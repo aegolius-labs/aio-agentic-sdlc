@@ -7,7 +7,7 @@ name = "agentic-backlog"
 version = "0.1.0"
 description = "Deterministic 3D Matrix Backlog Manager for Agentic Workflows"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { text = "PolyForm Noncommercial License 1.0.0" }
 authors = [
   { name="aegolius-labs" },
