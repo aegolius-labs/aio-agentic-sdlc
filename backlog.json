@@ -1,0 +1,43 @@
+{
+  "items": {
+    "Update pyproject.toml with PyPI metadata": {
+      "impact": 5,
+      "effort": 1,
+      "category": "Deployment",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 9,
+        "final": 9.0
+      }
+    },
+    "Create GitHub Actions publish workflow": {
+      "impact": 5,
+      "effort": 2,
+      "category": "Infrastructure",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 8,
+        "final": 8.0
+      }
+    },
+    "Update README.md for Agents": {
+      "impact": 4,
+      "effort": 1,
+      "category": "Documentation",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 8,
+        "final": 8.0
+      }
+    }
+  }
+}
