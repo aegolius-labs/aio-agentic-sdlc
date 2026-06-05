@@ -68,6 +68,46 @@
       "status": "Completed",
       "blockers": [],
       "scores": {}
+    },
+    "Support multi-line description field in backlog items to preserve task context and details": {
+      "impact": 5,
+      "effort": 3,
+      "category": "Core",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Implement backend connector for GitHub Issues and Projects integration": {
+      "impact": 5,
+      "effort": 4,
+      "category": "Integrations",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Implement backend connector for Azure DevOps Boards integration": {
+      "impact": 4,
+      "effort": 4,
+      "category": "Integrations",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Implement backend connector for Jira Software integration": {
+      "impact": 4,
+      "effort": 4,
+      "category": "Integrations",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {}
     }
   }
 }
