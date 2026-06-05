@@ -22,6 +22,10 @@ def _get_status(item):
     """Return the item's status, defaulting to 'New' for backward compatibility."""
     return item.get('status', 'New')
 
+def _get_blockers(item):
+    """Return the item's blockers list, defaulting to [] for backward compatibility."""
+    return item.get('blockers', [])
+
 def load_backlog():
     if not os.path.exists(BACKLOG_FILE):
         return {"items": {}}
@@ -78,6 +82,7 @@ def ensure_dependencies(data, requires):
                 "requires": [],
                 "ai_driven": True,
                 "status": "New",
+                "blockers": [],
                 "scores": {"base": 5, "final": 5}
             }
 
@@ -94,6 +99,7 @@ def add_cmd(args):
     
     requires = [r.strip() for r in args.requires.split(',')] if args.requires else []
     ensure_dependencies(data, requires)
+    blockers = [b.strip() for b in args.blockers.split(',')] if args.blockers else []
     
     data['items'][args.name] = {
         "impact": args.impact,
@@ -102,6 +108,7 @@ def add_cmd(args):
         "requires": requires,
         "ai_driven": args.ai_driven,
         "status": args.status,
+        "blockers": blockers,
         "scores": {}
     }
     save_backlog(data)
@@ -127,6 +134,9 @@ def update_cmd(args):
         item['ai_driven'] = args.ai_driven
     if args.status is not None:
         item['status'] = args.status
+    if args.blockers is not None:
+        blockers = [b.strip() for b in args.blockers.split(',')] if args.blockers else []
+        item['blockers'] = blockers
         
     save_backlog(data)
     print(f"Success! Updated '{args.name}'.")
@@ -209,6 +219,13 @@ def prioritize_cmd(args):
     new_items = {k: items[k] for k in final_ordered_keys}
     data['items'] = new_items
     
+    # Auto-set status to Blocked for items with non-empty blockers
+    for name, item in new_items.items():
+        if _get_blockers(item) and _get_status(item) != 'Completed':
+            item['status'] = 'Blocked'
+        elif _get_status(item) == 'Blocked' and not _get_blockers(item):
+            item['status'] = 'New'
+
     save_backlog(data)
     print("Success! Backlog prioritized.")
 
@@ -239,6 +256,10 @@ def export_cmd(args):
         lines.append(f"**Category:** {item.get('category', 'None')}")
         lines.append(f"**Dependencies:** {reqs}")
         lines.append(f"**Matrix:** Impact {item.get('impact', 0)} / Effort {item.get('effort', 0)} (Base: {base}) -> **Final Score: {final}**")
+        blockers = _get_blockers(item)
+        if blockers:
+            lines.append("")
+            lines.append(f"> **⚠️ Blocked by:** {', '.join(blockers)}")
         lines.append("")
         
     with open(out_file, 'w', encoding='utf-8') as f:
@@ -257,6 +278,40 @@ def status_cmd(args):
     save_backlog(data)
     print(f"Success! '{args.name}' status set to '{args.new_status}'.")
 
+def block_cmd(args):
+    """Add a blocker to an item."""
+    data = load_backlog()
+    if args.name not in data['items']:
+        print(f"Item '{args.name}' not found.", file=sys.stderr)
+        sys.exit(1)
+    _create_backup()
+    item = data['items'][args.name]
+    blockers = _get_blockers(item)
+    if args.reason not in blockers:
+        blockers.append(args.reason)
+    item['blockers'] = blockers
+    if _get_status(item) != 'Completed':
+        item['status'] = 'Blocked'
+    save_backlog(data)
+    print(f"Success! Added blocker to '{args.name}': {args.reason}")
+
+def unblock_cmd(args):
+    """Remove a specific blocker from an item."""
+    data = load_backlog()
+    if args.name not in data['items']:
+        print(f"Item '{args.name}' not found.", file=sys.stderr)
+        sys.exit(1)
+    _create_backup()
+    item = data['items'][args.name]
+    blockers = _get_blockers(item)
+    if args.reason in blockers:
+        blockers.remove(args.reason)
+    item['blockers'] = blockers
+    if not blockers and _get_status(item) == 'Blocked':
+        item['status'] = 'New'
+    save_backlog(data)
+    print(f"Success! Removed blocker from '{args.name}': {args.reason}")
+
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
@@ -272,6 +327,7 @@ def main():
     p_add.add_argument('--ai-driven', action='store_true')
     p_add.add_argument('--status', default='New', choices=VALID_STATUSES,
                        help="Initial status (default: New)")
+    p_add.add_argument('--blockers', help="Comma-separated blockers")
 
     p_update = subparsers.add_parser('update', help="Update an item")
     p_update.add_argument('name')
@@ -281,11 +337,20 @@ def main():
     p_update.add_argument('--requires')
     p_update.add_argument('--ai-driven', action='store_true')
     p_update.add_argument('--status', choices=VALID_STATUSES)
+    p_update.add_argument('--blockers', help="Comma-separated blockers (replaces existing)")
 
     p_status = subparsers.add_parser('status', help="Set item status")
     p_status.add_argument('name')
     p_status.add_argument('new_status', choices=VALID_STATUSES,
                           metavar='STATUS', help=f"One of: {', '.join(VALID_STATUSES)}")
+
+    p_block = subparsers.add_parser('block', help="Add a blocker to an item")
+    p_block.add_argument('name')
+    p_block.add_argument('reason', help="Blocker description")
+
+    p_unblock = subparsers.add_parser('unblock', help="Remove a blocker from an item")
+    p_unblock.add_argument('name')
+    p_unblock.add_argument('reason', help="Blocker description to remove")
 
     subparsers.add_parser('prioritize', help="Prioritize and sort")
 
@@ -299,6 +364,8 @@ def main():
         elif args.command == 'add': add_cmd(args)
         elif args.command == 'update': update_cmd(args)
         elif args.command == 'status': status_cmd(args)
+        elif args.command == 'block': block_cmd(args)
+        elif args.command == 'unblock': unblock_cmd(args)
         elif args.command == 'prioritize': prioritize_cmd(args)
         elif args.command == 'export': export_cmd(args)
     except Exception as e:
