@@ -1,16 +1,81 @@
 {
   "items": {
-    "Update pyproject.toml with PyPI metadata": {
+    "Update agentic SKILL.md instructions to mandate logging feature ideas to the backlog rather than assuming immediate implementation": {
       "impact": 5,
       "effort": 1,
-      "category": "Deployment",
+      "category": "Documentation",
       "requires": [],
       "ai_driven": false,
-      "status": "Completed",
+      "status": "New",
       "blockers": [],
       "scores": {
         "base": 9,
         "final": 9.0
+      }
+    },
+    "Support multi-line description field in backlog items to preserve task context and details": {
+      "impact": 5,
+      "effort": 3,
+      "category": "Core",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {
+        "base": 7,
+        "final": 7.0
+      }
+    },
+    "Bundle slash command templates for common actions (add, next, prioritize) and inject them via init": {
+      "impact": 4,
+      "effort": 3,
+      "category": "Agent Integration",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {
+        "base": 6,
+        "final": 6.0
+      }
+    },
+    "Implement backend connector for GitHub Issues and Projects integration": {
+      "impact": 5,
+      "effort": 4,
+      "category": "Integrations",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {
+        "base": 6,
+        "final": 6.0
+      }
+    },
+    "Implement backend connector for Azure DevOps Boards integration": {
+      "impact": 4,
+      "effort": 4,
+      "category": "Integrations",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {
+        "base": 5,
+        "final": 5.0
+      }
+    },
+    "Implement backend connector for Jira Software integration": {
+      "impact": 4,
+      "effort": 4,
+      "category": "Integrations",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {
+        "base": 5,
+        "final": 5.0
       }
     },
     "Create GitHub Actions publish workflow": {
@@ -22,8 +87,47 @@
       "status": "Completed",
       "blockers": [],
       "scores": {
-        "base": 8,
-        "final": 8.0
+        "base": 0,
+        "final": 0
+      }
+    },
+    "Generate and inject SKILL.md with instructions to strictly use uvx execution for agentic-backlog": {
+      "impact": 5,
+      "effort": 3,
+      "category": "Agent Integration",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 0,
+        "final": 0
+      }
+    },
+    "Make 'init' command idempotent to skip destructive backlog creation while preserving skill injection": {
+      "impact": 4,
+      "effort": 2,
+      "category": "Core",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 0,
+        "final": 0
+      }
+    },
+    "Package agentic SKILL.md template natively into CLI wheel via hatchling package-data instead of dynamic download": {
+      "impact": 5,
+      "effort": 3,
+      "category": "Packaging",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 0,
+        "final": 0
       }
     },
     "Update README.md for Agents": {
@@ -35,99 +139,22 @@
       "status": "Completed",
       "blockers": [],
       "scores": {
-        "base": 8,
-        "final": 8.0
+        "base": 0,
+        "final": 0
       }
     },
-    "Package agentic SKILL.md template natively into CLI wheel via hatchling package-data instead of dynamic download": {
-      "impact": 5,
-      "effort": 3,
-      "category": "Packaging",
-      "requires": [],
-      "ai_driven": false,
-      "status": "Completed",
-      "blockers": [],
-      "scores": {}
-    },
-    "Make 'init' command idempotent to skip destructive backlog creation while preserving skill injection": {
-      "impact": 4,
-      "effort": 2,
-      "category": "Core",
-      "requires": [],
-      "ai_driven": false,
-      "status": "Completed",
-      "blockers": [],
-      "scores": {}
-    },
-    "Generate and inject SKILL.md with instructions to strictly use uvx execution for agentic-backlog": {
-      "impact": 5,
-      "effort": 3,
-      "category": "Agent Integration",
-      "requires": [],
-      "ai_driven": false,
-      "status": "Completed",
-      "blockers": [],
-      "scores": {}
-    },
-    "Support multi-line description field in backlog items to preserve task context and details": {
-      "impact": 5,
-      "effort": 3,
-      "category": "Core",
-      "requires": [],
-      "ai_driven": false,
-      "status": "New",
-      "blockers": [],
-      "scores": {}
-    },
-    "Implement backend connector for GitHub Issues and Projects integration": {
-      "impact": 5,
-      "effort": 4,
-      "category": "Integrations",
-      "requires": [],
-      "ai_driven": false,
-      "status": "New",
-      "blockers": [],
-      "scores": {}
-    },
-    "Implement backend connector for Azure DevOps Boards integration": {
-      "impact": 4,
-      "effort": 4,
-      "category": "Integrations",
-      "requires": [],
-      "ai_driven": false,
-      "status": "New",
-      "blockers": [],
-      "scores": {}
-    },
-    "Implement backend connector for Jira Software integration": {
-      "impact": 4,
-      "effort": 4,
-      "category": "Integrations",
-      "requires": [],
-      "ai_driven": false,
-      "status": "New",
-      "blockers": [],
-      "scores": {}
-    },
-    "Bundle slash command templates for common actions (add, next, prioritize) and inject them via init": {
-      "impact": 4,
-      "effort": 3,
-      "category": "Agent Integration",
-      "requires": [],
-      "ai_driven": false,
-      "status": "New",
-      "blockers": [],
-      "scores": {}
-    },
-    "Update agentic SKILL.md instructions to mandate logging feature ideas to the backlog rather than assuming immediate implementation": {
+    "Update pyproject.toml with PyPI metadata": {
       "impact": 5,
       "effort": 1,
-      "category": "Documentation",
+      "category": "Deployment",
       "requires": [],
       "ai_driven": false,
-      "status": "New",
+      "status": "Completed",
       "blockers": [],
-      "scores": {}
+      "scores": {
+        "base": 0,
+        "final": 0
+      }
     }
   }
 }
