@@ -29,4 +29,3 @@ You MUST run `uvx agentic-backlog` whenever you need to check your tasks, modify
 ### Agent Behavior Rules
 
 * **Logging vs Implementation:** When the user proposes a new feature, idea, or issue, you MUST log it to the backlog via `uvx agentic-backlog add` and STOP. Do NOT automatically begin implementing or planning implementation for the new idea unless the user explicitly instructs you to do so.
-
