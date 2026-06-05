@@ -19,12 +19,13 @@
       "category": "Core",
       "requires": [],
       "ai_driven": false,
-      "status": "New",
+      "status": "Completed",
       "blockers": [],
       "scores": {
         "base": 7,
         "final": 7.0
-      }
+      },
+      "description": "This enables agents to have proper context when looking at an item in the backlog."
     },
     "Bundle slash command templates for common actions (add, next, prioritize) and inject them via init": {
       "impact": 4,
@@ -155,6 +156,17 @@
         "base": 0,
         "final": 0
       }
+    },
+    "Test Task": {
+      "impact": 1,
+      "effort": 1,
+      "category": "Testing",
+      "description": "This is a detailed description of the task.",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {}
     }
   }
 }
