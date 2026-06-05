@@ -9,6 +9,18 @@ import glob
 import heapq
 
 BACKLOG_FILE = 'backlog.json'
+VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
+
+STATUS_BADGES = {
+    'New': '🆕',
+    'In Progress': '🚧',
+    'Completed': '✅',
+    'Blocked': '🚫',
+}
+
+def _get_status(item):
+    """Return the item's status, defaulting to 'New' for backward compatibility."""
+    return item.get('status', 'New')
 
 def load_backlog():
     if not os.path.exists(BACKLOG_FILE):
@@ -65,6 +77,7 @@ def ensure_dependencies(data, requires):
                 "category": "Nice-to-haves",
                 "requires": [],
                 "ai_driven": True,
+                "status": "New",
                 "scores": {"base": 5, "final": 5}
             }
 
@@ -88,6 +101,7 @@ def add_cmd(args):
         "category": args.category,
         "requires": requires,
         "ai_driven": args.ai_driven,
+        "status": args.status,
         "scores": {}
     }
     save_backlog(data)
@@ -111,6 +125,8 @@ def update_cmd(args):
         item['requires'] = requires
     if args.ai_driven is not None:
         item['ai_driven'] = args.ai_driven
+    if args.status is not None:
+        item['status'] = args.status
         
     save_backlog(data)
     print(f"Success! Updated '{args.name}'.")
@@ -145,16 +161,23 @@ def prioritize_cmd(args):
         if node not in visited: visit(node)
 
     for name, item in items.items():
-        base = item['impact'] + (5 - item['effort'])
-        item['scores']['base'] = base
+        if _get_status(item) == 'Completed':
+            item['scores']['base'] = 0
+        else:
+            base = item['impact'] + (5 - item['effort'])
+            item['scores']['base'] = base
 
     final_scores = {}
     for node in reversed(order):
-        base = items[node]['scores']['base']
-        dependents = [n for n in order if node in items[n].get('requires', [])]
-        boost = 0.5 * sum(final_scores[d] for d in dependents)
-        final_scores[node] = base + boost
-        items[node]['scores']['final'] = final_scores[node]
+        if _get_status(items[node]) == 'Completed':
+            final_scores[node] = 0
+            items[node]['scores']['final'] = 0
+        else:
+            base = items[node]['scores']['base']
+            dependents = [n for n in order if node in items[n].get('requires', [])]
+            boost = 0.5 * sum(final_scores[d] for d in dependents)
+            final_scores[node] = base + boost
+            items[node]['scores']['final'] = final_scores[node]
 
     def get_cat_weight(cat):
         c = cat.lower()
@@ -208,8 +231,11 @@ def export_cmd(args):
         scores = item.get('scores', {})
         base = scores.get('base', 0)
         final = scores.get('final', 0)
+        status = _get_status(item)
+        badge = STATUS_BADGES.get(status, '')
         
-        lines.append(f"## {i}. {name}{ai_tag}")
+        lines.append(f"## {i}. {badge} {name}{ai_tag}")
+        lines.append(f"**Status:** {status}")
         lines.append(f"**Category:** {item.get('category', 'None')}")
         lines.append(f"**Dependencies:** {reqs}")
         lines.append(f"**Matrix:** Impact {item.get('impact', 0)} / Effort {item.get('effort', 0)} (Base: {base}) -> **Final Score: {final}**")
@@ -219,6 +245,17 @@ def export_cmd(args):
         f.write("\n".join(lines))
         
     print(f"Success! Exported human-readable backlog to {out_file}")
+
+def status_cmd(args):
+    """Convenience command to quickly change an item's status."""
+    data = load_backlog()
+    if args.name not in data['items']:
+        print(f"Item '{args.name}' not found.", file=sys.stderr)
+        sys.exit(1)
+    _create_backup()
+    data['items'][args.name]['status'] = args.new_status
+    save_backlog(data)
+    print(f"Success! '{args.name}' status set to '{args.new_status}'.")
 
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
@@ -233,6 +270,8 @@ def main():
     p_add.add_argument('--category', required=True)
     p_add.add_argument('--requires', help="Comma-separated dependencies")
     p_add.add_argument('--ai-driven', action='store_true')
+    p_add.add_argument('--status', default='New', choices=VALID_STATUSES,
+                       help="Initial status (default: New)")
 
     p_update = subparsers.add_parser('update', help="Update an item")
     p_update.add_argument('name')
@@ -241,6 +280,12 @@ def main():
     p_update.add_argument('--category')
     p_update.add_argument('--requires')
     p_update.add_argument('--ai-driven', action='store_true')
+    p_update.add_argument('--status', choices=VALID_STATUSES)
+
+    p_status = subparsers.add_parser('status', help="Set item status")
+    p_status.add_argument('name')
+    p_status.add_argument('new_status', choices=VALID_STATUSES,
+                          metavar='STATUS', help=f"One of: {', '.join(VALID_STATUSES)}")
 
     subparsers.add_parser('prioritize', help="Prioritize and sort")
 
@@ -253,6 +298,7 @@ def main():
         if args.command == 'init': init_cmd(args)
         elif args.command == 'add': add_cmd(args)
         elif args.command == 'update': update_cmd(args)
+        elif args.command == 'status': status_cmd(args)
         elif args.command == 'prioritize': prioritize_cmd(args)
         elif args.command == 'export': export_cmd(args)
     except Exception as e:
