@@ -98,7 +98,7 @@ def init_cmd(args):
             frameworks = detect_frameworks()
             if frameworks:
                 print(f"[Info] Detected frameworks: {', '.join(frameworks)}", file=sys.stderr)
-                items = generate_seed_backlog(frameworks)
+            items = generate_seed_backlog(frameworks)
         except ImportError:
             pass
             

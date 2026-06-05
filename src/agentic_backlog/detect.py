@@ -26,11 +26,67 @@ def detect_frameworks(cwd="."):
         
     return frameworks
 
-def generate_seed_backlog(frameworks):
-    """Generate a dictionary of seed items based on detected frameworks."""
+import re
+
+def seed_from_openspec(cwd="."):
+    """Parse tasks.md from Open-Spec into backlog items."""
+    items = {}
+    tasks_file = os.path.join(cwd, "tasks.md")
+    if os.path.exists(tasks_file):
+        with open(tasks_file, "r", encoding="utf-8") as f:
+            for line in f:
+                match = re.match(r"^\s*-\s*\[([ xX])\]\s+(.+)$", line)
+                if match:
+                    status_char = match.group(1).lower()
+                    name = match.group(2).strip()
+                    items[name] = {
+                        "impact": 3, "effort": 3, "category": "Open-Spec Task",
+                        "requires": [], "ai_driven": False,
+                        "status": "Completed" if status_char == "x" else "New",
+                        "blockers": [], "scores": {}
+                    }
+    return items
+
+def seed_from_speckit(cwd="."):
+    """Parse markdown files in specs/ from Spec-Kit into backlog items."""
+    items = {}
+    specs_dir = os.path.join(cwd, "specs")
+    if os.path.exists(specs_dir) and os.path.isdir(specs_dir):
+        for fname in os.listdir(specs_dir):
+            if fname.endswith(".md"):
+                fpath = os.path.join(specs_dir, fname)
+                with open(fpath, "r", encoding="utf-8") as f:
+                    for line in f:
+                        match = re.match(r"^\s*-\s*\[([ xX])\]\s+(.+)$", line)
+                        if match:
+                            status_char = match.group(1).lower()
+                            name = match.group(2).strip()
+                            items[name] = {
+                                "impact": 3, "effort": 3, "category": f"Spec-Kit Task ({fname})",
+                                "requires": [], "ai_driven": False,
+                                "status": "Completed" if status_char == "x" else "New",
+                                "blockers": [], "scores": {}
+                            }
+    return items
+
+def generate_seed_backlog(frameworks, cwd="."):
+    """Generate a dictionary of seed items based on detected frameworks and specs."""
     items = {}
     
-    # Universal baselines
+    # Try SDD framework parsing first
+    openspec_items = seed_from_openspec(cwd)
+    if openspec_items:
+        items.update(openspec_items)
+        
+    speckit_items = seed_from_speckit(cwd)
+    if speckit_items:
+        items.update(speckit_items)
+        
+    # If SDD found tasks, do not add universal baselines to avoid clutter
+    if items:
+        return items
+        
+    # Universal baselines if no spec parsing succeeded
     items["Initial Project Documentation"] = {
         "impact": 5, "effort": 2, "category": "Documentation",
         "requires": [], "ai_driven": True, "status": "New", "blockers": [], "scores": {}
