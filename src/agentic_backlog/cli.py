@@ -7,6 +7,7 @@ import time
 import datetime
 import glob
 import heapq
+import importlib.resources
 
 BACKLOG_FILE = 'backlog.json'
 VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
@@ -86,29 +87,48 @@ def ensure_dependencies(data, requires):
                 "scores": {"base": 5, "final": 5}
             }
 
+def _inject_agent_skills():
+    """Extract SKILL.md from package and inject into the workspace."""
+    try:
+        content = importlib.resources.files('agentic_backlog').joinpath('templates', 'agentic-backlog', 'SKILL.md').read_text(encoding='utf-8')
+    except Exception as e:
+        print(f"[WARNING] Could not load bundled SKILL.md template: {e}", file=sys.stderr)
+        return
+
+    # Provider-dependent paths can be added here (e.g. .cursor/rules, .github/copilot-instructions)
+    skill_dir = os.path.join('.agent', 'skills', 'agentic-backlog')
+    os.makedirs(skill_dir, exist_ok=True)
+    
+    skill_file = os.path.join(skill_dir, 'SKILL.md')
+    with open(skill_file, 'w', encoding='utf-8') as f:
+        f.write(content)
+        
+    print(f"Success! Injected agent skill into {skill_file}")
+
 def init_cmd(args):
     if os.path.exists(BACKLOG_FILE):
-        print(f"File {BACKLOG_FILE} already exists.")
-        sys.exit(1)
-        
-    items = {}
-    if not getattr(args, 'empty', False):
-        try:
-            from .detect import detect_frameworks, generate_seed_backlog
-            frameworks = detect_frameworks()
-            if frameworks:
-                print(f"[Info] Detected frameworks: {', '.join(frameworks)}", file=sys.stderr)
-            items = generate_seed_backlog(frameworks)
-        except ImportError:
-            pass
-            
-    data = {"items": items}
-    save_backlog(data)
-    
-    if items:
-        print(f"Success! Initialized {BACKLOG_FILE} with {len(items)} seed items.")
+        print(f"File {BACKLOG_FILE} already exists. Skipping seed generation.")
     else:
-        print(f"Success! Initialized empty {BACKLOG_FILE}")
+        items = {}
+        if not getattr(args, 'empty', False):
+            try:
+                from .detect import detect_frameworks, generate_seed_backlog
+                frameworks = detect_frameworks()
+                if frameworks:
+                    print(f"[Info] Detected frameworks: {', '.join(frameworks)}", file=sys.stderr)
+                items = generate_seed_backlog(frameworks)
+            except ImportError:
+                pass
+                
+        data = {"items": items}
+        save_backlog(data)
+        
+        if items:
+            print(f"Success! Initialized {BACKLOG_FILE} with {len(items)} seed items.")
+        else:
+            print(f"Success! Initialized empty {BACKLOG_FILE}")
+            
+    _inject_agent_skills()
 
 def add_cmd(args):
     data = load_backlog()

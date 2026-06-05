@@ -38,6 +38,36 @@
         "base": 8,
         "final": 8.0
       }
+    },
+    "Package agentic SKILL.md template natively into CLI wheel via hatchling package-data instead of dynamic download": {
+      "impact": 5,
+      "effort": 3,
+      "category": "Packaging",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {}
+    },
+    "Make 'init' command idempotent to skip destructive backlog creation while preserving skill injection": {
+      "impact": 4,
+      "effort": 2,
+      "category": "Core",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {}
+    },
+    "Generate and inject SKILL.md with instructions to strictly use uvx execution for agentic-backlog": {
+      "impact": 5,
+      "effort": 3,
+      "category": "Agent Integration",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {}
     }
   }
 }
