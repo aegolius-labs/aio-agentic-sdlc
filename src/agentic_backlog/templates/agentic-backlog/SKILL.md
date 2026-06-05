@@ -25,4 +25,8 @@ This ensures the CLI is dynamically executed via `uvx` even if it is not install
 * **Prioritize:** `uvx agentic-backlog prioritize` (Re-sorts the backlog).
 
 You MUST run `uvx agentic-backlog` whenever you need to check your tasks, modify priorities, or mark work as completed.
-If you encounter any bugs with `agentic-backlog` itself, document your experience and create GitHub issues if requested.
+
+### Agent Behavior Rules
+
+* **Logging vs Implementation:** When the user proposes a new feature, idea, or issue, you MUST log it to the backlog via `uvx agentic-backlog add` and STOP. Do NOT automatically begin implementing or planning implementation for the new idea unless the user explicitly instructs you to do so.
+
