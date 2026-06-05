@@ -141,15 +141,13 @@ def update_cmd(args):
     save_backlog(data)
     print(f"Success! Updated '{args.name}'.")
 
-def prioritize_cmd(args):
-    data = load_backlog()
-    if not data['items']:
-        print("Backlog is empty.")
-        return
-        
-    _create_backup()
-    items = data['items']
-
+def _compute_sorted_items(items):
+    """Compute scores and return items in priority-sorted order.
+    
+    This is a read-only computation — it modifies the items dict in-place
+    (scores) but does not save to disk. Returns the ordered keys list.
+    Raises SystemExit on circular dependency.
+    """
     visited = set()
     temp_mark = set()
     order = []
@@ -215,6 +213,18 @@ def prioritize_cmd(args):
             in_degree[dep] -= 1
             if in_degree[dep] == 0:
                 heapq.heappush(pq, (-items[dep]['scores']['final'], -get_cat_weight(items[dep]['category']), dep))
+
+    return final_ordered_keys
+
+def prioritize_cmd(args):
+    data = load_backlog()
+    if not data['items']:
+        print("Backlog is empty.")
+        return
+        
+    _create_backup()
+    items = data['items']
+    final_ordered_keys = _compute_sorted_items(items)
 
     new_items = {k: items[k] for k in final_ordered_keys}
     data['items'] = new_items
@@ -312,6 +322,69 @@ def unblock_cmd(args):
     save_backlog(data)
     print(f"Success! Removed blocker from '{args.name}': {args.reason}")
 
+def next_cmd(args):
+    """Find and output the highest-priority workable item."""
+    import copy
+    data = load_backlog()
+    if not data['items']:
+        result = {"target": None, "warning": "Backlog is empty."}
+        if args.format == 'human':
+            print("Backlog is empty.")
+        else:
+            print(json.dumps(result, indent=2))
+        return
+
+    # Work on a deep copy so we don't mutate the file
+    items = copy.deepcopy(data['items'])
+    ordered_keys = _compute_sorted_items(items)
+
+    # Find first workable item
+    top_key = ordered_keys[0] if ordered_keys else None
+    target_key = None
+    for key in ordered_keys:
+        item = items[key]
+        if _get_status(item) != 'Completed' and not _get_blockers(item):
+            target_key = key
+            break
+
+    if target_key is None:
+        result = {"target": None, "warning": "No workable items remain. All items are either completed or blocked."}
+        if args.format == 'human':
+            print(result["warning"])
+        else:
+            print(json.dumps(result, indent=2))
+        return
+
+    target_item = items[target_key]
+    target_data = {
+        "name": target_key,
+        "impact": target_item.get("impact"),
+        "effort": target_item.get("effort"),
+        "category": target_item.get("category"),
+        "status": _get_status(target_item),
+        "blockers": _get_blockers(target_item),
+        "requires": target_item.get("requires", []),
+        "scores": target_item.get("scores", {}),
+    }
+    result = {"target": target_data}
+
+    # Warn if the top item is blocked
+    if top_key and top_key != target_key:
+        top_item = items[top_key]
+        if _get_status(top_item) != 'Completed':
+            top_blockers = _get_blockers(top_item)
+            result["warning"] = f"Top item '{top_key}' has the highest priority but is blocked by: {top_blockers}"
+
+    if args.format == 'human':
+        print(f"Next workable item: {target_key}")
+        print(f"  Impact: {target_data['impact']} | Effort: {target_data['effort']}")
+        print(f"  Category: {target_data['category']}")
+        print(f"  Score: {target_data['scores'].get('final', 'N/A')}")
+        if 'warning' in result:
+            print(f"  ⚠ {result['warning']}")
+    else:
+        print(json.dumps(result, indent=2))
+
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
@@ -354,6 +427,10 @@ def main():
 
     subparsers.add_parser('prioritize', help="Prioritize and sort")
 
+    p_next = subparsers.add_parser('next', help="Get next workable item")
+    p_next.add_argument('--format', choices=['json', 'human'], default='json',
+                        help="Output format (default: json)")
+
     p_export = subparsers.add_parser('export', help="Export to Markdown")
     p_export.add_argument('--out', default='backlog.md', help="Output file")
 
@@ -367,6 +444,7 @@ def main():
         elif args.command == 'block': block_cmd(args)
         elif args.command == 'unblock': unblock_cmd(args)
         elif args.command == 'prioritize': prioritize_cmd(args)
+        elif args.command == 'next': next_cmd(args)
         elif args.command == 'export': export_cmd(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
