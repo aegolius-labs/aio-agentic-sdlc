@@ -90,8 +90,25 @@ def init_cmd(args):
     if os.path.exists(BACKLOG_FILE):
         print(f"File {BACKLOG_FILE} already exists.")
         sys.exit(1)
-    save_backlog({"items": {}})
-    print(f"Success! Initialized empty {BACKLOG_FILE}")
+        
+    items = {}
+    if not getattr(args, 'empty', False):
+        try:
+            from .detect import detect_frameworks, generate_seed_backlog
+            frameworks = detect_frameworks()
+            if frameworks:
+                print(f"[Info] Detected frameworks: {', '.join(frameworks)}", file=sys.stderr)
+                items = generate_seed_backlog(frameworks)
+        except ImportError:
+            pass
+            
+    data = {"items": items}
+    save_backlog(data)
+    
+    if items:
+        print(f"Success! Initialized {BACKLOG_FILE} with {len(items)} seed items.")
+    else:
+        print(f"Success! Initialized empty {BACKLOG_FILE}")
 
 def add_cmd(args):
     data = load_backlog()
@@ -389,7 +406,8 @@ def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
 
-    subparsers.add_parser('init', help="Initialize empty backlog.json")
+    p_init = subparsers.add_parser('init', help="Initialize backlog.json")
+    p_init.add_argument('--empty', action='store_true', help="Skip auto-detecting frameworks for seed items")
 
     p_add = subparsers.add_parser('add', help="Add an item")
     p_add.add_argument('name')
