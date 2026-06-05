@@ -64,6 +64,25 @@ class TestGenerateSeedBacklog:
         assert "Initial Project Documentation" in items
         assert "Configure Clippy and Rustfmt" in items
 
+
+    def test_generate_openspec(self, tmp_path):
+        (tmp_path / 'tasks.md').write_text('- [ ] OpenSpec task 1\n- [x] OpenSpec task 2')
+        items = generate_seed_backlog([], cwd=str(tmp_path))
+        assert 'OpenSpec task 1' in items
+        assert items['OpenSpec task 1']['status'] == 'New'
+        assert items['OpenSpec task 1']['category'] == 'Open-Spec Task'
+        assert 'OpenSpec task 2' in items
+        assert items['OpenSpec task 2']['status'] == 'Completed'
+        assert 'Initial Project Documentation' not in items
+
+    def test_generate_speckit(self, tmp_path):
+        specs_dir = tmp_path / 'specs'
+        specs_dir.mkdir()
+        (specs_dir / 'tasks.md').write_text('- [ ] SpecKit task 1')
+        items = generate_seed_backlog([], cwd=str(tmp_path))
+        assert 'SpecKit task 1' in items
+        assert items['SpecKit task 1']['category'] == 'Spec-Kit Task (tasks.md)'
+        assert 'Initial Project Documentation' not in items
 class TestInitCmdIntegration:
     @pytest.fixture(autouse=True)
     def clean_backlog(self, tmp_path, monkeypatch):
