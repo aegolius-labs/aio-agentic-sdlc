@@ -108,6 +108,26 @@
       "status": "New",
       "blockers": [],
       "scores": {}
+    },
+    "Bundle slash command templates for common actions (add, next, prioritize) and inject them via init": {
+      "impact": 4,
+      "effort": 3,
+      "category": "Agent Integration",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Update agentic SKILL.md instructions to mandate logging feature ideas to the backlog rather than assuming immediate implementation": {
+      "impact": 5,
+      "effort": 1,
+      "category": "Documentation",
+      "requires": [],
+      "ai_driven": false,
+      "status": "New",
+      "blockers": [],
+      "scores": {}
     }
   }
 }
