@@ -142,6 +142,7 @@ def add_cmd(args):
         "impact": args.impact,
         "effort": args.effort,
         "category": args.category,
+        "description": args.description or "",
         "requires": requires,
         "ai_driven": args.ai_driven,
         "status": args.status,
@@ -171,6 +172,8 @@ def update_cmd(args):
         item['ai_driven'] = args.ai_driven
     if args.status is not None:
         item['status'] = args.status
+    if args.description is not None:
+        item['description'] = args.description
     if args.blockers is not None:
         blockers = [b.strip() for b in args.blockers.split(',')] if args.blockers else []
         item['blockers'] = blockers
@@ -303,6 +306,10 @@ def export_cmd(args):
         lines.append(f"**Category:** {item.get('category', 'None')}")
         lines.append(f"**Dependencies:** {reqs}")
         lines.append(f"**Matrix:** Impact {item.get('impact', 0)} / Effort {item.get('effort', 0)} (Base: {base}) -> **Final Score: {final}**")
+        desc = item.get('description')
+        if desc:
+            lines.append("")
+            lines.append(f"**Description:**\n{desc}")
         blockers = _get_blockers(item)
         if blockers:
             lines.append("")
@@ -398,6 +405,7 @@ def next_cmd(args):
         "impact": target_item.get("impact"),
         "effort": target_item.get("effort"),
         "category": target_item.get("category"),
+        "description": target_item.get("description", ""),
         "status": _get_status(target_item),
         "blockers": _get_blockers(target_item),
         "requires": target_item.get("requires", []),
@@ -414,6 +422,8 @@ def next_cmd(args):
 
     if args.format == 'human':
         print(f"Next workable item: {target_key}")
+        if target_data.get('description'):
+            print(f"  Description: {target_data['description']}")
         print(f"  Impact: {target_data['impact']} | Effort: {target_data['effort']}")
         print(f"  Category: {target_data['category']}")
         print(f"  Score: {target_data['scores'].get('final', 'N/A')}")
@@ -434,6 +444,7 @@ def main():
     p_add.add_argument('--impact', type=int, choices=range(1, 6), required=True)
     p_add.add_argument('--effort', type=int, choices=range(1, 6), required=True)
     p_add.add_argument('--category', required=True)
+    p_add.add_argument('--description', help="Detailed description of the task")
     p_add.add_argument('--requires', help="Comma-separated dependencies")
     p_add.add_argument('--ai-driven', action='store_true')
     p_add.add_argument('--status', default='New', choices=VALID_STATUSES,
@@ -445,6 +456,7 @@ def main():
     p_update.add_argument('--impact', type=int, choices=range(1, 6))
     p_update.add_argument('--effort', type=int, choices=range(1, 6))
     p_update.add_argument('--category')
+    p_update.add_argument('--description', help="Detailed description of the task")
     p_update.add_argument('--requires')
     p_update.add_argument('--ai-driven', action='store_true')
     p_update.add_argument('--status', choices=VALID_STATUSES)
