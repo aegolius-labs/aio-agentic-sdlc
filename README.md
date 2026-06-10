@@ -19,6 +19,7 @@ uv tool install agentic-backlog
 ```
 
 Or using `pipx`:
+
 ```bash
 pipx install agentic-backlog
 ```
