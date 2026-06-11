@@ -8,29 +8,51 @@ It replaces token-heavy LLM prioritization of Markdown files with a strict, dete
 
 This project is intended for **Personal / Non-Commercial Use Only**. When you publish this to GitHub, it is highly recommended to select a license like the **PolyForm Noncommercial License 1.0.0** or **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** from the GitHub license templates.
 
-## Installation & Usage for Agents (Agy, etc.)
+## Installation & Configuration
 
-This tool is distributed globally via PyPI, making it extremely easy for autonomous coding agents (like Agy) to install and use without local source code dependency.
+Because `agentic-backlog` is an agentic-first toolkit, the easiest way to install and integrate the MCP Server into your IDE (VS Code, Cursor, Windsurf, Claude Desktop) is by using `uvx` to fetch the server directly from GitHub. This requires **zero local installation**.
 
-You can install it globally in milliseconds using `uv`:
+Add the following to your IDE's `mcp.json` or equivalent configuration file:
 
-```bash
-uv tool install agentic-backlog
+```json
+"mcpServers": {
+  "agentic-backlog": {
+    "command": "uvx",
+    "args": [
+      "--from",
+      "git+https://github.com/aegolius-labs/agentic-backlog-cli",
+      "agentic-backlog-mcp"
+    ]
+  }
+}
 ```
 
-Or using `pipx`:
+### Global Installation (Optional)
+
+If you plan to use the CLI frequently and prefer not to type the full `uvx` GitHub URL every time, you can permanently install the CLI globally using `uv`:
+
 ```bash
-pipx install agentic-backlog
+uv tool install git+https://github.com/aegolius-labs/agentic-backlog-cli
 ```
 
-Once installed globally, you can invoke it from anywhere in your workspace:
+Once installed, you can invoke the CLI natively:
 
 ```bash
-agentic-backlog init
-agentic-backlog add "my-feature" --impact 5 --effort 3 --category "Security" --requires "prereq-feature"
-agentic-backlog prioritize
-agentic-backlog next
-agentic-backlog export
+agb init
+agb add "my-feature" --impact 5 --effort 3 --category "Security"
+agb prioritize
+agb export
+```
+
+*(Note: `agentic-backlog` can also be used if you prefer the full name)*
+
+### Zero-Install Execution (via uvx)
+
+If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:
+
+```bash
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agb init
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agb export
 ```
 
 ## Integrations (OpenSpec & Spec-Kit)
