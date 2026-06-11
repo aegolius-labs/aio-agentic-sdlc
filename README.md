@@ -8,30 +8,34 @@ It replaces token-heavy LLM prioritization of Markdown files with a strict, dete
 
 This project is intended for **Personal / Non-Commercial Use Only**. When you publish this to GitHub, it is highly recommended to select a license like the **PolyForm Noncommercial License 1.0.0** or **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** from the GitHub license templates.
 
-## Installation & Usage for Agents (Agy, etc.)
+## Installation & Configuration
 
-This tool is distributed globally via PyPI, making it extremely easy for autonomous coding agents (like Agy) to install and use without local source code dependency.
+Because `agentic-backlog` is an agentic-first toolkit, the easiest way to install and integrate the MCP Server into your IDE (VS Code, Cursor, Windsurf, Claude Desktop) is by using `uvx` to fetch the server directly from GitHub. This requires **zero local installation**.
 
-You can install it globally in milliseconds using `uv`:
+Add the following to your IDE's `mcp.json` or equivalent configuration file:
 
-```bash
-uv tool install agentic-backlog
+```json
+"mcpServers": {
+  "agentic-backlog": {
+    "command": "uvx",
+    "args": [
+      "--from",
+      "git+https://github.com/aegolius-labs/agentic-backlog-cli",
+      "agentic-backlog-mcp"
+    ]
+  }
+}
 ```
 
-Or using `pipx`:
+### CLI Fallback
+
+If you need to interact with the backlog via the terminal (or need to `init` the project as a human), you can execute the CLI commands directly from GitHub:
 
 ```bash
-pipx install agentic-backlog
-```
-
-Once installed globally, you can invoke it from anywhere in your workspace:
-
-```bash
-agentic-backlog init
-agentic-backlog add "my-feature" --impact 5 --effort 3 --category "Security" --requires "prereq-feature"
-agentic-backlog prioritize
-agentic-backlog next
-agentic-backlog export
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog init
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog add "my-feature" --impact 5 --effort 3 --category "Security"
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog prioritize
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog export
 ```
 
 ## Integrations (OpenSpec & Spec-Kit)
