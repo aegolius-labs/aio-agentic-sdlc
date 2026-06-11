@@ -13,7 +13,7 @@ mcp = FastMCP("Agentic Backlog")
 
 @mcp.resource("backlog://current")
 def read_current_backlog() -> str:
-    """Read the complete prioritized project backlog as JSON."""
+    """Read the complete prioritized project backlog as JSON from the current working directory."""
     data = load_backlog()
     return json.dumps(data, indent=2)
 
@@ -26,9 +26,9 @@ def pick_next_task_prompt() -> str:
     )
 
 @mcp.tool()
-def get_next_task() -> str:
+def get_next_task(project_path: str = Field(".", description="Absolute path to the project directory")) -> str:
     """Find and return the highest-priority workable task from the backlog."""
-    target_data, warning = get_next_item()
+    target_data, warning = get_next_item(project_path)
     if not target_data:
         return f"Warning: {warning}"
     return json.dumps({"target": target_data, "warning": warning}, indent=2)
@@ -41,7 +41,8 @@ def add_task(
     category: str = Field(..., description="Category (e.g. Core, Feature, Bug)"),
     description: str = Field("", description="Detailed task description"),
     requires: str = Field("", description="Comma-separated list of required task names"),
-    status: str = Field("New", description="Initial status")
+    status: str = Field("New", description="Initial status"),
+    project_path: str = Field(".", description="Absolute path to the project directory")
 ) -> str:
     """Add a new task to the project backlog."""
     if status not in VALID_STATUSES:
@@ -49,7 +50,8 @@ def add_task(
     try:
         warnings = add_item(
             name=name, impact=impact, effort=effort, category=category,
-            description=description, requires=requires, ai_driven=True, status=status
+            description=description, requires=requires, ai_driven=True, status=status,
+            project_path=project_path
         )
         msg = f"Task '{name}' added successfully."
         if warnings:
@@ -61,31 +63,35 @@ def add_task(
 @mcp.tool()
 def update_task_status(
     name: str = Field(..., description="Task name"), 
-    new_status: str = Field(..., description="New status ('New', 'In Progress', 'Completed', 'Blocked')")
+    new_status: str = Field(..., description="New status ('New', 'In Progress', 'Completed', 'Blocked')"),
+    project_path: str = Field(".", description="Absolute path to the project directory")
 ) -> str:
     """Quickly update the status of an existing task."""
     if new_status not in VALID_STATUSES:
         return f"Error: Status must be one of {VALID_STATUSES}"
     try:
-        set_status(name, new_status)
+        set_status(name, new_status, project_path)
         return f"Task '{name}' status set to '{new_status}'."
     except Exception as e:
         return f"Error: {str(e)}"
 
 @mcp.tool()
-def remove_task(name: str = Field(..., description="Task name")) -> str:
+def remove_task(
+    name: str = Field(..., description="Task name"),
+    project_path: str = Field(".", description="Absolute path to the project directory")
+) -> str:
     """Remove a task entirely from the backlog."""
     try:
-        remove_item(name)
+        remove_item(name, project_path)
         return f"Task '{name}' completely removed."
     except Exception as e:
         return f"Error: {str(e)}"
 
 @mcp.tool()
-def prioritize_backlog() -> str:
+def prioritize_backlog(project_path: str = Field(".", description="Absolute path to the project directory")) -> str:
     """Force an immediate topological sort and priority re-calculation of the backlog."""
     try:
-        if prioritize_items():
+        if prioritize_items(project_path):
             return "Backlog successfully prioritized."
         return "Backlog is empty."
     except Exception as e:
@@ -94,11 +100,12 @@ def prioritize_backlog() -> str:
 @mcp.tool()
 def block_task(
     name: str = Field(..., description="Task name"), 
-    reason: str = Field(..., description="Why is it blocked?")
+    reason: str = Field(..., description="Why is it blocked?"),
+    project_path: str = Field(".", description="Absolute path to the project directory")
 ) -> str:
     """Add a blocker to a task, preventing it from being worked on."""
     try:
-        add_blocker(name, reason)
+        add_blocker(name, reason, project_path)
         return f"Blocker added to '{name}'."
     except Exception as e:
         return f"Error: {str(e)}"
