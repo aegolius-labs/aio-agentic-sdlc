@@ -27,14 +27,29 @@ Add the following to your IDE's `mcp.json` or equivalent configuration file:
 }
 ```
 
-### CLI Fallback
+### Global Installation (Optional)
 
-If you need to interact with the backlog via the terminal (or need to `init` the project as a human), you can execute the CLI commands directly from GitHub:
+If you plan to use the CLI frequently and prefer not to type the full `uvx` GitHub URL every time, you can permanently install the CLI globally using `uv`:
+
+```bash
+uv tool install git+https://github.com/aegolius-labs/agentic-backlog-cli
+```
+
+Once installed, you can invoke the CLI natively:
+
+```bash
+agentic-backlog init
+agentic-backlog add "my-feature" --impact 5 --effort 3 --category "Security"
+agentic-backlog prioritize
+agentic-backlog export
+```
+
+### Zero-Install Execution (via uvx)
+
+If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:
 
 ```bash
 uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog init
-uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog add "my-feature" --impact 5 --effort 3 --category "Security"
-uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog prioritize
 uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog export
 ```
 
