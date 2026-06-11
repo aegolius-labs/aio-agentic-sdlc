@@ -1,17 +1,17 @@
 {
   "items": {
-    "Expose agentic-backlog via MCP Server": {
-      "impact": 5,
-      "effort": 4,
-      "category": "Integrations",
-      "description": "Create a Model Context Protocol (MCP) server that exposes the backlog natively to agents. Must include: 1. Native schema discovery for tools (add, update, next). 2. Resources to expose the raw backlog state without CLI commands. 3. Prompts to quickly bundle the next highest-priority task into context. Target distribution: seamless installation via IDE extension marketplaces.",
+    "Automate Semantic Versioning & GitHub Releases": {
+      "impact": 4,
+      "effort": 2,
+      "category": "Infrastructure",
+      "description": "Implement an automated release process (e.g. Release Please) to bump versions and create GitHub Releases based on Conventional Commits, without PyPI distribution.",
       "requires": [],
       "ai_driven": false,
-      "status": "Completed",
+      "status": "New",
       "blockers": [],
       "scores": {
-        "base": 6,
-        "final": 6.0
+        "base": 7,
+        "final": 7.0
       }
     },
     "Implement backend connector for GitHub Issues and Projects integration": {
@@ -71,6 +71,20 @@
       "impact": 5,
       "effort": 2,
       "category": "Infrastructure",
+      "requires": [],
+      "ai_driven": false,
+      "status": "Completed",
+      "blockers": [],
+      "scores": {
+        "base": 0,
+        "final": 0
+      }
+    },
+    "Expose agentic-backlog via MCP Server": {
+      "impact": 5,
+      "effort": 4,
+      "category": "Integrations",
+      "description": "Create a Model Context Protocol (MCP) server that exposes the backlog natively to agents. Must include: 1. Native schema discovery for tools (add, update, next). 2. Resources to expose the raw backlog state without CLI commands. 3. Prompts to quickly bundle the next highest-priority task into context. Target distribution: seamless installation via IDE extension marketplaces.",
       "requires": [],
       "ai_driven": false,
       "status": "Completed",
