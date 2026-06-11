@@ -7,7 +7,7 @@
       "description": "Create a Model Context Protocol (MCP) server that exposes the backlog natively to agents. Must include: 1. Native schema discovery for tools (add, update, next). 2. Resources to expose the raw backlog state without CLI commands. 3. Prompts to quickly bundle the next highest-priority task into context. Target distribution: seamless installation via IDE extension marketplaces.",
       "requires": [],
       "ai_driven": false,
-      "status": "New",
+      "status": "Completed",
       "blockers": [],
       "scores": {
         "base": 6,
