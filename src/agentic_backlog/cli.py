@@ -366,6 +366,26 @@ def unblock_cmd(args):
     save_backlog(data)
     print(f"Success! Removed blocker from '{args.name}': {args.reason}")
 
+def remove_cmd(args):
+    """Remove an item completely from the backlog."""
+    data = load_backlog()
+    if args.name not in data['items']:
+        print(f"Item '{args.name}' not found.", file=sys.stderr)
+        sys.exit(1)
+        
+    _create_backup()
+    
+    # Remove from other items' requires and blockers lists
+    for name, item in data['items'].items():
+        if 'requires' in item and args.name in item['requires']:
+            item['requires'].remove(args.name)
+        if 'blockers' in item and args.name in item['blockers']:
+            item['blockers'].remove(args.name)
+            
+    del data['items'][args.name]
+    save_backlog(data)
+    print(f"Success! Removed '{args.name}' completely from backlog.")
+
 def next_cmd(args):
     """Find and output the highest-priority workable item."""
     import copy
@@ -475,6 +495,9 @@ def main():
     p_unblock.add_argument('name')
     p_unblock.add_argument('reason', help="Blocker description to remove")
 
+    p_remove = subparsers.add_parser('remove', help="Remove an item completely")
+    p_remove.add_argument('name')
+
     subparsers.add_parser('prioritize', help="Prioritize and sort")
 
     p_next = subparsers.add_parser('next', help="Get next workable item")
@@ -493,6 +516,7 @@ def main():
         elif args.command == 'status': status_cmd(args)
         elif args.command == 'block': block_cmd(args)
         elif args.command == 'unblock': unblock_cmd(args)
+        elif args.command == 'remove': remove_cmd(args)
         elif args.command == 'prioritize': prioritize_cmd(args)
         elif args.command == 'next': next_cmd(args)
         elif args.command == 'export': export_cmd(args)
