@@ -28,6 +28,7 @@ dev = ["pytest>=7.0"]
 
 [project.scripts]
 agentic-backlog = "agentic_backlog.cli:main"
+agb = "agentic_backlog.cli:main"
 agentic-backlog-mcp = "agentic_backlog.mcp_server:main"
 
 [tool.pytest.ini_options]

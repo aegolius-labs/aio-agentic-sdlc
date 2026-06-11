@@ -38,19 +38,21 @@ uv tool install git+https://github.com/aegolius-labs/agentic-backlog-cli
 Once installed, you can invoke the CLI natively:
 
 ```bash
-agentic-backlog init
-agentic-backlog add "my-feature" --impact 5 --effort 3 --category "Security"
-agentic-backlog prioritize
-agentic-backlog export
+agb init
+agb add "my-feature" --impact 5 --effort 3 --category "Security"
+agb prioritize
+agb export
 ```
+
+*(Note: `agentic-backlog` can also be used if you prefer the full name)*
 
 ### Zero-Install Execution (via uvx)
 
 If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:
 
 ```bash
-uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog init
-uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog export
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agb init
+uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agb export
 ```
 
 ## Integrations (OpenSpec & Spec-Kit)
