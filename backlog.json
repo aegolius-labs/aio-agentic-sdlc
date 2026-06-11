@@ -7,7 +7,7 @@
       "description": "Implement an automated release process (e.g. Release Please) to bump versions and create GitHub Releases based on Conventional Commits, without PyPI distribution.",
       "requires": [],
       "ai_driven": false,
-      "status": "New",
+      "status": "Completed",
       "blockers": [],
       "scores": {
         "base": 7,
