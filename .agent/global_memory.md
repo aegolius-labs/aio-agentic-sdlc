@@ -9,3 +9,4 @@
 
 - **Tool Fallbacks:** If an MCP tool (like `github-mcp-server`) fails due to auth or permissions (e.g. 403), MUST fallback to the corresponding CLI tool (e.g. `gh issue create`) before giving up, respecting the Tool Preference hierarchy (MCP > CLI > API).
 - **PowerShell Encoding:** NEVER use `echo "text" >> file` in Windows PowerShell. It defaults to UTF-16LE and corrupts UTF-8 files. MUST use explicit file tools (`replace_file_content` or `write_to_file`).
+- **Python Versioning:** Since the project is UV-first, always default to upgrading to more recent versions of Python if a dependency or architecture requires it. Do not block or ask for permission for minor version bumps.
