@@ -47,3 +47,7 @@ node_modules/
 
 qa_tests/
 backlog.md
+
+# Agent Scratch Directories
+scratch/
+scratch_*/

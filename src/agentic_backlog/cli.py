@@ -38,7 +38,86 @@ def _inject_agent_skills():
         
     print(f"Success! Injected agent skill into {skill_file}")
 
+from .config import save_config
+
 def init_cmd(args):
+    is_github = getattr(args, 'github', False)
+    
+    if is_github:
+        repo = getattr(args, 'github_repo')
+        project_num = getattr(args, 'github_project')
+        is_org = getattr(args, 'github_is_org', True)
+        
+        if not repo:
+            print("[ERROR] --github-repo is required when using --github", file=sys.stderr)
+            sys.exit(1)
+            
+        try:
+            from .github import GitHubClient
+            client = GitHubClient()
+            owner, name = repo.split('/')
+            
+            if not project_num:
+                print(f"[Info] No project number provided. Creating new Project V2 for {repo}...")
+                owner_id = client.get_owner_id(owner, is_org)
+                repo_id = client.get_repo_id(owner, name)
+                new_project = client.create_project_v2(owner_id, "Agentic Backlog", repo_id)
+                project_num = new_project["number"]
+                print(f"Success! Created new GitHub Project V2: #{project_num}")
+                
+            print(f"[Info] Initializing GitHub mode for repo: {repo}, project: {project_num}")
+            
+            config = {
+                "core": {"mode": "github"},
+                "github": {"repo": repo, "project_number": int(project_num), "is_org": is_org}
+            }
+            save_config(config)
+            
+            print("[Info] Verifying project and creating missing fields via GraphQL...")
+            client.ensure_backlog_fields(owner, project_num, is_org)
+            print("Success! Custom fields verified/created in GitHub Project V2.")
+        except Exception as e:
+            print(f"[ERROR] Failed to communicate with GitHub API: {e}", file=sys.stderr)
+            sys.exit(1)
+            
+        if os.path.exists(BACKLOG_FILE):
+            print(f"[Info] Migrating {BACKLOG_FILE} to archive...")
+            with open(BACKLOG_FILE, 'r', encoding='utf-8') as f:
+                old_data = json.load(f)
+            old_data["_archived"] = "Migrated to GitHub Projects V2"
+            
+            archive_name = "backlog_archived.json"
+            with open(archive_name, 'w', encoding='utf-8') as f:
+                json.dump(old_data, f, indent=2)
+                
+            if "items" in old_data and old_data["items"]:
+                print(f"[Info] Syncing {len(old_data['items'])} items to GitHub Project...")
+                from .github_core import add_item_github
+                for name, item in old_data["items"].items():
+                    print(f"  -> Migrating: {name}")
+                    add_item_github(
+                        name=name,
+                        impact=item.get("impact", 1),
+                        effort=item.get("effort", 1),
+                        category=item.get("category", ""),
+                        description=item.get("description", ""),
+                        requires=item.get("requires", []),
+                        ai_driven=item.get("ai_driven", False),
+                        status=item.get("status", "New"),
+                        blockers=item.get("blockers", []),
+                        project_path="."
+                    )
+                print("Success! Backlog synced to GitHub.")
+                
+            if not getattr(args, 'dry_run', False):
+                os.remove(BACKLOG_FILE)
+                print(f"Success! {BACKLOG_FILE} removed. Old data saved to {archive_name}. Please commit the archive to VCS.")
+            else:
+                print(f"Success! Old data saved to {archive_name}. Skipped removing {BACKLOG_FILE} due to --dry-run.")
+            
+        _inject_agent_skills()
+        return
+
     if os.path.exists(BACKLOG_FILE):
         print(f"File {BACKLOG_FILE} already exists. Skipping seed generation.")
     else:
@@ -69,8 +148,8 @@ def add_cmd(args):
         impact=args.impact,
         effort=args.effort,
         category=args.category,
-        description=args.description,
-        requires=args.requires,
+        description=getattr(args, 'description', None),
+        requires=getattr(args, 'requires', None),
         ai_driven=args.ai_driven,
         status=args.status,
         blockers=args.blockers
@@ -85,9 +164,9 @@ def update_cmd(args):
             name=args.name,
             impact=args.impact,
             effort=args.effort,
-            category=args.category,
-            description=args.description,
-            requires=args.requires,
+            category=getattr(args, 'category', None),
+            description=getattr(args, 'description', None),
+            requires=getattr(args, 'requires', None),
             ai_driven=args.ai_driven,
             status=args.status,
             blockers=args.blockers
@@ -100,10 +179,14 @@ def update_cmd(args):
         sys.exit(1)
 
 def prioritize_cmd(args):
-    if prioritize_items():
-        print("Success! Backlog prioritized.")
-    else:
-        print("Backlog is empty.")
+    try:
+        if prioritize_items():
+            print("Success! Backlog prioritized.")
+        else:
+            print("Backlog is empty.")
+    except ValueError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
 
 def export_cmd(args):
     data = load_backlog()
@@ -202,7 +285,7 @@ def next_cmd(args):
         print(f"  Category: {target_data['category']}")
         print(f"  Score: {target_data['scores'].get('final', 'N/A')}")
         if warning:
-            print(f"  ⚠ {warning}")
+            print(f"  [!] {warning}")
     else:
         print(json.dumps(result, indent=2))
 
@@ -210,8 +293,13 @@ def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
 
-    p_init = subparsers.add_parser('init', help="Initialize backlog.json")
+    p_init = subparsers.add_parser('init', help="Initialize backlog.json or github configuration")
     p_init.add_argument('--empty', action='store_true', help="Skip auto-detecting frameworks for seed items")
+    p_init.add_argument('--github', action='store_true', help="Initialize in GitHub mode")
+    p_init.add_argument('--github-repo', help="GitHub repository in owner/repo format")
+    p_init.add_argument('--github-project', type=int, help="GitHub Project V2 number")
+    p_init.add_argument('--github-is-user', dest='github_is_org', action='store_false', help="Indicate the project owner is a user instead of an organization")
+    p_init.add_argument('--dry-run', action='store_true', help="Skip archiving backlog.json during GitHub mode initialization")
 
     p_add = subparsers.add_parser('add', help="Add an item")
     p_add.add_argument('name')
