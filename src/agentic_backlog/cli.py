@@ -84,36 +84,51 @@ def init_cmd(args):
             print(f"[Info] Migrating {BACKLOG_FILE} to archive...")
             with open(BACKLOG_FILE, 'r', encoding='utf-8') as f:
                 old_data = json.load(f)
-            old_data["_archived"] = "Migrated to GitHub Projects V2"
             
-            archive_name = "backlog_archived.json"
-            with open(archive_name, 'w', encoding='utf-8') as f:
+            # Step 1 & 2: Tag as migrated and commit
+            old_data["_archived"] = "Migrated to GitHub Projects V2"
+            with open(BACKLOG_FILE, 'w', encoding='utf-8') as f:
                 json.dump(old_data, f, indent=2)
+                
+            import subprocess
+            if not getattr(args, 'dry_run', False):
+                try:
+                    subprocess.run(["git", "add", BACKLOG_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    subprocess.run(["git", "commit", "-m", "chore: mark local backlog as migrated to GitHub Projects"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                except Exception:
+                    pass
                 
             if "items" in old_data and old_data["items"]:
                 print(f"[Info] Syncing {len(old_data['items'])} items to GitHub Project...")
                 from .github_core import add_item_github
                 for name, item in old_data["items"].items():
                     print(f"  -> Migrating: {name}")
-                    add_item_github(
-                        name=name,
-                        impact=item.get("impact", 1),
-                        effort=item.get("effort", 1),
-                        category=item.get("category", ""),
-                        description=item.get("description", ""),
-                        requires=item.get("requires", []),
-                        ai_driven=item.get("ai_driven", False),
-                        status=item.get("status", "New"),
-                        blockers=item.get("blockers", []),
-                        project_path="."
-                    )
+                    if not getattr(args, 'dry_run', False):
+                        add_item_github(
+                            name=name,
+                            impact=item.get("impact", 1),
+                            effort=item.get("effort", 1),
+                            category=item.get("category", ""),
+                            description=item.get("description", ""),
+                            requires=item.get("requires", []),
+                            ai_driven=item.get("ai_driven", False),
+                            status=item.get("status", "New"),
+                            blockers=item.get("blockers", []),
+                            project_path="."
+                        )
                 print("Success! Backlog synced to GitHub.")
                 
+            # Step 3 & 4: Delete local file and commit deletion
             if not getattr(args, 'dry_run', False):
                 os.remove(BACKLOG_FILE)
-                print(f"Success! {BACKLOG_FILE} removed. Old data saved to {archive_name}. Please commit the archive to VCS.")
+                try:
+                    subprocess.run(["git", "rm", BACKLOG_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    subprocess.run(["git", "commit", "-m", "chore: remove migrated local backlog"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                except Exception:
+                    pass
+                print(f"Success! {BACKLOG_FILE} removed and commits orchestrated.")
             else:
-                print(f"Success! Old data saved to {archive_name}. Skipped removing {BACKLOG_FILE} due to --dry-run.")
+                print(f"Success! Skipped removing {BACKLOG_FILE} due to --dry-run.")
             
         _inject_agent_skills()
         return
