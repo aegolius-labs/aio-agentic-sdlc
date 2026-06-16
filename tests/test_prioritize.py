@@ -107,5 +107,5 @@ class TestCircularDependency:
             "X": _make_item(3, 3, requires=["Y"]),
             "Y": _make_item(3, 3, requires=["X"]),
         })
-        with pytest.raises(ValueError):
+        with pytest.raises(SystemExit):
             _run_prioritize()

@@ -221,6 +221,9 @@ def get_next_item(project_path="."):
     return target_data, warning
 
 def add_item(name, impact, effort, category, description=None, requires=None, ai_driven=False, status='New', blockers=None, project_path="."):
+    if not description or not str(description).strip():
+        raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
+
     if is_github_mode(project_path):
         return add_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path)
 
@@ -246,6 +249,9 @@ def add_item(name, impact, effort, category, description=None, requires=None, ai
     return warnings
 
 def update_item(name, impact=None, effort=None, category=None, description=None, requires=None, ai_driven=None, status=None, blockers=None, project_path="."):
+    if description is not None and not str(description).strip():
+        raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
+
     if is_github_mode(project_path):
         return update_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path)
 
