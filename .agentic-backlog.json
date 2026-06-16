@@ -1,0 +1,10 @@
+{
+  "core": {
+    "mode": "github"
+  },
+  "github": {
+    "repo": "aegolius-labs/agentic-backlog-cli",
+    "project_number": 3,
+    "is_org": true
+  }
+}

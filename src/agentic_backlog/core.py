@@ -4,6 +4,12 @@ import time
 import datetime
 import glob
 import heapq
+from .config import is_github_mode
+from .github_core import (
+    add_item_github, prioritize_items_github, get_next_item_github,
+    update_item_github, set_status_github, add_blocker_github,
+    remove_blocker_github, remove_item_github
+)
 
 BACKLOG_FILE = 'backlog.json'
 VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
@@ -14,25 +20,28 @@ def _get_status(item):
 def _get_blockers(item):
     return item.get('blockers', [])
 
-def load_backlog():
-    if not os.path.exists(BACKLOG_FILE):
+def load_backlog(project_path="."):
+    file_path = os.path.join(project_path, BACKLOG_FILE)
+    if not os.path.exists(file_path):
         return {"items": {}}
-    with open(BACKLOG_FILE, 'r', encoding='utf-8') as f:
+    with open(file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def save_backlog(data):
-    with open(BACKLOG_FILE, 'w', encoding='utf-8') as f:
+def save_backlog(data, project_path="."):
+    file_path = os.path.join(project_path, BACKLOG_FILE)
+    with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
-def _create_backup():
-    if not os.path.exists(BACKLOG_FILE):
+def _create_backup(project_path="."):
+    file_path = os.path.join(project_path, BACKLOG_FILE)
+    if not os.path.exists(file_path):
         return
-    data = load_backlog()
+    data = load_backlog(project_path)
     if not data.get("items"):
         return
 
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H%M%S')
-    backup_file = f"{ts}_backlog.json"
+    backup_file = os.path.join(project_path, f"{ts}_backlog.json")
     with open(backup_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
@@ -139,12 +148,15 @@ def _compute_sorted_items(items):
 
     return final_ordered_keys
 
-def prioritize_items():
-    data = load_backlog()
+def prioritize_items(project_path="."):
+    if is_github_mode(project_path):
+        return prioritize_items_github(project_path, _compute_sorted_items)
+
+    data = load_backlog(project_path)
     if not data['items']:
         return False
         
-    _create_backup()
+    _create_backup(project_path)
     items = data['items']
     final_ordered_keys = _compute_sorted_items(items)
 
@@ -157,12 +169,15 @@ def prioritize_items():
         elif _get_status(item) == 'Blocked' and not _get_blockers(item):
             item['status'] = 'New'
 
-    save_backlog(data)
+    save_backlog(data, project_path)
     return True
 
-def get_next_item():
+def get_next_item(project_path="."):
+    if is_github_mode(project_path):
+        return get_next_item_github(project_path, _compute_sorted_items)
+
     import copy
-    data = load_backlog()
+    data = load_backlog(project_path)
     if not data['items']:
         return None, "Backlog is empty."
 
@@ -205,9 +220,12 @@ def get_next_item():
 
     return target_data, warning
 
-def add_item(name, impact, effort, category, description=None, requires=None, ai_driven=False, status='New', blockers=None):
-    data = load_backlog()
-    _create_backup()
+def add_item(name, impact, effort, category, description=None, requires=None, ai_driven=False, status='New', blockers=None, project_path="."):
+    if is_github_mode(project_path):
+        return add_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path)
+
+    data = load_backlog(project_path)
+    _create_backup(project_path)
     
     requires_list = [r.strip() for r in requires.split(',')] if requires else []
     warnings = ensure_dependencies(data, requires_list)
@@ -224,15 +242,18 @@ def add_item(name, impact, effort, category, description=None, requires=None, ai
         "blockers": blockers_list,
         "scores": {}
     }
-    save_backlog(data)
+    save_backlog(data, project_path)
     return warnings
 
-def update_item(name, impact=None, effort=None, category=None, description=None, requires=None, ai_driven=None, status=None, blockers=None):
-    data = load_backlog()
+def update_item(name, impact=None, effort=None, category=None, description=None, requires=None, ai_driven=None, status=None, blockers=None, project_path="."):
+    if is_github_mode(project_path):
+        return update_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path)
+
+    data = load_backlog(project_path)
     if name not in data['items']:
         raise ValueError(f"Item '{name}' not found.")
     
-    _create_backup()
+    _create_backup(project_path)
     item = data['items'][name]
     warnings = []
     
@@ -256,19 +277,25 @@ def update_item(name, impact=None, effort=None, category=None, description=None,
     save_backlog(data)
     return warnings
 
-def set_status(name, new_status):
-    data = load_backlog()
-    if name not in data['items']:
-        raise ValueError(f"Item '{name}' not found.")
-    _create_backup()
-    data['items'][name]['status'] = new_status
-    save_backlog(data)
+def set_status(name, new_status, project_path="."):
+    if is_github_mode(project_path):
+        return set_status_github(name, new_status, project_path)
 
-def add_blocker(name, reason):
-    data = load_backlog()
+    data = load_backlog(project_path)
     if name not in data['items']:
         raise ValueError(f"Item '{name}' not found.")
-    _create_backup()
+    _create_backup(project_path)
+    data['items'][name]['status'] = new_status
+    save_backlog(data, project_path)
+
+def add_blocker(name, reason, project_path="."):
+    if is_github_mode(project_path):
+        return add_blocker_github(name, reason, project_path)
+
+    data = load_backlog(project_path)
+    if name not in data['items']:
+        raise ValueError(f"Item '{name}' not found.")
+    _create_backup(project_path)
     item = data['items'][name]
     blockers = _get_blockers(item)
     if reason not in blockers:
@@ -276,13 +303,16 @@ def add_blocker(name, reason):
     item['blockers'] = blockers
     if _get_status(item) != 'Completed':
         item['status'] = 'Blocked'
-    save_backlog(data)
+    save_backlog(data, project_path)
 
-def remove_blocker(name, reason):
-    data = load_backlog()
+def remove_blocker(name, reason, project_path="."):
+    if is_github_mode(project_path):
+        return remove_blocker_github(name, reason, project_path)
+
+    data = load_backlog(project_path)
     if name not in data['items']:
         raise ValueError(f"Item '{name}' not found.")
-    _create_backup()
+    _create_backup(project_path)
     item = data['items'][name]
     blockers = _get_blockers(item)
     if reason in blockers:
@@ -290,14 +320,17 @@ def remove_blocker(name, reason):
     item['blockers'] = blockers
     if not blockers and _get_status(item) == 'Blocked':
         item['status'] = 'New'
-    save_backlog(data)
+    save_backlog(data, project_path)
 
-def remove_item(name):
-    data = load_backlog()
+def remove_item(name, project_path="."):
+    if is_github_mode(project_path):
+        return remove_item_github(name, project_path)
+
+    data = load_backlog(project_path)
     if name not in data['items']:
         raise ValueError(f"Item '{name}' not found.")
         
-    _create_backup()
+    _create_backup(project_path)
     
     for n, item in data['items'].items():
         if 'requires' in item and name in item['requires']:
@@ -306,4 +339,4 @@ def remove_item(name):
             item['blockers'].remove(name)
             
     del data['items'][name]
-    save_backlog(data)
+    save_backlog(data, project_path)

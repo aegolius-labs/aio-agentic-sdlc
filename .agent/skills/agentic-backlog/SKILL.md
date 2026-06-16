@@ -5,24 +5,30 @@ description: "Deterministic 3D Matrix Backlog Manager for Agentic Workflows. Use
 
 # Agentic Backlog Skill
 
-This repository uses `agentic-backlog` to manage its tasks deterministically.
+This project utilizes `agentic-backlog` natively via the Model Context Protocol (MCP).
 
 ## Instructions
 
-To interact with the project backlog, **ALWAYS** use the following command structure:
+**Primary Method (MCP Server):**
+If you have the MCP tools (`add_task`, `get_next_task`, `update_task_status`, `prioritize_backlog`, etc.) available in your context, **use them directly**. They are superior to the CLI.
 
-```bash
-uvx agentic-backlog <command> [args]
+If they are NOT available, you MUST instruct the user to configure their IDE (VS Code, Cursor, Claude Desktop, etc.) to run the MCP server directly from GitHub. Provide them with this exact configuration snippet for their `mcp.json` (or equivalent configuration file):
+
+```json
+"mcpServers": {
+  "agentic-backlog": {
+    "command": "uvx",
+    "args": ["--from", "git+https://github.com/aegolius-labs/agentic-backlog-cli", "agentic-backlog-mcp"]
+  }
+}
 ```
 
-This ensures the CLI is dynamically executed via `uvx` even if it is not installed in the local virtual environment.
+**Fallback Method (CLI):**
+If MCP setup is impossible or the user prefers a terminal workflow, interact with the project backlog directly via GitHub using `uvx`:
 
-### Common Commands
+* **View next task:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog next`
+* **Add a task:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog add "<task name>" --impact <1-5> --effort <1-5> --category "<category>"`
+* **Update status:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog status "<task name>" "<New|In Progress|Completed|Blocked>"`
+* **Prioritize:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog prioritize`
 
-* **View next task:** `uvx agentic-backlog next` (Output is in JSON format by default).
-* **Add a task:** `uvx agentic-backlog add "<task name>" --impact <1-5> --effort <1-5> --category "<category>"`
-* **Update status:** `uvx agentic-backlog status "<task name>" "<New|In Progress|Completed|Blocked>"`
-* **Prioritize:** `uvx agentic-backlog prioritize` (Re-sorts the backlog).
-
-You MUST run `uvx agentic-backlog` whenever you need to check your tasks, modify priorities, or mark work as completed.
-If you encounter any bugs with `agentic-backlog` itself, document your experience and create GitHub issues if requested.
+You MUST ensure the backlog is sorted after adding dependencies. If you encounter bugs, document your experience and create GitHub issues.
