@@ -45,6 +45,27 @@ class GitHubClient:
         data = self.execute(query, {"owner": owner, "name": name})
         return data["repository"]["id"]
 
+    def get_repository_issue_types(self, owner, name):
+        query = """
+        query($owner: String!, $name: String!) {
+          repository(owner: $owner, name: $name) {
+            issueTypes(first: 50) {
+              nodes {
+                id
+                name
+              }
+            }
+          }
+        }
+        """
+        data = self.execute(query, {"owner": owner, "name": name})
+        # Note: personal repos or free tier might not have issueTypes enabled/accessible via API, 
+        # so safely handle missing fields.
+        issue_types = data.get("repository", {}).get("issueTypes", {})
+        if issue_types:
+            return issue_types.get("nodes", [])
+        return []
+
     def get_owner_id(self, owner, is_org=True):
         entity_type = "organization" if is_org else "user"
         query = f"""
@@ -134,9 +155,18 @@ class GitHubClient:
         return self.execute(mutation, {"input": input_data})
         
     def ensure_backlog_fields(self, owner, project_number, is_org=True):
+        from .config import load_config
         project = self.get_project_v2_info(owner, project_number, is_org)
         project_id = project["id"]
         existing_fields = {f["name"]: f for f in project["fields"]["nodes"] if f}
+        
+        config = load_config(".")
+        hierarchy = config.get("hierarchy", {})
+        item_types = []
+        for v in hierarchy.values():
+            item_types.extend(v)
+        if not item_types:
+            item_types = ["Epic", "Feature", "Task", "Bug"]
         
         expected_fields = [
             ("Impact", "NUMBER", None),
@@ -145,7 +175,9 @@ class GitHubClient:
             ("Final Score", "NUMBER", None),
             ("Blockers", "TEXT", None),
             ("AI Driven", "SINGLE_SELECT", ["True", "False"]),
-            ("Category", "TEXT", None)
+            ("Category", "TEXT", None),
+            ("Item Type", "SINGLE_SELECT", item_types),
+            ("Parent ID", "TEXT", None)
         ]
         
         for name, dtype, options in expected_fields:

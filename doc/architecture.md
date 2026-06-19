@@ -4,7 +4,9 @@ This document describes the high-level architecture and data flow of the `agenti
 
 ## System Overview
 
-The CLI acts as a deterministic backlog manager using a 3-Dimensional matrix (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. State can be persisted either in a local JSON file (`backlog.json`) or natively integrated with GitHub Projects/Issues.
+> **Note:** Please read [VISION.md](./VISION.md) to understand the foundational North-Star of this project—the Semantic Roadmap Graph—before making architectural changes.
+
+The CLI acts as a deterministic backlog manager using a 3-Dimensional matrix (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. State is persisted in a local JSON DAG (`backlog.json`) and can optionally be projected and synced with GitHub Projects/Issues.
 
 ```mermaid
 graph TD
