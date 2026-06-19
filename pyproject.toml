@@ -17,7 +17,7 @@ classifiers = [
     "License :: Other/Proprietary License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["mcp>=1.0.0", "requests>=2.31.0"]
+dependencies = ["mcp>=1.28.0", "requests>=2.31.0"]
 
 [project.urls]
 "Homepage" = "https://github.com/aegolius-labs/agentic-backlog-cli"
