@@ -1,8 +1,7 @@
 {
   "packages": {
     ".": {
-      "release-type": "python",
-      "package-name": "agentic-backlog"
+      "release-type": "python"
     }
   }
 }
