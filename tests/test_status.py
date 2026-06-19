@@ -112,7 +112,7 @@ class TestAddWithStatus:
         _save({})
         add_cmd(argparse.Namespace(
             name="feat", impact=3, effort=3, category="Business",
-            description=None, requires=None, ai_driven=False, status="New", blockers=None,
+            description="Valid description", requires=None, ai_driven=False, status="New", blockers=None,
         ))
         data = _load()
         assert data["items"]["feat"]["status"] == "New"
@@ -123,7 +123,7 @@ class TestAddWithStatus:
         _save({})
         add_cmd(argparse.Namespace(
             name="wip", impact=3, effort=3, category="Business",
-            description=None, requires=None, ai_driven=False, status="In Progress", blockers=None,
+            description="Valid description", requires=None, ai_driven=False, status="In Progress", blockers=None,
         ))
         data = _load()
         assert data["items"]["wip"]["status"] == "In Progress"

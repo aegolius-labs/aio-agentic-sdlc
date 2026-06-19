@@ -16,6 +16,15 @@ def read_current_backlog() -> str:
     """Read the complete prioritized project backlog as JSON from the current working directory."""
     data = load_backlog()
     return json.dumps(data, indent=2)
+@mcp.resource("backlog://hierarchy-rules")
+def read_hierarchy_rules() -> str:
+    """Read the validation mode and graph hierarchy rules."""
+    from .config import load_config
+    config = load_config(".")
+    return json.dumps({
+        "hierarchy": config.get("hierarchy", {"1": ["Epic"], "2": ["Feature"], "3": ["Task", "Bug"]}),
+        "validation_mode": config.get("core", {}).get("validation_mode", "flex")
+    }, indent=2)
 
 @mcp.prompt("pick-next-task")
 def pick_next_task_prompt() -> str:
@@ -42,7 +51,9 @@ def add_task(
     description: str = Field("", description="Detailed task description"),
     requires: str = Field("", description="Comma-separated list of required task names"),
     status: str = Field("New", description="Initial status"),
-    project_path: str = Field(".", description="Absolute path to the project directory")
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+    item_type: str = Field("Task", description="Type of the item based on hierarchy rules"),
+    parent_id: str = Field(None, description="Parent item ID if applicable")
 ) -> str:
     """Add a new task to the project backlog."""
     if status not in VALID_STATUSES:
@@ -51,9 +62,38 @@ def add_task(
         warnings = add_item(
             name=name, impact=impact, effort=effort, category=category,
             description=description, requires=requires, ai_driven=True, status=status,
-            project_path=project_path
+            project_path=project_path, item_type=item_type, parent_id=parent_id
         )
         msg = f"Task '{name}' added successfully."
+        if warnings:
+            msg += "\nWarnings:\n" + "\n".join(warnings)
+        return msg
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+@mcp.tool()
+def update_task(
+    name: str = Field(..., description="The name of the task to update"),
+    impact: int = Field(None, description="Impact score from 1-5"),
+    effort: int = Field(None, description="Effort score from 1-5 (1=Easy, 5=Hard)"),
+    category: str = Field(None, description="Category (e.g. Core, Feature, Bug)"),
+    description: str = Field(None, description="Detailed task description"),
+    requires: str = Field(None, description="Comma-separated list of required task names"),
+    status: str = Field(None, description="Status"),
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+    item_type: str = Field(None, description="Type of the item based on hierarchy rules"),
+    parent_id: str = Field(None, description="Parent item ID if applicable")
+) -> str:
+    """Update an existing task in the project backlog."""
+    if status is not None and status not in VALID_STATUSES:
+        return f"Error: Status must be one of {VALID_STATUSES}"
+    try:
+        warnings = update_item(
+            name=name, impact=impact, effort=effort, category=category,
+            description=description, requires=requires, ai_driven=None, status=status,
+            blockers=None, project_path=project_path, item_type=item_type, parent_id=parent_id
+        )
+        msg = f"Task '{name}' updated successfully."
         if warnings:
             msg += "\nWarnings:\n" + "\n".join(warnings)
         return msg

@@ -38,11 +38,52 @@ def _inject_agent_skills():
         
     print(f"Success! Injected agent skill into {skill_file}")
 
-from .config import save_config
+from .config import save_config, load_config
 
 def init_cmd(args):
     is_github = getattr(args, 'github', False)
     
+    print("\n--- Agentic-Backlog Initialization ---")
+    print("1. Simple Hierarchy: Epic -> Feature -> Task/Bug")
+    print("2. Deep Hierarchy: Initiative -> Theme -> Epic -> Feature -> User Story/Tech Story/Bug -> Task -> SubTask")
+    print("3. Custom Hierarchy: Define your own")
+    try:
+        choice = input("Select your Semantic Roadmap Graph schema (1/2/3) [1]: ").strip() or "1"
+    except EOFError:
+        choice = "1"
+    
+    hierarchy = {}
+    if choice == "1":
+        hierarchy = {"1": ["Epic"], "2": ["Feature"], "3": ["Task", "Bug"]}
+    elif choice == "2":
+        hierarchy = {
+            "1": ["Initiative"], "2": ["Theme"], "3": ["Epic"], "4": ["Feature"], 
+            "5": ["User Story", "Tech Story", "Bug"], "6": ["Task"], "7": ["SubTask"]
+        }
+    else:
+        print("Define your custom hierarchy levels (comma separated types). Press Enter with no input to finish.")
+        level = 1
+        while True:
+            try:
+                types_input = input(f"Level {level} types: ").strip()
+            except EOFError:
+                break
+            if not types_input:
+                break
+            hierarchy[str(level)] = [t.strip() for t in types_input.split(",")]
+            level += 1
+            
+    try:
+        val_choice = input("Select Validation Mode: 1. Strict (direct parent only), 2. Flex (any higher level parent) [2]: ").strip() or "2"
+    except EOFError:
+        val_choice = "2"
+    validation_mode = "strict" if val_choice == "1" else "flex"
+
+    config = {
+        "core": {"validation_mode": validation_mode, "mode": "local"},
+        "hierarchy": hierarchy
+    }
+
     if is_github:
         repo = getattr(args, 'github_repo')
         project_num = getattr(args, 'github_project')
@@ -57,6 +98,14 @@ def init_cmd(args):
             client = GitHubClient()
             owner, name = repo.split('/')
             
+            if is_org:
+                print(f"[Info] Checking native Issue Types for org repo {repo}...")
+                issue_types = client.get_repository_issue_types(owner, name)
+                if issue_types:
+                    print(f"[Info] Found {len(issue_types)} native Issue Types in {repo}.")
+                else:
+                    print(f"[Warning] No native Issue Types found. Consider creating them in GitHub settings if desired.")
+            
             if not project_num:
                 print(f"[Info] No project number provided. Creating new Project V2 for {repo}...")
                 owner_id = client.get_owner_id(owner, is_org)
@@ -66,12 +115,8 @@ def init_cmd(args):
                 print(f"Success! Created new GitHub Project V2: #{project_num}")
                 
             print(f"[Info] Initializing GitHub mode for repo: {repo}, project: {project_num}")
-            
-            config = {
-                "core": {"mode": "github"},
-                "github": {"repo": repo, "project_number": int(project_num), "is_org": is_org}
-            }
-            save_config(config)
+            config["core"]["mode"] = "github"
+            config["github"] = {"repo": repo, "project_number": int(project_num), "is_org": is_org}
             
             print("[Info] Verifying project and creating missing fields via GraphQL...")
             client.ensure_backlog_fields(owner, project_num, is_org)
@@ -80,63 +125,39 @@ def init_cmd(args):
             print(f"[ERROR] Failed to communicate with GitHub API: {e}", file=sys.stderr)
             sys.exit(1)
             
-        if os.path.exists(BACKLOG_FILE):
-            print(f"[Info] Migrating {BACKLOG_FILE} to archive...")
-            with open(BACKLOG_FILE, 'r', encoding='utf-8') as f:
-                old_data = json.load(f)
-            
-            # Step 1 & 2: Tag as migrated and commit
-            old_data["_archived"] = "Migrated to GitHub Projects V2"
-            with open(BACKLOG_FILE, 'w', encoding='utf-8') as f:
-                json.dump(old_data, f, indent=2)
-                
-            import subprocess
-            if not getattr(args, 'dry_run', False):
-                try:
-                    subprocess.run(["git", "add", BACKLOG_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    subprocess.run(["git", "commit", "-m", "chore: mark local backlog as migrated to GitHub Projects"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                except Exception:
-                    pass
-                
-            if "items" in old_data and old_data["items"]:
-                print(f"[Info] Syncing {len(old_data['items'])} items to GitHub Project...")
-                from .github_core import add_item_github
-                for name, item in old_data["items"].items():
-                    print(f"  -> Migrating: {name}")
-                    if not getattr(args, 'dry_run', False):
-                        add_item_github(
-                            name=name,
-                            impact=item.get("impact", 1),
-                            effort=item.get("effort", 1),
-                            category=item.get("category", ""),
-                            description=item.get("description", ""),
-                            requires=item.get("requires", []),
-                            ai_driven=item.get("ai_driven", False),
-                            status=item.get("status", "New"),
-                            blockers=item.get("blockers", []),
-                            project_path="."
-                        )
-                print("Success! Backlog synced to GitHub.")
-                
-            # Step 3 & 4: Delete local file and commit deletion
-            if not getattr(args, 'dry_run', False):
-                os.remove(BACKLOG_FILE)
-                try:
-                    subprocess.run(["git", "rm", BACKLOG_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    subprocess.run(["git", "commit", "-m", "chore: remove migrated local backlog"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                except Exception:
-                    pass
-                print(f"Success! {BACKLOG_FILE} removed and commits orchestrated.")
-            else:
-                print(f"Success! Skipped removing {BACKLOG_FILE} due to --dry-run.")
-            
-        _inject_agent_skills()
-        return
+    save_config(config)
+    from .core import BACKLOG_FILE, save_backlog
 
-    if os.path.exists(BACKLOG_FILE):
-        print(f"File {BACKLOG_FILE} already exists. Skipping seed generation.")
-    else:
-        items = {}
+    if is_github and os.path.exists(BACKLOG_FILE):
+        with open(BACKLOG_FILE, 'r', encoding='utf-8') as f:
+            old_data = json.load(f)
+            
+        items_to_sync = old_data.get("nodes") or old_data.get("items", {})
+            
+        if items_to_sync:
+            print(f"[Info] Syncing {len(items_to_sync)} items to GitHub Project...")
+            from .github_core import add_item_github
+            for name, item in items_to_sync.items():
+                print(f"  -> Migrating: {name}")
+                if not getattr(args, 'dry_run', False):
+                    add_item_github(
+                        name=name,
+                        impact=item.get("impact", 1),
+                        effort=item.get("effort", 1),
+                        category=item.get("category", ""),
+                        description=item.get("description", ""),
+                        requires=item.get("requires", []),
+                        ai_driven=item.get("ai_driven", False),
+                        status=item.get("status", "New"),
+                        blockers=item.get("blockers", []),
+                        project_path=".",
+                        item_type=item.get("item_type", "Task"),
+                        parent_id=item.get("parent_id")
+                    )
+            print("Success! Backlog synced to GitHub.")
+
+    if not os.path.exists(BACKLOG_FILE):
+        nodes = {}
         if not getattr(args, 'empty', False):
             try:
                 from .detect import detect_frameworks, generate_seed_backlog
@@ -144,17 +165,22 @@ def init_cmd(args):
                 if frameworks:
                     print(f"[Info] Detected frameworks: {', '.join(frameworks)}", file=sys.stderr)
                 items = generate_seed_backlog(frameworks)
+                for name, i in items.items():
+                    nodes[name] = i
+                    nodes[name]["item_type"] = "Task"
             except ImportError:
                 pass
                 
-        data = {"items": items}
+        data = {"nodes": nodes, "edges": []}
         save_backlog(data)
         
-        if items:
-            print(f"Success! Initialized {BACKLOG_FILE} with {len(items)} seed items.")
+        if nodes:
+            print(f"Success! Initialized {BACKLOG_FILE} with {len(nodes)} seed items.")
         else:
             print(f"Success! Initialized empty {BACKLOG_FILE}")
-            
+    else:
+        print(f"File {BACKLOG_FILE} already exists. Schema updated.")
+        
     _inject_agent_skills()
 
 def add_cmd(args):
@@ -304,6 +330,24 @@ def next_cmd(args):
     else:
         print(json.dumps(result, indent=2))
 
+def sync_cmd(args):
+    config = load_config(".")
+    if config.get("core", {}).get("mode") != "github":
+        print("Error: 'sync' command is only available in GitHub mode.")
+        sys.exit(1)
+        
+    try:
+        from .github_core import sync_github
+        changes = sync_github(".")
+        print(f"Success! Backlog synced with GitHub Projects V2. ({changes} items updated/added)")
+        
+        # After sync, run prioritize to ensure DAG is updated correctly
+        prioritize_items(".")
+        print("Local DAG re-prioritized based on updated statuses.")
+    except Exception as e:
+        print(f"Error syncing with GitHub: {e}", file=sys.stderr)
+        sys.exit(1)
+
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
@@ -364,6 +408,8 @@ def main():
     p_export = subparsers.add_parser('export', help="Export to Markdown")
     p_export.add_argument('--out', default='backlog.md', help="Output file")
 
+    p_sync = subparsers.add_parser('sync', help="Sync local DAG with GitHub Projects V2 statuses and new SDD tasks")
+
     args = parser.parse_args()
 
     try:
@@ -377,6 +423,7 @@ def main():
         elif args.command == 'prioritize': prioritize_cmd(args)
         elif args.command == 'next': next_cmd(args)
         elif args.command == 'export': export_cmd(args)
+        elif args.command == 'sync': sync_cmd(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

@@ -11,7 +11,7 @@ def _get_project_fields(client, owner, project_number, is_org):
                 fields[f["name"]]["options"] = {opt["name"]: opt["id"] for opt in f["options"]}
     return project["id"], fields
 
-def add_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path):
+def add_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path, item_type="Task", parent_id=None):
     config = get_github_config(project_path)
     client = GitHubClient()
     owner, repo_name = config["repo"].split("/")
@@ -41,10 +41,18 @@ def add_item_github(name, impact, effort, category, description, requires, ai_dr
             client.update_item_field(project_id, item_id, fields["AI Driven"]["id"], opt_id, fields["AI Driven"]["dataType"])
     if "Blockers" in fields and blockers:
         client.update_item_field(project_id, item_id, fields["Blockers"]["id"], blockers, fields["Blockers"]["dataType"])
+    if "Item Type" in fields and item_type:
+        opt_id = fields["Item Type"].get("options", {}).get(item_type)
+        if not opt_id:
+            opt_id = fields["Item Type"].get("options", {}).get("Task")
+        if opt_id:
+            client.update_item_field(project_id, item_id, fields["Item Type"]["id"], opt_id, fields["Item Type"]["dataType"])
+    if "Parent ID" in fields and parent_id:
+        client.update_item_field(project_id, item_id, fields["Parent ID"]["id"], parent_id, fields["Parent ID"]["dataType"])
         
-    return [] # No warnings supported for auto-creating requires in GH mode yet
+    return []
 
-def update_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path):
+def update_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path, item_type=None, parent_id=None):
     config = get_github_config(project_path)
     client = GitHubClient()
     owner, _ = config["repo"].split("/")
@@ -80,6 +88,12 @@ def update_item_github(name, impact, effort, category, description, requires, ai
             client.update_item_field(project_id, item_id, fields["Status"]["id"], opt_id, fields["Status"]["dataType"])
     if blockers is not None and "Blockers" in fields:
         client.update_item_field(project_id, item_id, fields["Blockers"]["id"], blockers, fields["Blockers"]["dataType"])
+    if item_type is not None and "Item Type" in fields:
+        opt_id = fields["Item Type"].get("options", {}).get(item_type)
+        if opt_id:
+            client.update_item_field(project_id, item_id, fields["Item Type"]["id"], opt_id, fields["Item Type"]["dataType"])
+    if parent_id is not None and "Parent ID" in fields:
+        client.update_item_field(project_id, item_id, fields["Parent ID"]["id"], parent_id, fields["Parent ID"]["dataType"])
         
     return []
 
@@ -166,9 +180,59 @@ def _fetch_gh_items_as_dict(client, project_id):
             "requires": reqs,
             "status": status,
             "blockers": blockers,
-            "scores": {}
+            "scores": {},
+            "item_type": fields.get("Item Type", "Task"),
+            "parent_id": fields.get("Parent ID")
         }
     return items
+
+def sync_github(project_path):
+    from .core import load_backlog, save_backlog, get_status
+    config = get_github_config(project_path)
+    client = GitHubClient()
+    owner, _ = config["repo"].split("/")
+    
+    project_id, fields = _get_project_fields(client, owner, config["project_number"], config["is_org"])
+    gh_items = _fetch_gh_items_as_dict(client, project_id)
+    
+    local_backlog = load_backlog(project_path)
+    if "nodes" not in local_backlog:
+        local_backlog["nodes"] = {}
+        
+    changes_made = 0
+    # 1. Update existing nodes or Add new ones from GitHub
+    for title, gh_data in gh_items.items():
+        if title in local_backlog["nodes"]:
+            # Update status if changed
+            if local_backlog["nodes"][title].get("status") != gh_data["status"]:
+                local_backlog["nodes"][title]["status"] = gh_data["status"]
+                changes_made += 1
+        else:
+            # Item created by SDD framework in GitHub! Bring it into local DAG.
+            local_backlog["nodes"][title] = {
+                "impact": gh_data["impact"],
+                "effort": gh_data["effort"],
+                "category": gh_data["category"],
+                "ai_driven": True,
+                "status": gh_data["status"],
+                "blockers": gh_data["blockers"],
+                "scores": {},
+                "item_type": gh_data.get("item_type", "Task")
+            }
+            if gh_data.get("parent_id"):
+                if "edges" not in local_backlog:
+                    local_backlog["edges"] = []
+                local_backlog["edges"].append({
+                    "from": title,
+                    "to": gh_data["parent_id"],
+                    "relation": "parent"
+                })
+            changes_made += 1
+            
+    if changes_made > 0:
+        save_backlog(local_backlog, project_path)
+        
+    return changes_made
 
 def prioritize_items_github(project_path, compute_sorted_items_func):
     config = get_github_config(project_path)
