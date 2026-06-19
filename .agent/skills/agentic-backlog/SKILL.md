@@ -31,4 +31,7 @@ If MCP setup is impossible or the user prefers a terminal workflow, interact wit
 * **Update status:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog status "<task name>" "<New|In Progress|Completed|Blocked>"`
 * **Prioritize:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog prioritize`
 
+**Handling Feature Ideas:**
+If you conceptualize new features, improvements, or non-critical refactoring ideas during your workflow, you MUST NOT assume immediate implementation or drift from your current scope of work. Instead, you MUST log the idea to the backlog using the `add_task` MCP tool (or CLI fallback) with an appropriate effort and impact score so it can be formally prioritized.
+
 You MUST ensure the backlog is sorted after adding dependencies. If you encounter bugs, document your experience and create GitHub issues.
