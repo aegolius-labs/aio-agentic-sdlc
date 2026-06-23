@@ -4,6 +4,8 @@
 
 - **Branching:** MUST create a new branch (`feature/*`, `chore/*`, `hotfix/*`) for ANY new scope of work. MUST NOT commit directly to `dev` or `main`.
 - **Committing:** MUST commit frequently using Conventional Commits.
+- **Internal Directives vs Distribution Rules:** Directives meant specifically for the agent working on the repository itself (e.g., "document errors you encounter while developing") MUST NOT be added to templates distributed to end-users (`RULES.md`, `SKILL.md`, `AGENTS.md`). Template rules apply only to the end-user's execution environment.
+- **GitHub MCP EOF Failure Fallback:** If `github-mcp-server` tools (e.g. `search_issues`) fail with an EOF connection closed error, you must aggressively fallback to alternate means, such as writing a temporary Python script utilizing the local repository's `GitHubClient` module.
 
 ## Tools & API Interactions
 
