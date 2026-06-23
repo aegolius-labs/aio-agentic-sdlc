@@ -38,6 +38,58 @@ def _inject_agent_skills():
         
     print(f"Success! Injected agent skill into {skill_file}")
 
+def _inject_platform_rules(platforms_str):
+    """Generate platform-specific configuration files based on the SSoT rules."""
+    if not platforms_str:
+        return
+        
+    try:
+        rules_content = importlib.resources.files('agentic_backlog').joinpath('templates', 'agentic-backlog', 'RULES.md').read_text(encoding='utf-8')
+    except Exception as e:
+        print(f"[WARNING] Could not load bundled RULES.md template: {e}", file=sys.stderr)
+        return
+
+    platforms = [p.strip().lower() for p in platforms_str.split(',')]
+    
+    for platform in platforms:
+        if platform == 'claude':
+            with open('CLAUDE.md', 'a', encoding='utf-8') as f:
+                f.write(f"\n## Agentic Backlog Rules\n{rules_content}\n")
+            print("Success! Injected rules into CLAUDE.md")
+            
+        elif platform == 'cursor':
+            cursor_dir = os.path.join('.cursor', 'rules')
+            os.makedirs(cursor_dir, exist_ok=True)
+            cursor_file = os.path.join(cursor_dir, 'agentic-backlog.mdc')
+            with open(cursor_file, 'w', encoding='utf-8') as f:
+                f.write(f"---\ndescription: Agentic Backlog Behavioral Rules\nglobs: *\n---\n\n{rules_content}")
+            print(f"Success! Injected rules into {cursor_file}")
+            
+        elif platform in ('copilot', 'vscode', 'gh-copilot'):
+            gh_dir = '.github'
+            os.makedirs(gh_dir, exist_ok=True)
+            copilot_file = os.path.join(gh_dir, 'copilot-instructions.md')
+            with open(copilot_file, 'a', encoding='utf-8') as f:
+                f.write(f"\n## Agentic Backlog Rules\n{rules_content}\n")
+            print(f"Success! Injected rules into {copilot_file}")
+            
+        elif platform == 'antigravity':
+            agy_dir = os.path.join('.agents', 'rules')
+            os.makedirs(agy_dir, exist_ok=True)
+            agy_file = os.path.join(agy_dir, 'agentic-backlog.md')
+            with open(agy_file, 'w', encoding='utf-8') as f:
+                f.write(rules_content)
+            print(f"Success! Injected rules into {agy_file}")
+            
+        elif platform == 'agile':
+            with open('AGENTS.md', 'a', encoding='utf-8') as f:
+                f.write(f"\n## Agentic Backlog Rules\n{rules_content}\n")
+            print("Success! Injected rules into AGENTS.md")
+            
+        else:
+            print(f"[WARNING] Unknown platform '{platform}'. Supported: claude, cursor, copilot, antigravity, agile", file=sys.stderr)
+
+
 from .config import save_config, load_config
 
 def init_cmd(args):
@@ -182,6 +234,9 @@ def init_cmd(args):
         print(f"File {BACKLOG_FILE} already exists. Schema updated.")
         
     _inject_agent_skills()
+    platforms_arg = getattr(args, 'platforms', None)
+    if platforms_arg:
+        _inject_platform_rules(platforms_arg)
 
 def add_cmd(args):
     warnings = add_item(
@@ -359,6 +414,7 @@ def main():
     p_init.add_argument('--github-project', type=int, help="GitHub Project V2 number")
     p_init.add_argument('--github-is-user', dest='github_is_org', action='store_false', help="Indicate the project owner is a user instead of an organization")
     p_init.add_argument('--dry-run', action='store_true', help="Skip archiving backlog.json during GitHub mode initialization")
+    p_init.add_argument('--platforms', help="Comma-separated platforms to generate rules for (claude, cursor, copilot, antigravity, agile)")
 
     p_add = subparsers.add_parser('add', help="Add an item")
     p_add.add_argument('name')
