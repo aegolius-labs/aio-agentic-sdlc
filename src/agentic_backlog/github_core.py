@@ -187,7 +187,7 @@ def _fetch_gh_items_as_dict(client, project_id):
     return items
 
 def sync_github(project_path):
-    from .core import load_backlog, save_backlog, get_status
+    from .core import load_backlog, save_backlog, _get_status
     config = get_github_config(project_path)
     client = GitHubClient()
     owner, _ = config["repo"].split("/")
@@ -203,10 +203,12 @@ def sync_github(project_path):
     # 1. Update existing nodes or Add new ones from GitHub
     for title, gh_data in gh_items.items():
         if title in local_backlog["nodes"]:
-            # Update status if changed
-            if local_backlog["nodes"][title].get("status") != gh_data["status"]:
-                local_backlog["nodes"][title]["status"] = gh_data["status"]
-                changes_made += 1
+            node = local_backlog["nodes"][title]
+            # Update fields if changed
+            for field in ["status", "description", "impact", "effort", "category", "blockers"]:
+                if node.get(field) != gh_data.get(field):
+                    node[field] = gh_data.get(field)
+                    changes_made += 1
         else:
             # Item created by SDD framework in GitHub! Bring it into local DAG.
             local_backlog["nodes"][title] = {
@@ -216,6 +218,7 @@ def sync_github(project_path):
                 "ai_driven": True,
                 "status": gh_data["status"],
                 "blockers": gh_data["blockers"],
+                "description": gh_data.get("description", ""),
                 "scores": {},
                 "item_type": gh_data.get("item_type", "Task")
             }
@@ -268,7 +271,7 @@ def get_next_item_github(project_path, compute_sorted_items_func):
         return None, "Backlog is empty."
         
     try:
-        ordered_keys = compute_sorted_items_func(items)
+        ordered_keys = compute_sorted_items_func(items, [])
     except ValueError as e:
         return None, str(e)
         
@@ -276,7 +279,7 @@ def get_next_item_github(project_path, compute_sorted_items_func):
     target_key = None
     for key in ordered_keys:
         item = items[key]
-        if item.get("status") != 'Completed' and not item.get("blockers"):
+        if item.get("status") not in ['Completed', 'Done'] and not item.get("blockers"):
             target_key = key
             break
             
