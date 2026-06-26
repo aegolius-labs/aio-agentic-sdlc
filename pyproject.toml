@@ -24,7 +24,7 @@ dependencies = ["mcp>=1.28.0", "requests>=2.31.0"]
 "Bug Tracker" = "https://github.com/aegolius-labs/agentic-backlog-cli/issues"
 
 [project.optional-dependencies]
-dev = ["pytest>=9.1.0"]
+dev = ["pytest>=9.1.1"]
 
 [project.scripts]
 agentic-backlog = "agentic_backlog.cli:main"
