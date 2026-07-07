@@ -30,5 +30,3 @@ If MCP setup is impossible or the user prefers a terminal workflow, interact wit
 * **Add a task:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog add "<task name>" --impact <1-5> --effort <1-5> --category "<category>"`
 * **Update status:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog status "<task name>" "<New|In Progress|Completed|Blocked>"`
 * **Prioritize:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog prioritize`
-
-You MUST ensure the backlog is sorted after adding dependencies. If you encounter bugs, document your experience and create GitHub issues.

@@ -11,7 +11,11 @@ resolution-markers = [
 
 [[package]]
 name = "agentic-backlog"
+<<<<<<< HEAD
 version = "0.1.0"
+=======
+version = "0.2.1"
+>>>>>>> dev
 source = { editable = "." }
 dependencies = [
     { name = "mcp" },
