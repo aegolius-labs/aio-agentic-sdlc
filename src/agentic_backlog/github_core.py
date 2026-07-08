@@ -12,6 +12,8 @@ def _get_project_fields(client, owner, project_number, is_org):
     return project["id"], fields
 
 def add_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path, item_type="Task", parent_id=None):
+    if not description or not str(description).strip():
+        raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
     config = get_github_config(project_path)
     client = GitHubClient()
     owner, repo_name = config["repo"].split("/")
@@ -248,7 +250,7 @@ def prioritize_items_github(project_path, compute_sorted_items_func):
     if not items:
         return False
         
-    ordered_keys = compute_sorted_items_func(items)
+    ordered_keys = compute_sorted_items_func(items, [])
     
     if "Final Score" in fields:
         field_info = fields["Final Score"]
@@ -302,7 +304,7 @@ def get_next_item_github(project_path, compute_sorted_items_func):
     warning = None
     if top_key and top_key != target_key:
         top_item = items[top_key]
-        if top_item.get("status") != 'Completed':
+        if top_item.get("status") not in ['Completed', 'Done']:
             top_blockers = top_item.get("blockers")
             warning = f"Top item '{top_key}' has the highest priority but is blocked by: {top_blockers}"
 

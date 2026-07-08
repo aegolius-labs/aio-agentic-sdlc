@@ -87,6 +87,7 @@ class TestInitCmdIntegration:
     @pytest.fixture(autouse=True)
     def clean_backlog(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setattr("builtins.input", lambda *args: "1")
         
     def test_init_empty(self):
         from agentic_backlog.cli import init_cmd, load_backlog
@@ -94,7 +95,7 @@ class TestInitCmdIntegration:
         # Use empty flag to override detection
         init_cmd(argparse.Namespace(empty=True))
         data = load_backlog()
-        assert data["items"] == {}
+        assert data["nodes"] == {}
 
     def test_init_with_detection(self, tmp_path):
         from agentic_backlog.cli import init_cmd, load_backlog
@@ -103,5 +104,5 @@ class TestInitCmdIntegration:
         # Call without empty flag, should detect python
         init_cmd(argparse.Namespace(empty=False))
         data = load_backlog()
-        assert "Initial Project Documentation" in data["items"]
-        assert "Configure Pytest infrastructure" in data["items"]
+        assert "Initial Project Documentation" in data["nodes"]
+        assert "Configure Pytest infrastructure" in data["nodes"]
