@@ -1,17 +1,19 @@
-# Agentic-Backlog Vision & North Star
+# All-in-One Agentic SDLC (aio-agentic-sdlc) Vision & North Star
 
-**The Semantic Roadmap Graph**
+**The Dual-DAG Reconciliation Engine**
 
-The ultimate "North Star" for `agentic-backlog` is to serve as the definitive **Semantic Roadmap Graph** for a project. It is not merely a flat task tracker or a simple GitHub Issues bridge.
+The ultimate "North Star" for this project is to evolve beyond passive task tracking into a fully autonomous, **All-in-One Agentic Software Development Life Cycle (SDLC)** orchestrator. It acts as the definitive reconciliation engine between software design and reality.
 
 ## Core Philosophy
 
-1. **The Roadmap as a DAG:** An evolving backlog is essentially a mindmap or a Directed Acyclic Graph (DAG) that tells the complete story of a project. It documents how the project is supposed to work, how structural decisions were made, why they were made, and what the dependencies are.
-2. **Bridging Intention and Reality:** Tools like `graphify` create comprehensive graphs of how a codebase *actually* works based on the source code. `agentic-backlog` maintains the graph of what *should* exist (the intended architecture).
-3. **Reconciliation Engine:** The long-term vision is to superimpose the intended Roadmap Graph (`agentic-backlog`) over the implemented codebase graph (`graphify`) to automatically detect gaps, architectural misalignments, orphaned code, and precisely calculate what to tackle next to reconcile the two graphs.
+1. **The Intention DAG:** We maintain a living Directed Acyclic Graph (DAG) that represents the *desired* state of the software. It documents how the project is supposed to work, structural decisions, requirements, and dependencies.
+2. **The Reality DAG:** We generate a real-time DAG representing the *actual* state of the implemented codebase. To ensure we can compute an accurate delta, we must build our own Reality DAG generator so that it maps 1:1 with the ontology and schema of the Intention DAG.
+3. **The Backlog as a Diff:** The "Backlog" is no longer a static list of user-created tasks. The Backlog is mathematically defined as the **Diff** between the Intention DAG and the Reality DAG. This diff precisely highlights missing dependencies, orphaned code, incomplete features, and architectural misalignments.
+4. **Agentic Orchestration:** By calculating this Diff, our agentic SDLC framework knows exactly where the software is and where it needs to go. It can autonomously break down the Diff, formulate implementation plans, and delegate work to specialized subagents (Architects, Implementers, QA) to continuously pull the Reality DAG into alignment with the Intention DAG.
 
 ## Implications for Architecture
 
-- **Local Persistence is Key:** The local `backlog.json` file is a first-class citizen and acts as the local graph database. It must never be discarded, archived, or purely superseded by remote trackers.
-- **Hierarchy is Fundamental:** Hierarchical types (Epics, Features, Tasks) and relationships (Parents, Dependencies) are not just organizational conveniences—they are the structural edges of the semantic graph.
-- **Remote as a Projection:** While GitHub Issues/Projects are supported as powerful remote projections and execution trackers, the structural and semantic truth of the intended roadmap remains anchored in the local DAG.
+- **In-House Graph Generation:** Relying on third-party tools (like `graphify`) is insufficient if their output cannot map cleanly to our semantic Intention DAG. Both sides of the equation must speak the same structural language.
+- **Local Persistence is Key:** The local data representing the Intention DAG (e.g., `backlog.json` or a localized graph DB) is a first-class citizen. It serves as the immutable source of truth for the project's intent.
+- **Hierarchy & Relationships are Fundamental:** Hierarchical types and dependency relationships are not organizational conveniences—they are the critical structural edges required to compute an accurate diff between Intention and Reality.
+- **Remote as a Projection:** While external trackers (GitHub Issues/Projects, Jira) can be supported as remote projections or legacy interfaces, the true state of the work to be done is always derived dynamically from the Dual-DAG Diff.

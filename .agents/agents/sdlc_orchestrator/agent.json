@@ -1,0 +1,7 @@
+{
+  "name": "sdlc_orchestrator",
+  "description": "The central Orchestrator agent that manages the Software Development Life Cycle, delegating work to specialized subagents.",
+  "enable_mcp_tools": true,
+  "enable_subagent_tools": true,
+  "enable_write_tools": true
+}

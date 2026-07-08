@@ -1,6 +1,6 @@
 {
   "core": {
-    "mode": "github"
+    "mode": "local"
   },
   "github": {
     "repo": "aegolius-labs/agentic-backlog-cli",

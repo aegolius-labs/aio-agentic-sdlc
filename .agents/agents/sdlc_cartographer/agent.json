@@ -1,0 +1,7 @@
+{
+  "name": "sdlc_cartographer",
+  "description": "Subagent responsible for updating the Intention DAG, scanning the codebase for the Reality DAG, and calculating the Backlog Diff.",
+  "enable_mcp_tools": false,
+  "enable_subagent_tools": false,
+  "enable_write_tools": true
+}
