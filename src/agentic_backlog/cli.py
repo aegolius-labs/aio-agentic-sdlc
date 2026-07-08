@@ -7,7 +7,7 @@ import importlib.resources
 
 from .core import (
     load_backlog, save_backlog, VALID_STATUSES,
-    _get_status, _get_blockers,
+    _get_status, _get_blockers, get_requires,
     add_item, update_item, set_status, add_blocker, remove_blocker, remove_item,
     prioritize_items, get_next_item
 )
@@ -101,7 +101,7 @@ def init_cmd(args):
     print("3. Custom Hierarchy: Define your own")
     try:
         choice = input("Select your Semantic Roadmap Graph schema (1/2/3) [1]: ").strip() or "1"
-    except EOFError:
+    except (EOFError, OSError, IOError):
         choice = "1"
     
     hierarchy = {}
@@ -118,7 +118,7 @@ def init_cmd(args):
         while True:
             try:
                 types_input = input(f"Level {level} types: ").strip()
-            except EOFError:
+            except (EOFError, OSError, IOError):
                 break
             if not types_input:
                 break
@@ -127,7 +127,7 @@ def init_cmd(args):
             
     try:
         val_choice = input("Select Validation Mode: 1. Strict (direct parent only), 2. Flex (any higher level parent) [2]: ").strip() or "2"
-    except EOFError:
+    except (EOFError, OSError, IOError):
         val_choice = "2"
     validation_mode = "strict" if val_choice == "1" else "flex"
 
@@ -286,7 +286,7 @@ def prioritize_cmd(args):
 
 def export_cmd(args):
     data = load_backlog()
-    items = data.get('items', {})
+    nodes = data.get('nodes', {})
     
     out_file = args.out
     lines = [
@@ -297,9 +297,9 @@ def export_cmd(args):
         ""
     ]
     
-    for i, (name, item) in enumerate(items.items(), 1):
+    for i, (name, item) in enumerate(nodes.items(), 1):
         ai_tag = " 🤖 *(AI Generated Skeleton)*" if item.get('ai_driven') else ""
-        reqs = ", ".join(item.get('requires', [])) or "None"
+        reqs = ", ".join(get_requires(data, name)) or "None"
         scores = item.get('scores', {})
         base = scores.get('base', 0)
         final = scores.get('final', 0)
@@ -421,7 +421,7 @@ def main():
     p_add.add_argument('--impact', type=int, choices=range(1, 6), required=True)
     p_add.add_argument('--effort', type=int, choices=range(1, 6), required=True)
     p_add.add_argument('--category', required=True)
-    p_add.add_argument('--description', help="Detailed description of the task")
+    p_add.add_argument('--description', required=True, help="Detailed description of the task")
     p_add.add_argument('--requires', help="Comma-separated dependencies")
     p_add.add_argument('--ai-driven', action='store_true')
     p_add.add_argument('--status', default='New', choices=VALID_STATUSES,

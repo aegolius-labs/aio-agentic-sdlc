@@ -303,7 +303,7 @@ def get_next_item(project_path="."):
     warning = None
     if top_key and top_key != target_key:
         top_item = nodes[top_key]
-        if _get_status(top_item) != 'Completed':
+        if _get_status(top_item) not in ['Completed', 'Done']:
             top_blockers = _get_blockers(top_item)
             warning = f"Top item '{top_key}' has the highest priority but is blocked by: {top_blockers}"
 

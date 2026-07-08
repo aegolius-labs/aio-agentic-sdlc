@@ -30,12 +30,36 @@ def _make_item(impact, effort, status="New", requires=None, **extra):
     return item
 
 
-def _save(items_dict):
-    save_backlog({"items": items_dict})
-
-
 def _load():
-    return load_backlog()
+    data = load_backlog()
+    nodes = data.get("nodes", {})
+    edges = data.get("edges", [])
+    items = {}
+    for name, node in nodes.items():
+        item = node.copy()
+        item["requires"] = [e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"]
+        parent_edges = [e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"]
+        item["parent_id"] = parent_edges[0] if parent_edges else None
+        items[name] = item
+    return {"items": items}
+
+
+def _save(items_dict):
+    nodes = {}
+    edges = []
+    for name, item in items_dict.items():
+        node = item.copy()
+        if "requires" in node:
+            for req in node["requires"]:
+                edges.append({"from": name, "to": req, "relation": "requires"})
+            del node["requires"]
+        if "parent_id" in node and node["parent_id"]:
+            edges.append({"from": name, "to": node["parent_id"], "relation": "parent"})
+            del node["parent_id"]
+        if "item_type" not in node:
+            node["item_type"] = "Task"
+        nodes[name] = node
+    save_backlog({"nodes": nodes, "edges": edges})
 
 
 def _run_prioritize():
@@ -127,3 +151,13 @@ class TestAddWithStatus:
         ))
         data = _load()
         assert data["items"]["wip"]["status"] == "In Progress"
+
+    def test_add_missing_description_raises(self):
+        from agentic_backlog.cli import add_cmd
+        import argparse
+        _save({})
+        with pytest.raises(ValueError, match="Description cannot be empty"):
+            add_cmd(argparse.Namespace(
+                name="wip", impact=3, effort=3, category="Business",
+                description="", requires=None, ai_driven=False, status="In Progress", blockers=None,
+            ))
