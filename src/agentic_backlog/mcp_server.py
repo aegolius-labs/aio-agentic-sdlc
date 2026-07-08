@@ -48,7 +48,7 @@ def add_task(
     impact: int = Field(..., description="Impact score from 1-5"),
     effort: int = Field(..., description="Effort score from 1-5 (1=Easy, 5=Hard)"),
     category: str = Field(..., description="Category (e.g. Core, Feature, Bug)"),
-    description: str = Field("", description="Detailed task description"),
+    description: str = Field(..., description="Detailed task description"),
     requires: str = Field("", description="Comma-separated list of required task names"),
     status: str = Field("New", description="Initial status"),
     project_path: str = Field(".", description="Absolute path to the project directory"),

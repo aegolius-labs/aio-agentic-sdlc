@@ -39,11 +39,35 @@ def _run_prioritize():
 
 
 def _load():
-    return load_backlog()
+    data = load_backlog()
+    nodes = data.get("nodes", {})
+    edges = data.get("edges", [])
+    items = {}
+    for name, node in nodes.items():
+        item = node.copy()
+        item["requires"] = [e["to"] for e in edges if e["from"] == name and e["relation"] == "requires"]
+        parent_edges = [e["to"] for e in edges if e["from"] == name and e["relation"] == "parent"]
+        item["parent_id"] = parent_edges[0] if parent_edges else None
+        items[name] = item
+    return {"items": items}
 
 
 def _save(items_dict):
-    save_backlog({"items": items_dict})
+    nodes = {}
+    edges = []
+    for name, item in items_dict.items():
+        node = item.copy()
+        if "requires" in node:
+            for req in node["requires"]:
+                edges.append({"from": name, "to": req, "relation": "requires"})
+            del node["requires"]
+        if "parent_id" in node and node["parent_id"]:
+            edges.append({"from": name, "to": node["parent_id"], "relation": "parent"})
+            del node["parent_id"]
+        if "item_type" not in node:
+            node["item_type"] = "Task"
+        nodes[name] = node
+    save_backlog({"nodes": nodes, "edges": edges})
 
 
 # ── tests ────────────────────────────────────────────────────────────────────
