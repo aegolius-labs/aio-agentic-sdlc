@@ -189,7 +189,7 @@ def _fetch_gh_items_as_dict(client, project_id):
     return items
 
 def sync_github(project_path):
-    from .core import load_backlog, save_backlog, _get_status
+    from .core import load_backlog, save_backlog
     config = get_github_config(project_path)
     client = GitHubClient()
     owner, _ = config["repo"].split("/")
