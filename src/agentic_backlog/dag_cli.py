@@ -4,6 +4,7 @@ import sys
 from agentic_backlog.dag_manager import DAGManager
 from agentic_backlog.dag_models import Node, Edge, NodeType, EdgeType
 from agentic_backlog.diffing_engine import DiffingEngine
+from agentic_backlog.reality_dag_generator import RealityDAGGenerator
 
 @click.group()
 def cli():
@@ -36,6 +37,21 @@ def diff(intention, reality):
         click.echo(json.dumps(diff_result, indent=2))
     except Exception as e:
         click.secho(f"Error computing diff: {str(e)}", err=True, fg='red')
+        sys.exit(1)
+
+@cli.command("generate-reality")
+@click.option('--dir', required=True, type=click.Path(exists=True), help='Root directory to analyze.')
+@click.option('--system', default="System", help='Name of the root system node.')
+@click.option('--output', required=True, type=click.Path(), help='Path to save the generated Reality DAG yaml file.')
+def generate_reality(dir, system, output):
+    """Generates a Reality DAG by statically analyzing source code in the given directory."""
+    try:
+        generator = RealityDAGGenerator(root_dir=dir, system_name=system)
+        reality_dag = generator.generate()
+        reality_dag.save(output)
+        click.echo(f"Reality DAG generated and saved to {output}.")
+    except Exception as e:
+        click.secho(f"Error generating reality DAG: {str(e)}", err=True, fg='red')
         sys.exit(1)
 
 @cli.group()
