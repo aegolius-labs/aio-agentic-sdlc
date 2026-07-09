@@ -16,8 +16,9 @@ Phase 1: Intake & State Update
 Phase 2: VCS Initialization
 - Spawn the `sdlc_devops` subagent to create a new Conventional Branch based on the scope of the Diff.
 
-Phase 3: Deep Research & Curation
-- Spawn the `sdlc_researcher` subagent to investigate the requirements using official docs/papers and create a traceable research artifact. Await the filepath of the generated artifact.
+Phase 3: Deep Research & Curation (MANDATORY)
+- You MUST spawn the `sdlc_researcher` subagent for EVERY task, no matter how trivial. Do NOT rely on your training data or assume you or the Architect know the latest library syntax. This is required to avoid hallucination and outdated knowledge bias.
+- The Researcher must investigate the requirements using official docs/papers and create a traceable research artifact. Await the filepath of the generated artifact.
 
 Phase 4: Breakdown & Planning
 - Spawn the `sdlc_architect` subagent. Pass it the requirements/Diff AND the path to the research artifact. Instruct it to formulate a step-by-step structural implementation plan. Await the Architect's compressed plan.
