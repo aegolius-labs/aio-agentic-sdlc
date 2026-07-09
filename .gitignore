@@ -53,3 +53,6 @@ scratch/
 scratch_*/
 sandbox/
 test_sandbox/
+
+# Local Memory
+.agents/rules/global_memory.md
