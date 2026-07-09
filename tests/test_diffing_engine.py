@@ -119,3 +119,86 @@ def test_extraneous_edge():
     nodes = diff["nodes"]
     task_name = "Disconnect 'ui' from 'api' (calls)"
     assert task_name in nodes
+
+
+# Implicit Roll-up Tests
+
+def test_unmapped_node_with_no_parents():
+    node_a = Node(id="a", type=NodeType.CONTAINER, name="A")
+    node_b = Node(id="b", type=NodeType.CONTAINER, name="B")
+    
+    intent = create_sample_dag(nodes=[node_a])
+    reality = create_sample_dag(nodes=[node_a, node_b])
+    
+    engine = DiffingEngine(intent, reality)
+    diff = engine.calculate_diff()
+    
+    nodes = diff["nodes"]
+    assert "Remove Container 'B'" in nodes
+
+def test_unmapped_node_with_unmapped_parent():
+    node_a = Node(id="a", type=NodeType.CONTAINER, name="A")
+    node_b = Node(id="b", type=NodeType.CONTAINER, name="B")
+    node_c = Node(id="c", type=NodeType.CONTAINER, name="C")
+    edge = Edge(source="b", target="c", type=EdgeType.CONTAINS)
+    
+    intent = create_sample_dag(nodes=[node_a])
+    reality = create_sample_dag(nodes=[node_b, node_c], edges=[edge])
+    
+    engine = DiffingEngine(intent, reality)
+    diff = engine.calculate_diff()
+    
+    nodes = diff["nodes"]
+    assert "Remove Container 'B'" in nodes
+    assert "Remove Container 'C'" in nodes
+
+def test_unmapped_node_with_mapped_parent():
+    node_a = Node(id="a", type=NodeType.CONTAINER, name="A")
+    node_b = Node(id="b", type=NodeType.CONTAINER, name="B")
+    edge = Edge(source="a", target="b", type=EdgeType.CONTAINS)
+    
+    intent = create_sample_dag(nodes=[node_a])
+    reality = create_sample_dag(nodes=[node_a, node_b], edges=[edge])
+    
+    engine = DiffingEngine(intent, reality)
+    diff = engine.calculate_diff()
+    
+    nodes = diff["nodes"]
+    assert "Remove Container 'B'" not in nodes
+
+def test_unmapped_node_with_mapped_grandparent():
+    node_a = Node(id="a", type=NodeType.CONTAINER, name="A")
+    node_b = Node(id="b", type=NodeType.CONTAINER, name="B")
+    node_c = Node(id="c", type=NodeType.CONTAINER, name="C")
+    edge1 = Edge(source="a", target="b", type=EdgeType.CONTAINS)
+    edge2 = Edge(source="b", target="c", type=EdgeType.CONTAINS)
+    
+    intent = create_sample_dag(nodes=[node_a])
+    reality = create_sample_dag(nodes=[node_a, node_b, node_c], edges=[edge1, edge2])
+    
+    engine = DiffingEngine(intent, reality)
+    diff = engine.calculate_diff()
+    
+    nodes = diff["nodes"]
+    assert "Remove Container 'B'" not in nodes
+    assert "Remove Container 'C'" not in nodes
+
+def test_circular_dependency_resiliency():
+    node_b = Node(id="b", type=NodeType.CONTAINER, name="B")
+    node_c = Node(id="c", type=NodeType.CONTAINER, name="C")
+    node_d = Node(id="d", type=NodeType.CONTAINER, name="D")
+    
+    edge1 = Edge(source="b", target="c", type=EdgeType.CONTAINS)
+    edge2 = Edge(source="c", target="d", type=EdgeType.CONTAINS)
+    edge3 = Edge(source="d", target="b", type=EdgeType.CONTAINS)
+    
+    intent = create_sample_dag(nodes=[])
+    reality = create_sample_dag(nodes=[node_b, node_c, node_d], edges=[edge1, edge2, edge3])
+    
+    engine = DiffingEngine(intent, reality)
+    diff = engine.calculate_diff()
+    
+    nodes = diff["nodes"]
+    assert "Remove Container 'B'" in nodes
+    assert "Remove Container 'C'" in nodes
+    assert "Remove Container 'D'" in nodes

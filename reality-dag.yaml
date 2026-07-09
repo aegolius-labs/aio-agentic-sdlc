@@ -1,0 +1,957 @@
+metadata:
+  name: System
+  version: 1.0.0
+nodes:
+- id: system_root
+  type: system
+  name: System
+  description: Root project system
+- id: agentic_backlog.cli
+  type: module
+  name: cli.py
+  description: Python module agentic_backlog.cli
+- id: agentic_backlog.cli.init_cmd
+  type: component
+  name: init_cmd
+  description: Function init_cmd
+- id: agentic_backlog.cli.add_cmd
+  type: component
+  name: add_cmd
+  description: Function add_cmd
+- id: agentic_backlog.cli.update_cmd
+  type: component
+  name: update_cmd
+  description: Function update_cmd
+- id: agentic_backlog.cli.prioritize_cmd
+  type: component
+  name: prioritize_cmd
+  description: Function prioritize_cmd
+- id: agentic_backlog.cli.export_cmd
+  type: component
+  name: export_cmd
+  description: Function export_cmd
+- id: agentic_backlog.cli.status_cmd
+  type: component
+  name: status_cmd
+  description: Function status_cmd
+- id: agentic_backlog.cli.block_cmd
+  type: component
+  name: block_cmd
+  description: Function block_cmd
+- id: agentic_backlog.cli.unblock_cmd
+  type: component
+  name: unblock_cmd
+  description: Function unblock_cmd
+- id: agentic_backlog.cli.remove_cmd
+  type: component
+  name: remove_cmd
+  description: Function remove_cmd
+- id: agentic_backlog.cli.next_cmd
+  type: component
+  name: next_cmd
+  description: Function next_cmd
+- id: agentic_backlog.cli.sync_cmd
+  type: component
+  name: sync_cmd
+  description: Function sync_cmd
+- id: agentic_backlog.cli.main
+  type: component
+  name: main
+  description: Function main
+- id: agentic_backlog.config
+  type: module
+  name: config.py
+  description: Python module agentic_backlog.config
+- id: agentic_backlog.config.load_config
+  type: component
+  name: load_config
+  description: Function load_config
+- id: agentic_backlog.config.save_config
+  type: component
+  name: save_config
+  description: Function save_config
+- id: agentic_backlog.config.is_github_mode
+  type: component
+  name: is_github_mode
+  description: Function is_github_mode
+- id: agentic_backlog.config.get_github_config
+  type: component
+  name: get_github_config
+  description: Function get_github_config
+- id: agentic_backlog.core
+  type: module
+  name: core.py
+  description: Python module agentic_backlog.core
+- id: agentic_backlog.core.validate_hierarchy
+  type: component
+  name: validate_hierarchy
+  description: Function validate_hierarchy
+- id: agentic_backlog.core.load_backlog
+  type: component
+  name: load_backlog
+  description: Function load_backlog
+- id: agentic_backlog.core.save_backlog
+  type: component
+  name: save_backlog
+  description: Function save_backlog
+- id: agentic_backlog.core.get_edges
+  type: component
+  name: get_edges
+  description: Function get_edges
+- id: agentic_backlog.core.get_requires
+  type: component
+  name: get_requires
+  description: Function get_requires
+- id: agentic_backlog.core.set_requires
+  type: component
+  name: set_requires
+  description: Function set_requires
+- id: agentic_backlog.core.get_parent
+  type: component
+  name: get_parent
+  description: Function get_parent
+- id: agentic_backlog.core.set_parent
+  type: component
+  name: set_parent
+  description: Function set_parent
+- id: agentic_backlog.core.ensure_dependencies
+  type: component
+  name: ensure_dependencies
+  description: Function ensure_dependencies
+- id: agentic_backlog.core.prioritize_items
+  type: component
+  name: prioritize_items
+  description: Function prioritize_items
+- id: agentic_backlog.core.get_next_item
+  type: component
+  name: get_next_item
+  description: Function get_next_item
+- id: agentic_backlog.core.add_item
+  type: component
+  name: add_item
+  description: Function add_item
+- id: agentic_backlog.core.update_item
+  type: component
+  name: update_item
+  description: Function update_item
+- id: agentic_backlog.core.set_status
+  type: component
+  name: set_status
+  description: Function set_status
+- id: agentic_backlog.core.add_blocker
+  type: component
+  name: add_blocker
+  description: Function add_blocker
+- id: agentic_backlog.core.remove_blocker
+  type: component
+  name: remove_blocker
+  description: Function remove_blocker
+- id: agentic_backlog.core.remove_item
+  type: component
+  name: remove_item
+  description: Function remove_item
+- id: agentic_backlog.dag_cli
+  type: module
+  name: dag_cli.py
+  description: Python module agentic_backlog.dag_cli
+- id: agentic_backlog.dag_cli.cli
+  type: component
+  name: cli
+  description: CLI tool for managing DAG state files safely.
+- id: agentic_backlog.dag_cli.validate
+  type: component
+  name: validate
+  description: Validates the structure and constraints of the DAG file.
+- id: agentic_backlog.dag_cli.diff
+  type: component
+  name: diff
+  description: Calculates the diff between Intention DAG and Reality DAG.
+- id: agentic_backlog.dag_cli.generate_reality
+  type: component
+  name: generate_reality
+  description: Generates a Reality DAG by statically analyzing source code in the
+    given directory.
+- id: agentic_backlog.dag_cli.node
+  type: component
+  name: node
+  description: Node manipulation commands.
+- id: agentic_backlog.dag_cli.node_add
+  type: component
+  name: node_add
+  description: Add a new node.
+- id: agentic_backlog.dag_cli.node_update
+  type: component
+  name: node_update
+  description: Update an existing node.
+- id: agentic_backlog.dag_cli.node_remove
+  type: component
+  name: node_remove
+  description: Remove a node.
+- id: agentic_backlog.dag_cli.node_list
+  type: component
+  name: node_list
+  description: List nodes.
+- id: agentic_backlog.dag_cli.edge
+  type: component
+  name: edge
+  description: Edge manipulation commands.
+- id: agentic_backlog.dag_cli.edge_add
+  type: component
+  name: edge_add
+  description: Add an edge.
+- id: agentic_backlog.dag_cli.edge_remove
+  type: component
+  name: edge_remove
+  description: Remove an edge.
+- id: agentic_backlog.dag_manager
+  type: module
+  name: dag_manager.py
+  description: Python module agentic_backlog.dag_manager
+- id: agentic_backlog.dag_manager.DAGManager
+  type: component
+  name: DAGManager
+  description: Class DAGManager
+- id: agentic_backlog.dag_manager.DAGManager.__init__
+  type: component
+  name: __init__
+  description: Function __init__
+- id: agentic_backlog.dag_manager.DAGManager.load
+  type: component
+  name: load
+  description: Function load
+- id: agentic_backlog.dag_manager.DAGManager.save
+  type: component
+  name: save
+  description: Function save
+- id: agentic_backlog.dag_manager.DAGManager.validate
+  type: component
+  name: validate
+  description: Function validate
+- id: agentic_backlog.dag_manager.DAGManager.add_node
+  type: component
+  name: add_node
+  description: Function add_node
+- id: agentic_backlog.dag_manager.DAGManager.update_node
+  type: component
+  name: update_node
+  description: Function update_node
+- id: agentic_backlog.dag_manager.DAGManager.remove_node
+  type: component
+  name: remove_node
+  description: Function remove_node
+- id: agentic_backlog.dag_manager.DAGManager.get_node
+  type: component
+  name: get_node
+  description: Function get_node
+- id: agentic_backlog.dag_manager.DAGManager.find_nodes
+  type: component
+  name: find_nodes
+  description: Function find_nodes
+- id: agentic_backlog.dag_manager.DAGManager.add_edge
+  type: component
+  name: add_edge
+  description: Function add_edge
+- id: agentic_backlog.dag_manager.DAGManager.remove_edge
+  type: component
+  name: remove_edge
+  description: Function remove_edge
+- id: agentic_backlog.dag_manager.DAGManager.get_edges
+  type: component
+  name: get_edges
+  description: Function get_edges
+- id: agentic_backlog.dag_models
+  type: module
+  name: dag_models.py
+  description: Python module agentic_backlog.dag_models
+- id: agentic_backlog.dag_models.NodeType
+  type: component
+  name: NodeType
+  description: Class NodeType
+- id: agentic_backlog.dag_models.EdgeType
+  type: component
+  name: EdgeType
+  description: Class EdgeType
+- id: agentic_backlog.dag_models.Metadata
+  type: entity
+  name: Metadata
+  description: Class Metadata
+- id: agentic_backlog.dag_models.Node
+  type: entity
+  name: Node
+  description: Class Node
+- id: agentic_backlog.dag_models.Edge
+  type: entity
+  name: Edge
+  description: Class Edge
+- id: agentic_backlog.detect
+  type: module
+  name: detect.py
+  description: Python module agentic_backlog.detect
+- id: agentic_backlog.detect.detect_frameworks
+  type: component
+  name: detect_frameworks
+  description: Analyze the current working directory to detect the tech stack.
+- id: agentic_backlog.detect.seed_from_openspec
+  type: component
+  name: seed_from_openspec
+  description: Parse tasks.md from Open-Spec into backlog items.
+- id: agentic_backlog.detect.seed_from_speckit
+  type: component
+  name: seed_from_speckit
+  description: Parse markdown files in specs/ from Spec-Kit into backlog items.
+- id: agentic_backlog.detect.generate_seed_backlog
+  type: component
+  name: generate_seed_backlog
+  description: Generate a dictionary of seed items based on detected frameworks and
+    specs.
+- id: agentic_backlog.diffing_engine
+  type: module
+  name: diffing_engine.py
+  description: Python module agentic_backlog.diffing_engine
+- id: agentic_backlog.diffing_engine.DiffingEngine
+  type: component
+  name: DiffingEngine
+  description: 'Computes the difference between an Intention DAG and a Reality DAG,
+
+    generating a backlog of tasks required to reconcile Reality with Intention.'
+- id: agentic_backlog.diffing_engine.DiffingEngine.__init__
+  type: component
+  name: __init__
+  description: Function __init__
+- id: agentic_backlog.diffing_engine.DiffingEngine.calculate_diff
+  type: component
+  name: calculate_diff
+  description: 'Calculates the diff between Intention DAG and Reality DAG.
+
+    Returns a dictionary representing Backlog items.'
+- id: agentic_backlog.github
+  type: module
+  name: github.py
+  description: Python module agentic_backlog.github
+- id: agentic_backlog.github.GitHubClient
+  type: component
+  name: GitHubClient
+  description: Class GitHubClient
+- id: agentic_backlog.github.GitHubClient.__init__
+  type: component
+  name: __init__
+  description: Function __init__
+- id: agentic_backlog.github.GitHubClient.execute
+  type: component
+  name: execute
+  description: Function execute
+- id: agentic_backlog.github.GitHubClient.get_repo_id
+  type: component
+  name: get_repo_id
+  description: Function get_repo_id
+- id: agentic_backlog.github.GitHubClient.get_repository_issue_types
+  type: component
+  name: get_repository_issue_types
+  description: Function get_repository_issue_types
+- id: agentic_backlog.github.GitHubClient.get_owner_id
+  type: component
+  name: get_owner_id
+  description: Function get_owner_id
+- id: agentic_backlog.github.GitHubClient.create_project_v2
+  type: component
+  name: create_project_v2
+  description: Function create_project_v2
+- id: agentic_backlog.github.GitHubClient.get_project_v2_info
+  type: component
+  name: get_project_v2_info
+  description: Function get_project_v2_info
+- id: agentic_backlog.github.GitHubClient.create_custom_field
+  type: component
+  name: create_custom_field
+  description: Function create_custom_field
+- id: agentic_backlog.github.GitHubClient.ensure_backlog_fields
+  type: component
+  name: ensure_backlog_fields
+  description: Function ensure_backlog_fields
+- id: agentic_backlog.github.GitHubClient.create_issue
+  type: component
+  name: create_issue
+  description: Function create_issue
+- id: agentic_backlog.github.GitHubClient.add_project_item
+  type: component
+  name: add_project_item
+  description: Function add_project_item
+- id: agentic_backlog.github.GitHubClient.update_item_field
+  type: component
+  name: update_item_field
+  description: Function update_item_field
+- id: agentic_backlog.github.GitHubClient.fetch_all_items
+  type: component
+  name: fetch_all_items
+  description: Function fetch_all_items
+- id: agentic_backlog.github_core
+  type: module
+  name: github_core.py
+  description: Python module agentic_backlog.github_core
+- id: agentic_backlog.github_core.add_item_github
+  type: component
+  name: add_item_github
+  description: Function add_item_github
+- id: agentic_backlog.github_core.update_item_github
+  type: component
+  name: update_item_github
+  description: Function update_item_github
+- id: agentic_backlog.github_core.set_status_github
+  type: component
+  name: set_status_github
+  description: Function set_status_github
+- id: agentic_backlog.github_core.add_blocker_github
+  type: component
+  name: add_blocker_github
+  description: Function add_blocker_github
+- id: agentic_backlog.github_core.remove_blocker_github
+  type: component
+  name: remove_blocker_github
+  description: Function remove_blocker_github
+- id: agentic_backlog.github_core.remove_item_github
+  type: component
+  name: remove_item_github
+  description: Function remove_item_github
+- id: agentic_backlog.github_core.sync_github
+  type: component
+  name: sync_github
+  description: Function sync_github
+- id: agentic_backlog.github_core.prioritize_items_github
+  type: component
+  name: prioritize_items_github
+  description: Function prioritize_items_github
+- id: agentic_backlog.github_core.get_next_item_github
+  type: component
+  name: get_next_item_github
+  description: Function get_next_item_github
+- id: agentic_backlog.mcp_server
+  type: module
+  name: mcp_server.py
+  description: Python module agentic_backlog.mcp_server
+- id: agentic_backlog.mcp_server.read_current_backlog
+  type: component
+  name: read_current_backlog
+  description: Read the complete prioritized project backlog as JSON from the current
+    working directory.
+- id: agentic_backlog.mcp_server.read_hierarchy_rules
+  type: component
+  name: read_hierarchy_rules
+  description: Read the validation mode and graph hierarchy rules.
+- id: agentic_backlog.mcp_server.pick_next_task_prompt
+  type: component
+  name: pick_next_task_prompt
+  description: Prompt the agent to pick the next workable task from the backlog.
+- id: agentic_backlog.mcp_server.get_next_task
+  type: component
+  name: get_next_task
+  description: Find and return the highest-priority workable task from the backlog.
+- id: agentic_backlog.mcp_server.add_task
+  type: component
+  name: add_task
+  description: Add a new task to the project backlog.
+- id: agentic_backlog.mcp_server.update_task
+  type: component
+  name: update_task
+  description: Update an existing task in the project backlog.
+- id: agentic_backlog.mcp_server.update_task_status
+  type: component
+  name: update_task_status
+  description: Quickly update the status of an existing task.
+- id: agentic_backlog.mcp_server.remove_task
+  type: component
+  name: remove_task
+  description: Remove a task entirely from the backlog.
+- id: agentic_backlog.mcp_server.prioritize_backlog
+  type: component
+  name: prioritize_backlog
+  description: Force an immediate topological sort and priority re-calculation of
+    the backlog.
+- id: agentic_backlog.mcp_server.block_task
+  type: component
+  name: block_task
+  description: Add a blocker to a task, preventing it from being worked on.
+- id: agentic_backlog.mcp_server.main
+  type: component
+  name: main
+  description: Function main
+- id: agentic_backlog.reality_dag_generator
+  type: module
+  name: reality_dag_generator.py
+  description: Python module agentic_backlog.reality_dag_generator
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  type: component
+  name: PythonASTVisitor
+  description: Class PythonASTVisitor
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor.__init__
+  type: component
+  name: __init__
+  description: Function __init__
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_ClassDef
+  type: component
+  name: visit_ClassDef
+  description: Function visit_ClassDef
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_FunctionDef
+  type: component
+  name: visit_FunctionDef
+  description: Function visit_FunctionDef
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_AsyncFunctionDef
+  type: component
+  name: visit_AsyncFunctionDef
+  description: Function visit_AsyncFunctionDef
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_Import
+  type: component
+  name: visit_Import
+  description: Function visit_Import
+- id: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_ImportFrom
+  type: component
+  name: visit_ImportFrom
+  description: Function visit_ImportFrom
+- id: agentic_backlog.reality_dag_generator.RealityDAGGenerator
+  type: component
+  name: RealityDAGGenerator
+  description: 'Generates a Reality DAG by statically analyzing source code.
+
+    Currently implements a Python AST parser.'
+- id: agentic_backlog.reality_dag_generator.RealityDAGGenerator.__init__
+  type: component
+  name: __init__
+  description: Function __init__
+- id: agentic_backlog.reality_dag_generator.RealityDAGGenerator.parse_python_file
+  type: component
+  name: parse_python_file
+  description: Function parse_python_file
+- id: agentic_backlog.reality_dag_generator.RealityDAGGenerator.generate
+  type: component
+  name: generate
+  description: Function generate
+- id: agentic_backlog.__init__
+  type: module
+  name: __init__.py
+  description: Python module agentic_backlog.__init__
+- id: utils.markdown_parser
+  type: module
+  name: markdown_parser.py
+  description: Python module utils.markdown_parser
+- id: utils.markdown_parser.extract_h2
+  type: component
+  name: extract_h2
+  description: Reads a markdown file and returns a list of strings containing all
+    H2 headers (lines starting with '## ').
+edges:
+- source: system_root
+  target: agentic_backlog.cli
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.init_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.add_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.update_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.prioritize_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.export_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.status_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.block_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.unblock_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.remove_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.next_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.sync_cmd
+  type: contains
+- source: agentic_backlog.cli
+  target: agentic_backlog.cli.main
+  type: contains
+- source: system_root
+  target: agentic_backlog.config
+  type: contains
+- source: agentic_backlog.config
+  target: agentic_backlog.config.load_config
+  type: contains
+- source: agentic_backlog.config
+  target: agentic_backlog.config.save_config
+  type: contains
+- source: agentic_backlog.config
+  target: agentic_backlog.config.is_github_mode
+  type: contains
+- source: agentic_backlog.config
+  target: agentic_backlog.config.get_github_config
+  type: contains
+- source: system_root
+  target: agentic_backlog.core
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.validate_hierarchy
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.load_backlog
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.save_backlog
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.get_edges
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.get_requires
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.set_requires
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.get_parent
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.set_parent
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.ensure_dependencies
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.prioritize_items
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.get_next_item
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.add_item
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.update_item
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.set_status
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.add_blocker
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.remove_blocker
+  type: contains
+- source: agentic_backlog.core
+  target: agentic_backlog.core.remove_item
+  type: contains
+- source: system_root
+  target: agentic_backlog.dag_cli
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_manager
+  type: depends_on
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_models
+  type: depends_on
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.diffing_engine
+  type: depends_on
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.reality_dag_generator
+  type: depends_on
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.cli
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.validate
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.diff
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.generate_reality
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.node
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.node_add
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.node_update
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.node_remove
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.node_list
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.edge
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.edge_add
+  type: contains
+- source: agentic_backlog.dag_cli
+  target: agentic_backlog.dag_cli.edge_remove
+  type: contains
+- source: system_root
+  target: agentic_backlog.dag_manager
+  type: contains
+- source: agentic_backlog.dag_manager
+  target: agentic_backlog.dag_models
+  type: depends_on
+- source: agentic_backlog.dag_manager
+  target: agentic_backlog.dag_manager.DAGManager
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.__init__
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.load
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.save
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.validate
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.add_node
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.update_node
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.remove_node
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.get_node
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.find_nodes
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.add_edge
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.remove_edge
+  type: contains
+- source: agentic_backlog.dag_manager.DAGManager
+  target: agentic_backlog.dag_manager.DAGManager.get_edges
+  type: contains
+- source: system_root
+  target: agentic_backlog.dag_models
+  type: contains
+- source: agentic_backlog.dag_models
+  target: agentic_backlog.dag_models.NodeType
+  type: contains
+- source: agentic_backlog.dag_models
+  target: agentic_backlog.dag_models.EdgeType
+  type: contains
+- source: agentic_backlog.dag_models
+  target: agentic_backlog.dag_models.Metadata
+  type: contains
+- source: agentic_backlog.dag_models
+  target: agentic_backlog.dag_models.Node
+  type: contains
+- source: agentic_backlog.dag_models
+  target: agentic_backlog.dag_models.Edge
+  type: contains
+- source: system_root
+  target: agentic_backlog.detect
+  type: contains
+- source: agentic_backlog.detect
+  target: agentic_backlog.detect.detect_frameworks
+  type: contains
+- source: agentic_backlog.detect
+  target: agentic_backlog.detect.seed_from_openspec
+  type: contains
+- source: agentic_backlog.detect
+  target: agentic_backlog.detect.seed_from_speckit
+  type: contains
+- source: agentic_backlog.detect
+  target: agentic_backlog.detect.generate_seed_backlog
+  type: contains
+- source: system_root
+  target: agentic_backlog.diffing_engine
+  type: contains
+- source: agentic_backlog.diffing_engine
+  target: agentic_backlog.dag_manager
+  type: depends_on
+- source: agentic_backlog.diffing_engine
+  target: agentic_backlog.dag_models
+  type: depends_on
+- source: agentic_backlog.diffing_engine
+  target: agentic_backlog.diffing_engine.DiffingEngine
+  type: contains
+- source: agentic_backlog.diffing_engine.DiffingEngine
+  target: agentic_backlog.diffing_engine.DiffingEngine.__init__
+  type: contains
+- source: agentic_backlog.diffing_engine.DiffingEngine
+  target: agentic_backlog.diffing_engine.DiffingEngine.calculate_diff
+  type: contains
+- source: system_root
+  target: agentic_backlog.github
+  type: contains
+- source: agentic_backlog.github
+  target: agentic_backlog.github.GitHubClient
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.__init__
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.execute
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.get_repo_id
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.get_repository_issue_types
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.get_owner_id
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.create_project_v2
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.get_project_v2_info
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.create_custom_field
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.ensure_backlog_fields
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.create_issue
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.add_project_item
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.update_item_field
+  type: contains
+- source: agentic_backlog.github.GitHubClient
+  target: agentic_backlog.github.GitHubClient.fetch_all_items
+  type: contains
+- source: system_root
+  target: agentic_backlog.github_core
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.add_item_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.update_item_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.set_status_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.add_blocker_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.remove_blocker_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.remove_item_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.sync_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.prioritize_items_github
+  type: contains
+- source: agentic_backlog.github_core
+  target: agentic_backlog.github_core.get_next_item_github
+  type: contains
+- source: system_root
+  target: agentic_backlog.mcp_server
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.read_current_backlog
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.read_hierarchy_rules
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.pick_next_task_prompt
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.get_next_task
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.add_task
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.update_task
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.update_task_status
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.remove_task
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.prioritize_backlog
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.block_task
+  type: contains
+- source: agentic_backlog.mcp_server
+  target: agentic_backlog.mcp_server.main
+  type: contains
+- source: system_root
+  target: agentic_backlog.reality_dag_generator
+  type: contains
+- source: agentic_backlog.reality_dag_generator
+  target: agentic_backlog.dag_manager
+  type: depends_on
+- source: agentic_backlog.reality_dag_generator
+  target: agentic_backlog.dag_models
+  type: depends_on
+- source: agentic_backlog.reality_dag_generator
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  type: contains
+- source: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor.__init__
+  type: contains
+- source: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_ClassDef
+  type: contains
+- source: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_FunctionDef
+  type: contains
+- source: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_AsyncFunctionDef
+  type: contains
+- source: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_Import
+  type: contains
+- source: agentic_backlog.reality_dag_generator.PythonASTVisitor
+  target: agentic_backlog.reality_dag_generator.PythonASTVisitor.visit_ImportFrom
+  type: contains
+- source: agentic_backlog.reality_dag_generator
+  target: agentic_backlog.reality_dag_generator.RealityDAGGenerator
+  type: contains
+- source: agentic_backlog.reality_dag_generator.RealityDAGGenerator
+  target: agentic_backlog.reality_dag_generator.RealityDAGGenerator.__init__
+  type: contains
+- source: agentic_backlog.reality_dag_generator.RealityDAGGenerator
+  target: agentic_backlog.reality_dag_generator.RealityDAGGenerator.parse_python_file
+  type: contains
+- source: agentic_backlog.reality_dag_generator.RealityDAGGenerator
+  target: agentic_backlog.reality_dag_generator.RealityDAGGenerator.generate
+  type: contains
+- source: system_root
+  target: agentic_backlog.__init__
+  type: contains
+- source: system_root
+  target: utils.markdown_parser
+  type: contains
+- source: utils.markdown_parser
+  target: utils.markdown_parser.extract_h2
+  type: contains

@@ -10,12 +10,13 @@ def ingest_diff():
     and merges the resulting tasks and edges into the local backlog (backlog.json)
     using core.load_backlog and core.save_backlog, followed by core.prioritize_items.
     """
-    dag_manager = DAGManager()
-    intention_dag = dag_manager.load_intention_dag()
-    reality_dag = dag_manager.load_reality_dag()
+    intention_dag = DAGManager.load("intention-dag.yaml")
+    reality_dag = DAGManager.load("reality-dag.yaml")
     
-    diffing_engine = DiffingEngine()
-    tasks, edges = diffing_engine.calculate_diff(intention_dag, reality_dag)
+    diffing_engine = DiffingEngine(intention_dag, reality_dag)
+    diff = diffing_engine.calculate_diff()
+    tasks = diff.get('nodes', {})
+    edges = diff.get('edges', [])
     
     backlog = core.load_backlog() or {}
     

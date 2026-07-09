@@ -1,7 +1,7 @@
 from typing import Dict, Any, List
 
 from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.dag_models import Node, Edge
+from agentic_backlog.dag_models import Node, Edge, EdgeType
 
 
 class DiffingEngine:
@@ -13,6 +13,30 @@ class DiffingEngine:
     def __init__(self, intention: DAGManager, reality: DAGManager):
         self.intention = intention
         self.reality = reality
+
+    def _is_implementation_detail(self, node_id: str) -> bool:
+        visited = set()
+        
+        def check_ancestors(current_id: str) -> bool:
+            if current_id in visited:
+                return False
+            visited.add(current_id)
+            
+            # Find all parent nodes in the Reality DAG
+            parents = [
+                e.source for e in self.reality.edges 
+                if e.target == current_id and e.type == EdgeType.CONTAINS
+            ]
+            
+            for parent_id in parents:
+                if parent_id in self.intention.nodes:
+                    return True
+                if check_ancestors(parent_id):
+                    return True
+                    
+            return False
+            
+        return check_ancestors(node_id)
 
     def calculate_diff(self) -> Dict[str, Any]:
         """
@@ -67,6 +91,10 @@ class DiffingEngine:
         # 2. Extraneous Nodes (Reality -> Intention)
         for node_id, reality_node in self.reality.nodes.items():
             if node_id not in self.intention.nodes:
+                # Implicit Roll-up Check
+                if self._is_implementation_detail(node_id):
+                    continue
+
                 task_name = f"Remove {reality_node.type.value.capitalize()} '{reality_node.name}'"
                 backlog_nodes[task_name] = {
                     "item_type": "Task",
