@@ -40,6 +40,7 @@ agentic-backlog = "agentic_backlog.cli:main"
 agb = "agentic_backlog.cli:main"
 agentic-backlog-mcp = "agentic_backlog.mcp_server:main"
 dag-tool = "agentic_backlog.dag_cli:cli"
+aio-sdlc = "agentic_backlog.cli:main"
 
 [tool.hatch.version]
 source = "vcs"

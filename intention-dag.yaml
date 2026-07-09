@@ -51,6 +51,18 @@ nodes:
     name: "Operational Modes Config"
     description: "Configuration for approval gates vs bypass mode for continuous delivery"
 
+  - id: "sdlc-intake-agent"
+    type: "agent"
+    domain: "ux"
+    name: "SDLC Intake Agent"
+    description: "Chats with the user, distills ideas into specs, and updates intention-dag.yaml safely without writing execution code"
+
+  - id: "cli-entrypoint"
+    type: "component"
+    domain: "ux"
+    name: "CLI Entrypoint"
+    description: "Exposes plan and apply commands to run the DiffingEngine and Orchestrator Loop"
+
 edges:
   - source: "aio-agentic-sdlc-system"
     target: "orchestrator-loop"
@@ -100,3 +112,21 @@ edges:
     target: "qa-swarm-orchestrator"
     type: "calls"
     description: "Triggers QA validation after executing parallel tasks"
+
+  - source: "aio-agentic-sdlc-system"
+    target: "sdlc-intake-agent"
+    type: "contains"
+
+  - source: "aio-agentic-sdlc-system"
+    target: "cli-entrypoint"
+    type: "contains"
+
+  - source: "cli-entrypoint"
+    target: "diffing-engine"
+    type: "calls"
+    description: "Runs the DiffingEngine and outputs generated backlog/diff via plan command"
+
+  - source: "cli-entrypoint"
+    target: "orchestrator-loop"
+    type: "calls"
+    description: "Executes the orchestrator_loop via apply command"

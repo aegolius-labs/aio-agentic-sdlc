@@ -403,6 +403,30 @@ def sync_cmd(args):
         print(f"Error syncing with GitHub: {e}", file=sys.stderr)
         sys.exit(1)
 
+def plan_cmd(args):
+    from .dag_manager import DAGManager
+    from .diffing_engine import DiffingEngine
+    import json
+    try:
+        intention_dag = DAGManager.load("intention-dag.yaml")
+        reality_dag = DAGManager.load("reality-dag.yaml")
+        engine = DiffingEngine(intention_dag, reality_dag)
+        diff = engine.calculate_diff()
+        print(json.dumps(diff, indent=2))
+    except Exception as e:
+        print(f"Error computing diff: {e}", file=sys.stderr)
+        sys.exit(1)
+
+def apply_cmd(args):
+    import asyncio
+    from .orchestrator_loop import main_loop
+    try:
+        asyncio.run(main_loop())
+        print("Apply completed.")
+    except Exception as e:
+        print(f"Error during apply: {e}", file=sys.stderr)
+        sys.exit(1)
+
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
@@ -466,6 +490,10 @@ def main():
 
     p_sync = subparsers.add_parser('sync', help="Sync local DAG with GitHub Projects V2 statuses and new SDD tasks")
 
+    p_plan = subparsers.add_parser('plan', help="Calculate and output the DAG diff (plan)")
+    
+    p_apply = subparsers.add_parser('apply', help="Apply the diff and run the SDLC orchestrator loop")
+
     args = parser.parse_args()
 
     try:
@@ -480,6 +508,8 @@ def main():
         elif args.command == 'next': next_cmd(args)
         elif args.command == 'export': export_cmd(args)
         elif args.command == 'sync': sync_cmd(args)
+        elif args.command == 'plan': plan_cmd(args)
+        elif args.command == 'apply': apply_cmd(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
