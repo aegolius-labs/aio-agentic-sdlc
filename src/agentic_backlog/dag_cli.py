@@ -3,6 +3,7 @@ import json
 import sys
 from agentic_backlog.dag_manager import DAGManager
 from agentic_backlog.dag_models import Node, Edge, NodeType, EdgeType
+from agentic_backlog.diffing_engine import DiffingEngine
 
 @click.group()
 def cli():
@@ -19,6 +20,22 @@ def validate(file):
         click.echo("DAG is valid.")
     except Exception as e:
         click.secho(f"Error validating DAG: {str(e)}", err=True, fg='red')
+        sys.exit(1)
+
+@cli.command()
+@click.option('--intention', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
+@click.option('--reality', required=True, type=click.Path(exists=True), help='Path to the Reality DAG yaml file.')
+def diff(intention, reality):
+    """Calculates the diff between Intention DAG and Reality DAG."""
+    try:
+        intent_manager = DAGManager.load(intention)
+        reality_manager = DAGManager.load(reality)
+        engine = DiffingEngine(intent_manager, reality_manager)
+        diff_result = engine.calculate_diff()
+        
+        click.echo(json.dumps(diff_result, indent=2))
+    except Exception as e:
+        click.secho(f"Error computing diff: {str(e)}", err=True, fg='red')
         sys.exit(1)
 
 @cli.group()
