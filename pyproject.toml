@@ -17,7 +17,7 @@ classifiers = [
     "License :: Other/Proprietary License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["mcp>=1.28.0", "requests>=2.31.0"]
+dependencies = ["mcp>=1.28.0", "requests>=2.31.0", "pydantic>=2.0.0", "pyyaml>=6.0.0", "click>=8.0.0"]
 
 [project.urls]
 "Homepage" = "https://github.com/aegolius-labs/agentic-backlog-cli"
@@ -30,6 +30,7 @@ dev = ["pytest>=9.1.0"]
 agentic-backlog = "agentic_backlog.cli:main"
 agb = "agentic_backlog.cli:main"
 agentic-backlog-mcp = "agentic_backlog.mcp_server:main"
+dag-tool = "agentic_backlog.dag_cli:cli"
 
 [tool.hatch.version]
 source = "vcs"
