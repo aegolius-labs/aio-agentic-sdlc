@@ -6,46 +6,45 @@ The SDLC Orchestrator is the central hub for the `aio-agentic-sdlc` framework. I
 ## 2. Core Principles
 - **Single Pane of Glass:** The user communicates exclusively with the Orchestrator.
 - **Strict Delegation:** The Orchestrator does not perform heavy computation, graph generation, or coding. It delegates to specialized subagents.
-- **Token-Optimized Communication:** Inter-agent communication relies on highly compressed, token-optimized data structures (JSON, YAML, precise file paths, raw diffs). Human pleasantries are strictly omitted.
-- **The Backlog is a Diff:** The project backlog is entirely dynamic. It is automatically generated and updated anytime there is a Diff calculated between the Intention DAG and the Reality DAG.
+- **Token-Optimized Communication:** Inter-agent communication relies on highly compressed, token-optimized data structures. Human pleasantries are strictly omitted.
+- **The Backlog is a Diff:** The project backlog is entirely dynamic, generated anytime there is a Diff calculated between the Intention DAG and the Reality DAG.
 
 ## 3. Specialized Subagent Roles
-*   **Cartographer (State Manager):** Responsible for parsing the codebase to update the Reality DAG, parsing user requirements to update the Intention DAG, and calculating the Diff between the two to dynamically generate the Backlog.
-*   **Architect:** Responsible for Research, Breakdown, and Planning based on the calculated Diff.
-*   **Implementer:** Responsible for executing code changes based on strict constraints and TDD principles.
-*   **QA / Tester:** Responsible for fuzzing, writing missing test cases, and attempting to break the implementer's code.
+*   **Cartographer (State Manager):** Updates DAGs and calculates the Diff.
+*   **DevOps Manager:** Handles Git branching, conventional commits, and Pull Requests.
+*   **Architect:** Responsible for Research, Breakdown, and Planning.
+*   **Implementer:** Executes code changes using TDD principles.
+*   **Linter:** Runs static analysis, code formatters, and security checks.
+*   **QA / Tester:** Responsible for adversarial testing and edge-case verification.
 
 ## 4. The Orchestrated SDLC Pipeline
 
 ### Phase 0: Bootstrap (One-Time Execution)
-1.  **Trigger:** Orchestrator detects `aio-agentic-sdlc` is uninitialized in the workspace.
-2.  **Delegation:** Orchestrator spawns the **Cartographer** subagent.
-3.  **Execution:** Cartographer scans the codebase to generate the initial **Reality DAG** and creates a baseline **Intention DAG**.
+1.  **Trigger:** Orchestrator detects uninitialized workspace.
+2.  **Delegation:** Spawns **Cartographer** to generate initial Reality DAG and baseline Intention DAG.
 
 ### Phase 1: Intake & State Update
-1.  **Trigger:** User provides an idea or requirement directly to the Orchestrator (external ticketing is ignored).
-2.  **Delegation:** Orchestrator spawns the **Cartographer**.
-3.  **Execution:** Cartographer updates the **Intention DAG** with the new requirements. It then calculates the Diff between the new Intention DAG and the existing Reality DAG.
-4.  **Handoff:** Cartographer returns the updated, dynamic Backlog (the Diff) to the Orchestrator.
+1.  **Trigger:** User provides requirement.
+2.  **Delegation:** Spawns **Cartographer** to update Intention DAG and return Diff (Backlog).
 
-### Phase 2: Breakdown & Planning
-1.  **Delegation:** Orchestrator spawns the **Architect** subagent, passing it the new Diff/Backlog.
-2.  **Execution:** Architect analyzes the Diff, performs necessary technical research, and formulates a step-by-step structural implementation plan.
-3.  **Handoff:** Architect returns a highly compressed data structure (the plan) to the Orchestrator.
+### Phase 2: VCS Initialization
+1.  **Delegation:** Spawns **DevOps** to create a Conventional Branch (e.g., `feature/...`) off main based on the Diff.
 
-### Phase 3: Implementation (TDD)
-1.  **Delegation:** Orchestrator parses the plan and spawns **Implementer** subagents.
-2.  **Execution:** Implementers follow Test-Driven Development (TDD) to write tests and implement the code required to resolve the Diff.
-3.  **Handoff:** Implementers return a compressed summary of changed files and passing tests.
+### Phase 3: Breakdown & Planning
+1.  **Delegation:** Spawns **Architect** to formulate step-by-step structural implementation plan.
 
-### Phase 4: Comprehensive Testing
-1.  **Delegation:** Orchestrator spawns the **QA** subagent.
-2.  **Execution:** QA inspects the implementations, runs integration suites, and performs adversarial testing.
-3.  **Handoff:** QA returns a pass/fail matrix. 
-    *   *If Fail:* Orchestrator loops back to **Phase 3 (Implementation)** with the failure context.
-    *   *If Pass:* Proceed to Wrap-Up.
+### Phase 4: Implementation (TDD)
+1.  **Delegation:** Parses plan and spawns **Implementers** to write tests and code.
 
-### Phase 5: Wrap-Up & State Reconciliation
-1.  **Delegation:** Orchestrator spawns the **Cartographer** one final time.
-2.  **Execution:** Cartographer rescans the modified codebase to update the **Reality DAG**. It calculates the Diff one last time to verify the backlog is now empty (Intention == Reality).
-3.  **Completion:** Orchestrator finalizes documentation, commits the code, opens a PR, and reports success to the user.
+### Phase 5: Static Analysis & Formatting
+1.  **Delegation:** Spawns **Linter** to run formatters (black, prettier) and static analysis (CodeQL, flake8).
+2.  **Loop:** If failure, route failure context back to **Phase 4 (Implementation)**.
+
+### Phase 6: Comprehensive Testing
+1.  **Delegation:** Spawns **QA** for integration and adversarial testing.
+2.  **Loop:** If failure, route failure context back to **Phase 4 (Implementation)**.
+
+### Phase 7: Wrap-Up & VCS Finalization
+1.  **Delegation:** Spawns **Cartographer** to rescan and verify empty Diff.
+2.  **Delegation:** Spawns **DevOps** to commit changes (Conventional Commits), push the branch, and open a PR.
+3.  **Completion:** Orchestrator reports success to the user.
