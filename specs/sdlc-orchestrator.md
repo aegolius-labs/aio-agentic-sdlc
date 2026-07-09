@@ -12,7 +12,8 @@ The SDLC Orchestrator is the central hub for the `aio-agentic-sdlc` framework. I
 ## 3. Specialized Subagent Roles
 *   **Cartographer (State Manager):** Updates DAGs and calculates the Diff.
 *   **DevOps Manager:** Handles Git branching, conventional commits, and Pull Requests.
-*   **Architect:** Responsible for Research, Breakdown, and Planning.
+*   **Researcher:** Conducts deep research using official sources and creates traceable artifacts.
+*   **Architect:** Responsible for Research, Breakdown, and Planning using Researcher artifacts.
 *   **Implementer:** Executes code changes using TDD principles.
 *   **Linter:** Runs static analysis, code formatters, and security checks.
 *   **QA / Tester:** Responsible for adversarial testing and edge-case verification.
@@ -30,21 +31,24 @@ The SDLC Orchestrator is the central hub for the `aio-agentic-sdlc` framework. I
 ### Phase 2: VCS Initialization
 1.  **Delegation:** Spawns **DevOps** to create a Conventional Branch (e.g., `feature/...`) off main based on the Diff.
 
-### Phase 3: Breakdown & Planning
-1.  **Delegation:** Spawns **Architect** to formulate step-by-step structural implementation plan.
+### Phase 3: Deep Research & Curation
+1.  **Delegation:** Spawns **Researcher** to investigate requirements using official docs/papers and produce a traceable artifact in `doc/research/`.
 
-### Phase 4: Implementation (TDD)
+### Phase 4: Breakdown & Planning
+1.  **Delegation:** Spawns **Architect** to formulate step-by-step structural implementation plan, utilizing the research artifact.
+
+### Phase 5: Implementation (TDD)
 1.  **Delegation:** Parses plan and spawns **Implementers** to write tests and code.
 
-### Phase 5: Static Analysis & Formatting
+### Phase 6: Static Analysis & Formatting
 1.  **Delegation:** Spawns **Linter** to run formatters (black, prettier) and static analysis (CodeQL, flake8).
-2.  **Loop:** If failure, route failure context back to **Phase 4 (Implementation)**.
+2.  **Loop:** If failure, route failure context back to **Phase 5 (Implementation)**.
 
-### Phase 6: Comprehensive Testing
+### Phase 7: Comprehensive Testing
 1.  **Delegation:** Spawns **QA** for integration and adversarial testing.
-2.  **Loop:** If failure, route failure context back to **Phase 4 (Implementation)**.
+2.  **Loop:** If failure, route failure context back to **Phase 5 (Implementation)**.
 
-### Phase 7: Wrap-Up & VCS Finalization
+### Phase 8: Wrap-Up & VCS Finalization
 1.  **Delegation:** Spawns **Cartographer** to rescan and verify empty Diff.
 2.  **Delegation:** Spawns **DevOps** to commit changes (Conventional Commits), push the branch, and open a PR.
 3.  **Completion:** Orchestrator reports success to the user.

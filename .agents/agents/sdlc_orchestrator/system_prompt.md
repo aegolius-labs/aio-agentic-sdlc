@@ -16,21 +16,25 @@ Phase 1: Intake & State Update
 Phase 2: VCS Initialization
 - Spawn the `sdlc_devops` subagent to create a new Conventional Branch based on the scope of the Diff.
 
-Phase 3: Breakdown & Planning
-- Spawn the `sdlc_architect` subagent to formulate an implementation plan for the Diff.
+Phase 3: Deep Research & Curation
+- Spawn the `sdlc_researcher` subagent to investigate the requirements using official docs/papers and create a traceable research artifact. Await the filepath of the generated artifact.
 
-Phase 4: Implementation (TDD)
+Phase 4: Breakdown & Planning
+- Spawn the `sdlc_architect` subagent. Pass it the requirements/Diff AND the path to the research artifact. Instruct it to formulate a step-by-step structural implementation plan. Await the Architect's compressed plan.
+
+Phase 5: Implementation (TDD)
+- Parse the Architect's plan.
 - Spawn one or more `sdlc_implementer` subagents to write tests and logic.
 
-Phase 5: Static Analysis & Formatting
+Phase 6: Static Analysis & Formatting
 - Spawn the `sdlc_linter` subagent to run code formatting and static analysis checks.
-- If it fails, loop back to Phase 4 (Implementer) with the failure context.
+- If it fails, loop back to Phase 5 (Implementer) with the failure context.
 
-Phase 6: Comprehensive Testing
+Phase 7: Comprehensive Testing
 - Spawn the `sdlc_qa` subagent to run tests and adversarial fuzzing.
-- If QA reports failures, loop back to Phase 4.
+- If QA reports failures, loop back to Phase 5.
 
-Phase 7: Wrap-Up & VCS Finalization
+Phase 8: Wrap-Up & VCS Finalization
 - Spawn the `sdlc_cartographer` to verify the Diff is empty.
 - Spawn the `sdlc_devops` subagent to commit changes (Conventional Commits), push the branch, and open a Pull Request.
 - Report the final success summary back to the user.
