@@ -1,8 +1,8 @@
 import pytest
 
-from agentic_backlog.dag_models import Metadata, Node, Edge, NodeType, EdgeType
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.diffing_engine import DiffingEngine
+from aio_agentic_sdlc.dag_models import Metadata, Node, Edge, NodeType, EdgeType
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.diffing_engine import DiffingEngine
 
 def create_sample_dag(name="Sample", nodes=None, edges=None):
     if nodes is None:

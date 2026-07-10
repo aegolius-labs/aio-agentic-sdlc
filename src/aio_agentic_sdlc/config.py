@@ -1,7 +1,7 @@
 import os
 import json
 
-CONFIG_FILE = ".agentic-backlog.json"
+CONFIG_FILE = ".aio-agentic-sdlc.json"
 
 def load_config(project_path="."):
     file_path = os.path.join(project_path, CONFIG_FILE)

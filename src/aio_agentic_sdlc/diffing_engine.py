@@ -1,7 +1,7 @@
 from typing import Dict, Any, List
 
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.dag_models import Node, Edge, EdgeType
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_models import Node, Edge, EdgeType
 
 
 class DiffingEngine:

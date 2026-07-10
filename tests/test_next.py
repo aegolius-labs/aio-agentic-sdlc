@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from agentic_backlog.cli import load_backlog, save_backlog
+from aio_agentic_sdlc.cli import load_backlog, save_backlog
 
 
 @pytest.fixture(autouse=True)
@@ -34,7 +34,7 @@ def _save(items_dict):
 
 
 def _run_next(format="json"):
-    from agentic_backlog.cli import next_cmd
+    from aio_agentic_sdlc.cli import next_cmd
     import argparse
     from io import StringIO
     

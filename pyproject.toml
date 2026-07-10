@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentic-backlog"
+name = "aio-agentic-sdlc"
 dynamic = ["version"]
 description = "Deterministic 3D Matrix Backlog Manager for Agentic Workflows"
 readme = "README.md"
@@ -29,18 +29,18 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/aegolius-labs/agentic-backlog-cli"
-"Bug Tracker" = "https://github.com/aegolius-labs/agentic-backlog-cli/issues"
+"Homepage" = "https://github.com/aegolius-labs/aio-agentic-sdlc-cli"
+"Bug Tracker" = "https://github.com/aegolius-labs/aio-agentic-sdlc-cli/issues"
 
 [dependency-groups]
 dev = ["pytest>=9.1.0", "pytest-asyncio>=0.23.0"]
 
 [project.scripts]
-agentic-backlog = "agentic_backlog.cli:main"
-agb = "agentic_backlog.cli:main"
-agentic-backlog-mcp = "agentic_backlog.mcp_server:main"
-dag-tool = "agentic_backlog.dag_cli:cli"
-aio-sdlc = "agentic_backlog.cli:main"
+aio-agentic-sdlc = "aio_agentic_sdlc.cli:main"
+agb = "aio_agentic_sdlc.cli:main"
+aio-agentic-sdlc-mcp = "aio_agentic_sdlc.mcp_server:main"
+dag-tool = "aio_agentic_sdlc.dag_cli:cli"
+aio-sdlc = "aio_agentic_sdlc.cli:main"
 
 [tool.hatch.version]
 source = "vcs"

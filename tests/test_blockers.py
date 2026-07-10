@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from agentic_backlog.cli import (
+from aio_agentic_sdlc.cli import (
     load_backlog, save_backlog, _get_blockers, _get_status,
 )
 
@@ -64,7 +64,7 @@ def _save(items_dict):
 
 
 def _run_prioritize():
-    from agentic_backlog.cli import prioritize_cmd
+    from aio_agentic_sdlc.cli import prioritize_cmd
     import argparse
     prioritize_cmd(argparse.Namespace())
 
@@ -115,7 +115,7 @@ class TestBlockerScoring:
 
 class TestBlockCmd:
     def test_block_adds_blocker_and_sets_status(self):
-        from agentic_backlog.cli import block_cmd
+        from aio_agentic_sdlc.cli import block_cmd
         import argparse
         _save({"feat": _make_item(3, 3)})
         block_cmd(argparse.Namespace(name="feat", reason="API key pending"))
@@ -124,7 +124,7 @@ class TestBlockCmd:
         assert data["items"]["feat"]["status"] == "Blocked"
 
     def test_block_no_duplicate(self):
-        from agentic_backlog.cli import block_cmd
+        from aio_agentic_sdlc.cli import block_cmd
         import argparse
         _save({"feat": _make_item(3, 3, blockers=["reason"])})
         block_cmd(argparse.Namespace(name="feat", reason="reason"))
@@ -132,7 +132,7 @@ class TestBlockCmd:
         assert data["items"]["feat"]["blockers"].count("reason") == 1
 
     def test_block_missing_item(self):
-        from agentic_backlog.cli import block_cmd
+        from aio_agentic_sdlc.cli import block_cmd
         import argparse
         _save({})
         with pytest.raises(SystemExit):
@@ -143,7 +143,7 @@ class TestBlockCmd:
 
 class TestUnblockCmd:
     def test_unblock_removes_blocker(self):
-        from agentic_backlog.cli import unblock_cmd
+        from aio_agentic_sdlc.cli import unblock_cmd
         import argparse
         _save({"feat": _make_item(3, 3, status="Blocked", blockers=["reason1", "reason2"])})
         unblock_cmd(argparse.Namespace(name="feat", reason="reason1"))
@@ -154,7 +154,7 @@ class TestUnblockCmd:
         assert data["items"]["feat"]["status"] == "Blocked"
 
     def test_unblock_last_reverts_status(self):
-        from agentic_backlog.cli import unblock_cmd
+        from aio_agentic_sdlc.cli import unblock_cmd
         import argparse
         _save({"feat": _make_item(3, 3, status="Blocked", blockers=["only-blocker"])})
         unblock_cmd(argparse.Namespace(name="feat", reason="only-blocker"))
@@ -163,7 +163,7 @@ class TestUnblockCmd:
         assert data["items"]["feat"]["status"] == "New"
 
     def test_unblock_missing_item(self):
-        from agentic_backlog.cli import unblock_cmd
+        from aio_agentic_sdlc.cli import unblock_cmd
         import argparse
         _save({})
         with pytest.raises(SystemExit):

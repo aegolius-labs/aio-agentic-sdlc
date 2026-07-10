@@ -2,29 +2,29 @@ import pytest
 import asyncio
 from unittest.mock import patch, MagicMock, AsyncMock
 
-from agentic_backlog import orchestrator_loop
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.diffing_engine import DiffingEngine
-from agentic_backlog import core
+from aio_agentic_sdlc import orchestrator_loop
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc import core
 
 @pytest.fixture
 def mock_dag_manager():
-    with patch("agentic_backlog.orchestrator_loop.DAGManager") as MockDAGManager:
+    with patch("aio_agentic_sdlc.orchestrator_loop.DAGManager") as MockDAGManager:
         yield MockDAGManager
 
 @pytest.fixture
 def mock_diffing_engine():
-    with patch("agentic_backlog.orchestrator_loop.DiffingEngine") as MockDiffingEngine:
+    with patch("aio_agentic_sdlc.orchestrator_loop.DiffingEngine") as MockDiffingEngine:
         yield MockDiffingEngine
 
 @pytest.fixture
 def mock_core():
-    with patch("agentic_backlog.orchestrator_loop.core") as mock_core:
+    with patch("aio_agentic_sdlc.orchestrator_loop.core") as mock_core:
         yield mock_core
 
 @pytest.fixture
 def mock_agent():
-    with patch("agentic_backlog.orchestrator_loop.Agent", new_callable=MagicMock) as mock_agent_class:
+    with patch("aio_agentic_sdlc.orchestrator_loop.Agent", new_callable=MagicMock) as mock_agent_class:
         mock_agent_instance = MagicMock()
         mock_agent_instance.chat = AsyncMock()
         mock_agent_instance.__aenter__ = AsyncMock(return_value=mock_agent_instance)
@@ -125,8 +125,8 @@ async def test_execute_task_with_agent(mock_agent):
 
 @pytest.mark.asyncio
 async def test_main_loop(mock_core, mock_agent):
-    with patch("agentic_backlog.orchestrator_loop.ingest_diff") as mock_ingest:
-        with patch("agentic_backlog.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
+    with patch("aio_agentic_sdlc.orchestrator_loop.ingest_diff") as mock_ingest:
+        with patch("aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
             mock_task = {"id": "t1"}
             mock_core.get_next_item.return_value = mock_task
             
@@ -140,8 +140,8 @@ async def test_main_loop(mock_core, mock_agent):
 
 @pytest.mark.asyncio
 async def test_main_loop_failure(mock_core, mock_agent):
-    with patch("agentic_backlog.orchestrator_loop.ingest_diff") as mock_ingest:
-        with patch("agentic_backlog.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
+    with patch("aio_agentic_sdlc.orchestrator_loop.ingest_diff") as mock_ingest:
+        with patch("aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
             mock_exec.side_effect = Exception("Agent failed")
             
             mock_task = {"id": "t1"}
@@ -154,7 +154,7 @@ async def test_main_loop_failure(mock_core, mock_agent):
 
 @pytest.mark.asyncio
 async def test_main_loop_malformed_task(mock_core, mock_agent):
-    with patch("agentic_backlog.orchestrator_loop.ingest_diff") as mock_ingest:
+    with patch("aio_agentic_sdlc.orchestrator_loop.ingest_diff") as mock_ingest:
         # Task without id
         mock_core.get_next_item.return_value = {"desc": "no id"}
         

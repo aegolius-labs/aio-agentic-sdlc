@@ -1,9 +1,9 @@
 import json
 import pytest
 from click.testing import CliRunner
-from agentic_backlog.dag_cli import cli
-from agentic_backlog.dag_models import Node, Edge, NodeType, EdgeType, Metadata
-from agentic_backlog.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_cli import cli
+from aio_agentic_sdlc.dag_models import Node, Edge, NodeType, EdgeType, Metadata
+from aio_agentic_sdlc.dag_manager import DAGManager
 
 @pytest.fixture
 def sample_dag_file(tmp_path):

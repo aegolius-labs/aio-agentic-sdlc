@@ -1,6 +1,6 @@
 import pytest
-from agentic_backlog.dag_models import Node, Edge, NodeType, EdgeType, Metadata
-from agentic_backlog.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_models import Node, Edge, NodeType, EdgeType, Metadata
+from aio_agentic_sdlc.dag_manager import DAGManager
 
 def test_dag_manager_initialization():
     metadata = Metadata(name="Test DAG", version="1.0.0")

@@ -9,7 +9,7 @@ This workflow enforces a clean Software Development Life Cycle (SDLC) across any
 
 ## 1. Intake
 Determine the source of the requested work and ingest the requirements.
-*   **Agentic Backlog**: If instructed to work from the backlog, use the `agentic-backlog` skill to fetch the highest priority `TODO` item.
+*   **Agentic Backlog**: If instructed to work from the backlog, use the `aio-agentic-sdlc` skill to fetch the highest priority `TODO` item.
 *   **Spec-Kit / Open-Spec**: If pointed to a `specs/` directory, read the relevant `.md` specification files to understand the requirements.
 *   **Jira / AzDO (External)**: If requested, attempt to use available MCP tools to read the specific ticket/issue.
 *   **User Prompt**: If none of the above, ingest the requirements directly from the user's conversational prompt.
@@ -46,5 +46,5 @@ Verify the integrity of the system before completion.
 ## 6. Wrap-up & PR
 Finalize the scope of work.
 *   **Documentation**: Ensure all changes are documented in `doc/`. Update the Global Memory File with any lessons learned.
-*   **State Reconciliation**: If using `agentic-backlog` or external trackers (Jira/AzDO), update the status of the task to `DONE` or `IN_REVIEW`.
+*   **State Reconciliation**: If using `aio-agentic-sdlc` or external trackers (Jira/AzDO), update the status of the task to `DONE` or `IN_REVIEW`.
 *   **Commit & PR**: Write Conventional Commits and open a Pull Request against `main`.

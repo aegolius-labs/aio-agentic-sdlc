@@ -1,11 +1,11 @@
 ---
-name: agentic-backlog
+name: aio-agentic-sdlc
 description: "Deterministic 3D Matrix Backlog Manager for Agentic Workflows. Use this skill to interact with the project backlog."
 ---
 
 # Agentic Backlog Skill
 
-This project utilizes `agentic-backlog` natively via the Model Context Protocol (MCP).
+This project utilizes `aio-agentic-sdlc` natively via the Model Context Protocol (MCP).
 
 ## Instructions
 
@@ -16,9 +16,9 @@ If they are NOT available, you MUST instruct the user to configure their IDE (VS
 
 ```json
 "mcpServers": {
-  "agentic-backlog": {
+  "aio-agentic-sdlc": {
     "command": "uvx",
-    "args": ["--from", "git+https://github.com/aegolius-labs/agentic-backlog-cli", "agentic-backlog-mcp"]
+    "args": ["--from", "git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli", "aio-agentic-sdlc-mcp"]
   }
 }
 ```
@@ -26,7 +26,7 @@ If they are NOT available, you MUST instruct the user to configure their IDE (VS
 **Fallback Method (CLI):**
 If MCP setup is impossible or the user prefers a terminal workflow, interact with the project backlog directly via GitHub using `uvx`:
 
-* **View next task:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog next`
-* **Add a task:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog add "<task name>" --impact <1-5> --effort <1-5> --category "<category>"`
-* **Update status:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog status "<task name>" "<New|In Progress|Completed|Blocked>"`
-* **Prioritize:** `uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agentic-backlog prioritize`
+* **View next task:** `uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli aio-agentic-sdlc next`
+* **Add a task:** `uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli aio-agentic-sdlc add "<task name>" --impact <1-5> --effort <1-5> --category "<category>"`
+* **Update status:** `uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli aio-agentic-sdlc status "<task name>" "<New|In Progress|Completed|Blocked>"`
+* **Prioritize:** `uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli aio-agentic-sdlc prioritize`

@@ -25,11 +25,11 @@ Add a private helper method `_is_implementation_detail(self, node_id: str) -> bo
 4. Call `check_ancestors(node_id)` and return its result.
 
 ### 3. Modifying `calculate_diff()`
-Update the Extraneous Nodes loop in `calculate_diff()` to use the new algorithm. Also, update the imports at the top of `diffing_engine.py` to include `EdgeType` from `agentic_backlog.dag_models`.
+Update the Extraneous Nodes loop in `calculate_diff()` to use the new algorithm. Also, update the imports at the top of `diffing_engine.py` to include `EdgeType` from `aio_agentic_sdlc.dag_models`.
 
 ```python
 # Updated imports
-from agentic_backlog.dag_models import Node, Edge, EdgeType
+from aio_agentic_sdlc.dag_models import Node, Edge, EdgeType
 
 # Extraneous Nodes Logic
 for node_id, reality_node in self.reality.nodes.items():

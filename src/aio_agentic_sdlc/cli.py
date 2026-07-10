@@ -24,12 +24,12 @@ STATUS_BADGES = {
 def _inject_agent_skills():
     """Extract SKILL.md from package and inject into the workspace."""
     try:
-        content = importlib.resources.files('agentic_backlog').joinpath('templates', 'agentic-backlog', 'SKILL.md').read_text(encoding='utf-8')
+        content = importlib.resources.files('aio_agentic_sdlc').joinpath('templates', 'aio-agentic-sdlc', 'SKILL.md').read_text(encoding='utf-8')
     except Exception as e:
         print(f"[WARNING] Could not load bundled SKILL.md template: {e}", file=sys.stderr)
         return
 
-    skill_dir = os.path.join('.agent', 'skills', 'agentic-backlog')
+    skill_dir = os.path.join('.agent', 'skills', 'aio-agentic-sdlc')
     os.makedirs(skill_dir, exist_ok=True)
     
     skill_file = os.path.join(skill_dir, 'SKILL.md')
@@ -44,7 +44,7 @@ def _inject_platform_rules(platforms_str):
         return
         
     try:
-        rules_content = importlib.resources.files('agentic_backlog').joinpath('templates', 'agentic-backlog', 'RULES.md').read_text(encoding='utf-8')
+        rules_content = importlib.resources.files('aio_agentic_sdlc').joinpath('templates', 'aio-agentic-sdlc', 'RULES.md').read_text(encoding='utf-8')
     except Exception as e:
         print(f"[WARNING] Could not load bundled RULES.md template: {e}", file=sys.stderr)
         return
@@ -60,7 +60,7 @@ def _inject_platform_rules(platforms_str):
         elif platform == 'cursor':
             cursor_dir = os.path.join('.cursor', 'rules')
             os.makedirs(cursor_dir, exist_ok=True)
-            cursor_file = os.path.join(cursor_dir, 'agentic-backlog.mdc')
+            cursor_file = os.path.join(cursor_dir, 'aio-agentic-sdlc.mdc')
             with open(cursor_file, 'w', encoding='utf-8') as f:
                 f.write(f"---\ndescription: Agentic Backlog Behavioral Rules\nglobs: *\n---\n\n{rules_content}")
             print(f"Success! Injected rules into {cursor_file}")
@@ -76,7 +76,7 @@ def _inject_platform_rules(platforms_str):
         elif platform == 'antigravity':
             agy_dir = os.path.join('.agents', 'rules')
             os.makedirs(agy_dir, exist_ok=True)
-            agy_file = os.path.join(agy_dir, 'agentic-backlog.md')
+            agy_file = os.path.join(agy_dir, 'aio-agentic-sdlc.md')
             with open(agy_file, 'w', encoding='utf-8') as f:
                 f.write(rules_content)
             print(f"Success! Injected rules into {agy_file}")

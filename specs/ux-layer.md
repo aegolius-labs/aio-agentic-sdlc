@@ -19,13 +19,13 @@ The `sdlc_intake` subagent acts as the intelligent interface between the user an
     *   Provide the basic subagent definition metadata (`name`, `description`, `model`).
     *   Specify necessary tool bindings (e.g., file system reading/writing for `specs/` and `intention-dag.yaml`).
 
-## 2. CLI Entrypoint (`agentic_backlog/cli.py`)
+## 2. CLI Entrypoint (`aio_agentic_sdlc/cli.py`)
 
 A command-line interface acts as the manual invocation point for the user to plan and execute the derived SDLC tasks.
 
 ### Features & Updates:
 
-*   **`src/agentic_backlog/cli.py`**:
+*   **`src/aio_agentic_sdlc/cli.py`**:
     *   Define a CLI entrypoint for SDLC operations.
     *   **`plan` Command**: 
         *   Instantiates and runs the `DiffingEngine`.
@@ -38,7 +38,7 @@ A command-line interface acts as the manual invocation point for the user to pla
 *   **`pyproject.toml` Integration**:
     *   Update `[project.scripts]` section to include the CLI tool mapping:
         ```toml
-        aio-sdlc = "agentic_backlog.cli:main"
+        aio-sdlc = "aio_agentic_sdlc.cli:main"
         ```
 
 ## 3. Workflow Integration
