@@ -10,18 +10,18 @@ This project is intended for **Personal / Non-Commercial Use Only**. When you pu
 
 ## Installation & Configuration
 
-Because `agentic-backlog` is an agentic-first toolkit, the easiest way to install and integrate the MCP Server into your IDE (VS Code, Cursor, Windsurf, Claude Desktop) is by using `uvx` to fetch the server directly from GitHub. This requires **zero local installation**.
+Because `aio-agentic-sdlc` is an agentic-first toolkit, the easiest way to install and integrate the MCP Server into your IDE (VS Code, Cursor, Windsurf, Claude Desktop) is by using `uvx` to fetch the server directly from GitHub. This requires **zero local installation**.
 
 Add the following to your IDE's `mcp.json` or equivalent configuration file:
 
 ```json
 "mcpServers": {
-  "agentic-backlog": {
+  "aio-agentic-sdlc": {
     "command": "uvx",
     "args": [
       "--from",
-      "git+https://github.com/aegolius-labs/agentic-backlog-cli",
-      "agentic-backlog-mcp"
+      "git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli",
+      "aio-agentic-sdlc-mcp"
     ]
   }
 }
@@ -32,7 +32,7 @@ Add the following to your IDE's `mcp.json` or equivalent configuration file:
 If you plan to use the CLI frequently and prefer not to type the full `uvx` GitHub URL every time, you can permanently install the CLI globally using `uv`:
 
 ```bash
-uv tool install git+https://github.com/aegolius-labs/agentic-backlog-cli
+uv tool install git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli
 ```
 
 Once installed, you can invoke the CLI natively:
@@ -44,17 +44,17 @@ agb prioritize
 agb export
 ```
 
-*(Note: `agentic-backlog` can also be used if you prefer the full name)*
+*(Note: `aio-agentic-sdlc` can also be used if you prefer the full name)*
 
 ### Zero-Install Execution (via uvx)
 
 If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:
 
 ```bash
-uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agb init
-uvx --from git+https://github.com/aegolius-labs/agentic-backlog-cli agb export
+uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb init
+uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb export
 ```
 
 ## Integrations (OpenSpec & Spec-Kit)
 
-`agentic-backlog` natively integrates with **Open-Spec** and **Spec-Kit** frameworks. When you run `agentic-backlog init` inside a workspace utilizing these frameworks (e.g. detecting `tasks.md` or `specs/*.md` files), the CLI will automatically parse your Markdown checklists and seed them dynamically into the resulting JSON tracking structure.
+`aio-agentic-sdlc` natively integrates with **Open-Spec** and **Spec-Kit** frameworks. When you run `aio-agentic-sdlc init` inside a workspace utilizing these frameworks (e.g. detecting `tasks.md` or `specs/*.md` files), the CLI will automatically parse your Markdown checklists and seed them dynamically into the resulting JSON tracking structure.

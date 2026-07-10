@@ -60,7 +60,7 @@
       "scores": {},
       "item_type": "Task"
     },
-    "Expose agentic-backlog via MCP Server": {
+    "Expose aio-agentic-sdlc via MCP Server": {
       "impact": 5.0,
       "effort": 4.0,
       "category": "Integrations",
@@ -70,7 +70,7 @@
       "scores": {},
       "item_type": "Task"
     },
-    "Generate and inject SKILL.md with instructions to strictly use uvx execution for agentic-backlog": {
+    "Generate and inject SKILL.md with instructions to strictly use uvx execution for aio-agentic-sdlc": {
       "impact": 5.0,
       "effort": 3.0,
       "category": "Agent Integration",

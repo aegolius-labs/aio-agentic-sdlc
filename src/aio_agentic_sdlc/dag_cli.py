@@ -1,10 +1,10 @@
 import click
 import json
 import sys
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.dag_models import Node, Edge, NodeType, EdgeType
-from agentic_backlog.diffing_engine import DiffingEngine
-from agentic_backlog.reality_dag_generator import RealityDAGGenerator
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_models import Node, Edge, NodeType, EdgeType
+from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 
 @click.group()
 def cli():

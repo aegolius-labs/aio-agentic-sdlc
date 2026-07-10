@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from agentic_backlog.cli import (
+from aio_agentic_sdlc.cli import (
     load_backlog, save_backlog, BACKLOG_FILE, VALID_STATUSES, _get_status,
 )
 
@@ -63,7 +63,7 @@ def _save(items_dict):
 
 
 def _run_prioritize():
-    from agentic_backlog.cli import prioritize_cmd
+    from aio_agentic_sdlc.cli import prioritize_cmd
     import argparse
     prioritize_cmd(argparse.Namespace())
 
@@ -112,7 +112,7 @@ class TestCompletedScoring:
 
 class TestStatusCmd:
     def test_status_cmd_changes_status(self):
-        from agentic_backlog.cli import status_cmd
+        from aio_agentic_sdlc.cli import status_cmd
         import argparse
         _save({"alpha": _make_item(3, 3, status="New")})
         status_cmd(argparse.Namespace(name="alpha", new_status="In Progress"))
@@ -120,7 +120,7 @@ class TestStatusCmd:
         assert data["items"]["alpha"]["status"] == "In Progress"
 
     def test_status_cmd_missing_item(self):
-        from agentic_backlog.cli import status_cmd
+        from aio_agentic_sdlc.cli import status_cmd
         import argparse
         _save({})
         with pytest.raises(SystemExit):
@@ -131,7 +131,7 @@ class TestStatusCmd:
 
 class TestAddWithStatus:
     def test_add_default_status(self):
-        from agentic_backlog.cli import add_cmd
+        from aio_agentic_sdlc.cli import add_cmd
         import argparse
         _save({})
         add_cmd(argparse.Namespace(
@@ -142,7 +142,7 @@ class TestAddWithStatus:
         assert data["items"]["feat"]["status"] == "New"
 
     def test_add_custom_status(self):
-        from agentic_backlog.cli import add_cmd
+        from aio_agentic_sdlc.cli import add_cmd
         import argparse
         _save({})
         add_cmd(argparse.Namespace(
@@ -153,7 +153,7 @@ class TestAddWithStatus:
         assert data["items"]["wip"]["status"] == "In Progress"
 
     def test_add_missing_description_raises(self):
-        from agentic_backlog.cli import add_cmd
+        from aio_agentic_sdlc.cli import add_cmd
         import argparse
         _save({})
         with pytest.raises(ValueError, match="Description cannot be empty"):

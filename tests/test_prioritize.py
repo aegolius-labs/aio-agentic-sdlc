@@ -7,7 +7,7 @@ import pytest
 # Ensure the source package is importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from agentic_backlog.cli import load_backlog, save_backlog, BACKLOG_FILE
+from aio_agentic_sdlc.cli import load_backlog, save_backlog, BACKLOG_FILE
 
 
 @pytest.fixture(autouse=True)
@@ -33,7 +33,7 @@ def _make_item(impact, effort, requires=None, **extra):
 
 def _run_prioritize():
     """Import and call prioritize_cmd programmatically."""
-    from agentic_backlog.cli import prioritize_cmd
+    from aio_agentic_sdlc.cli import prioritize_cmd
     import argparse
     prioritize_cmd(argparse.Namespace())
 

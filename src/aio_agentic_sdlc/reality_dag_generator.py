@@ -2,8 +2,8 @@ import os
 from typing import Dict, List, Set, Any, Optional
 from tree_sitter import Language, Parser, Node
 import tree_sitter_python
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.dag_models import Metadata, Node as DAGNode, Edge, NodeType, EdgeType
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_models import Metadata, Node as DAGNode, Edge, NodeType, EdgeType
 
 PYTHON_LANGUAGE = Language(tree_sitter_python.language())
 

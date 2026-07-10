@@ -7,13 +7,13 @@ class GitHubClient:
         self.token = token or os.environ.get("GITHUB_TOKEN")
         
         if not self.token:
-            cred_path = ".agentic-backlog-credentials"
+            cred_path = ".aio-agentic-sdlc-credentials"
             if os.path.exists(cred_path):
                 with open(cred_path, "r", encoding="utf-8") as f:
                     self.token = f.read().strip()
                     
         if not self.token:
-            raise ValueError("GitHub token not provided. Please set GITHUB_TOKEN environment variable or create .agentic-backlog-credentials.")
+            raise ValueError("GitHub token not provided. Please set GITHUB_TOKEN environment variable or create .aio-agentic-sdlc-credentials.")
             
         self.url = "https://api.github.com/graphql"
         self.headers = {

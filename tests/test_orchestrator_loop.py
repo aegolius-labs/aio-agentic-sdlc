@@ -2,31 +2,34 @@ import pytest
 import asyncio
 from unittest.mock import patch, MagicMock, AsyncMock
 
-from agentic_backlog import orchestrator_loop
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.diffing_engine import DiffingEngine
-from agentic_backlog import core
+from aio_agentic_sdlc import orchestrator_loop
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc import core
 
 @pytest.fixture
 def mock_dag_manager():
-    with patch("agentic_backlog.orchestrator_loop.DAGManager") as MockDAGManager:
+    with patch("aio_agentic_sdlc.orchestrator_loop.DAGManager") as MockDAGManager:
         yield MockDAGManager
 
 @pytest.fixture
 def mock_diffing_engine():
-    with patch("agentic_backlog.orchestrator_loop.DiffingEngine") as MockDiffingEngine:
+    with patch("aio_agentic_sdlc.orchestrator_loop.DiffingEngine") as MockDiffingEngine:
         yield MockDiffingEngine
 
 @pytest.fixture
 def mock_core():
-    with patch("agentic_backlog.orchestrator_loop.core") as mock_core:
+    with patch("aio_agentic_sdlc.orchestrator_loop.core") as mock_core:
         yield mock_core
 
 @pytest.fixture
 def mock_agent():
-    with patch("agentic_backlog.orchestrator_loop.Agent", new_callable=MagicMock) as mock_agent_class:
-        mock_agent_instance = mock_agent_class.return_value
+    with patch("aio_agentic_sdlc.orchestrator_loop.Agent", new_callable=MagicMock) as mock_agent_class:
+        mock_agent_instance = MagicMock()
         mock_agent_instance.chat = AsyncMock()
+        mock_agent_instance.__aenter__ = AsyncMock(return_value=mock_agent_instance)
+        mock_agent_instance.__aexit__ = AsyncMock(return_value=None)
+        mock_agent_class.return_value = mock_agent_instance
         yield mock_agent_class
 
 def test_ingest_diff(mock_dag_manager, mock_diffing_engine, mock_core):
@@ -36,10 +39,10 @@ def test_ingest_diff(mock_dag_manager, mock_diffing_engine, mock_core):
     mock_dag_mgr_inst.load_reality_dag.return_value = "reality_dag"
     
     mock_diff_eng_inst = mock_diffing_engine.return_value
-    mock_diff_eng_inst.calculate_diff.return_value = (
-        [{"id": "t1", "desc": "task 1"}],
-        [{"source": "t1", "target": "t2"}]
-    )
+    mock_diff_eng_inst.calculate_diff.return_value = {
+        "nodes": {"t1": {"id": "t1", "desc": "task 1"}},
+        "edges": [{"source": "t1", "target": "t2"}]
+    }
     
     mock_core.load_backlog.return_value = {"items": [], "edges": []}
     
@@ -55,7 +58,7 @@ def test_ingest_diff(mock_dag_manager, mock_diffing_engine, mock_core):
 
 def test_ingest_diff_empty(mock_dag_manager, mock_diffing_engine, mock_core):
     mock_diff_eng_inst = mock_diffing_engine.return_value
-    mock_diff_eng_inst.calculate_diff.return_value = ([], [])
+    mock_diff_eng_inst.calculate_diff.return_value = {"nodes": {}, "edges": []}
     mock_core.load_backlog.return_value = None  # test None backlog fallback
     
     orchestrator_loop.ingest_diff()
@@ -64,10 +67,10 @@ def test_ingest_diff_empty(mock_dag_manager, mock_diffing_engine, mock_core):
 
 def test_ingest_diff_overlapping_updates(mock_dag_manager, mock_diffing_engine, mock_core):
     mock_diff_eng_inst = mock_diffing_engine.return_value
-    mock_diff_eng_inst.calculate_diff.return_value = (
-        [{"id": "t1", "desc": "updated task 1"}, {"id": "t3", "desc": "new task"}],
-        [{"source": "t1", "target": "t3"}]
-    )
+    mock_diff_eng_inst.calculate_diff.return_value = {
+        "nodes": {"t1": {"id": "t1", "desc": "updated task 1"}, "t3": {"id": "t3", "desc": "new task"}},
+        "edges": [{"source": "t1", "target": "t3"}]
+    }
     
     mock_core.load_backlog.return_value = {
         "items": [{"id": "t1", "desc": "old task 1"}, {"id": "t2", "desc": "task 2"}],
@@ -95,7 +98,7 @@ def test_ingest_diff_overlapping_updates(mock_dag_manager, mock_diffing_engine, 
 def test_ingest_diff_malformed_mocks(mock_dag_manager, mock_diffing_engine, mock_core):
     # If calculate_diff returns strings instead of dicts or objects, the code should just ignore them.
     mock_diff_eng_inst = mock_diffing_engine.return_value
-    mock_diff_eng_inst.calculate_diff.return_value = (["invalid_task_string"], ["invalid_edge_string"])
+    mock_diff_eng_inst.calculate_diff.return_value = {"nodes": {"invalid": "invalid_task_string"}, "edges": ["invalid_edge_string"]}
     mock_core.load_backlog.return_value = {"items": [], "edges": []}
     
     orchestrator_loop.ingest_diff()
@@ -122,8 +125,8 @@ async def test_execute_task_with_agent(mock_agent):
 
 @pytest.mark.asyncio
 async def test_main_loop(mock_core, mock_agent):
-    with patch("agentic_backlog.orchestrator_loop.ingest_diff") as mock_ingest:
-        with patch("agentic_backlog.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
+    with patch("aio_agentic_sdlc.orchestrator_loop.ingest_diff") as mock_ingest:
+        with patch("aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
             mock_task = {"id": "t1"}
             mock_core.get_next_item.return_value = mock_task
             
@@ -137,8 +140,8 @@ async def test_main_loop(mock_core, mock_agent):
 
 @pytest.mark.asyncio
 async def test_main_loop_failure(mock_core, mock_agent):
-    with patch("agentic_backlog.orchestrator_loop.ingest_diff") as mock_ingest:
-        with patch("agentic_backlog.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
+    with patch("aio_agentic_sdlc.orchestrator_loop.ingest_diff") as mock_ingest:
+        with patch("aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent", new_callable=AsyncMock) as mock_exec:
             mock_exec.side_effect = Exception("Agent failed")
             
             mock_task = {"id": "t1"}
@@ -151,7 +154,7 @@ async def test_main_loop_failure(mock_core, mock_agent):
 
 @pytest.mark.asyncio
 async def test_main_loop_malformed_task(mock_core, mock_agent):
-    with patch("agentic_backlog.orchestrator_loop.ingest_diff") as mock_ingest:
+    with patch("aio_agentic_sdlc.orchestrator_loop.ingest_diff") as mock_ingest:
         # Task without id
         mock_core.get_next_item.return_value = {"desc": "no id"}
         

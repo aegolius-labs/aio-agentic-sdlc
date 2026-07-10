@@ -5,7 +5,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from agentic_backlog.detect import detect_frameworks, generate_seed_backlog
+from aio_agentic_sdlc.detect import detect_frameworks, generate_seed_backlog
 
 class TestDetectFrameworks:
     def test_detect_python(self, tmp_path):
@@ -90,7 +90,7 @@ class TestInitCmdIntegration:
         monkeypatch.setattr("builtins.input", lambda *args: "1")
         
     def test_init_empty(self):
-        from agentic_backlog.cli import init_cmd, load_backlog
+        from aio_agentic_sdlc.cli import init_cmd, load_backlog
         import argparse
         # Use empty flag to override detection
         init_cmd(argparse.Namespace(empty=True))
@@ -98,7 +98,7 @@ class TestInitCmdIntegration:
         assert data["nodes"] == {}
 
     def test_init_with_detection(self, tmp_path):
-        from agentic_backlog.cli import init_cmd, load_backlog
+        from aio_agentic_sdlc.cli import init_cmd, load_backlog
         import argparse
         (tmp_path / "pyproject.toml").write_text("")
         # Call without empty flag, should detect python

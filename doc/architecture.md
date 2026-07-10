@@ -1,6 +1,6 @@
 # Agentic Backlog Architecture
 
-This document describes the high-level architecture and data flow of the `agentic-backlog-cli` tool.
+This document describes the high-level architecture and data flow of the `aio-agentic-sdlc-cli` tool.
 
 ## System Overview
 
@@ -67,7 +67,7 @@ When prioritizing or retrieving the next task, the system performs:
 
 ### 5. State Persistence
 
-Depending on the configured mode (`.agentic-backlog.json`), the final sorted items are either saved to `backlog.json` locally or synchronized directly with GitHub Issues and Projects V2 via the GitHub API.
+Depending on the configured mode (`.aio-agentic-sdlc.json`), the final sorted items are either saved to `backlog.json` locally or synchronized directly with GitHub Issues and Projects V2 via the GitHub API.
 
 ## Framework Detection and SDD Reconciliation
 

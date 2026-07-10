@@ -1,7 +1,7 @@
 import yaml
 from typing import List, Dict, Any, Set
 from pydantic import ValidationError
-from agentic_backlog.dag_models import Metadata, Node, Edge, NodeType, EdgeType
+from aio_agentic_sdlc.dag_models import Metadata, Node, Edge, NodeType, EdgeType
 
 class DAGManager:
     def __init__(self, metadata: Metadata, nodes: List[Node], edges: List[Edge]):

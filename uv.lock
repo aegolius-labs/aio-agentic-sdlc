@@ -20,7 +20,7 @@ wheels = [
 ]
 
 [[package]]
-name = "agentic-backlog"
+name = "aio-agentic-sdlc"
 source = { editable = "." }
 dependencies = [
     { name = "click" },

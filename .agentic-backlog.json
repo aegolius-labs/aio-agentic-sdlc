@@ -3,7 +3,7 @@
     "mode": "local"
   },
   "github": {
-    "repo": "aegolius-labs/agentic-backlog-cli",
+    "repo": "aegolius-labs/aio-agentic-sdlc-cli",
     "project_number": 3,
     "is_org": true
   }

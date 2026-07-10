@@ -3,10 +3,11 @@ name: sdlc_intake
 description: Acts as a product manager and architect. Distills user requirements into structured specifications and updates the system DAG representation (intention-dag.yaml).
 model: gemini-2.5-pro
 tools:
-  - read_file
-  - write_file
-  - edit_file
-  - list_directory
+  - view_file
+  - write_to_file
+  - multi_replace_file_content
+  - list_dir
+  - run_command
 ---
 
 # Intake Agent (sdlc_intake)

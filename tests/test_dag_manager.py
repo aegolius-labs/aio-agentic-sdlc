@@ -1,6 +1,6 @@
 import pytest
-from agentic_backlog.dag_models import Node, Edge, NodeType, EdgeType, Metadata
-from agentic_backlog.dag_manager import DAGManager
+from aio_agentic_sdlc.dag_models import Node, Edge, NodeType, EdgeType, Metadata
+from aio_agentic_sdlc.dag_manager import DAGManager
 
 def test_dag_manager_initialization():
     metadata = Metadata(name="Test DAG", version="1.0.0")
@@ -76,10 +76,8 @@ def test_cycle_detection():
     
     # n3 -> n1 (cycle)
     edge3 = Edge(source="n3", target="n1", type=EdgeType.DEPENDS_ON)
-    manager.add_edge(edge3)
-    
     with pytest.raises(ValueError, match="Cycle detected"):
-        manager.validate()
+        manager.add_edge(edge3)
 
 def test_find_nodes():
     node1 = Node(id="n1", type=NodeType.SYSTEM, name="Sys1", domain="core")
