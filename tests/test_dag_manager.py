@@ -76,10 +76,8 @@ def test_cycle_detection():
     
     # n3 -> n1 (cycle)
     edge3 = Edge(source="n3", target="n1", type=EdgeType.DEPENDS_ON)
-    manager.add_edge(edge3)
-    
     with pytest.raises(ValueError, match="Cycle detected"):
-        manager.validate()
+        manager.add_edge(edge3)
 
 def test_find_nodes():
     node1 = Node(id="n1", type=NodeType.SYSTEM, name="Sys1", domain="core")

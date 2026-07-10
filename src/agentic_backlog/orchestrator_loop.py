@@ -21,7 +21,7 @@ def ingest_diff():
     backlog = core.load_backlog() or {}
     
     existing_items = {item['id']: item for item in backlog.get('items', [])}
-    for task in tasks:
+    for task in tasks.values() if isinstance(tasks, dict) else tasks:
         if isinstance(task, dict) and 'id' in task:
             existing_items[task['id']] = task
         elif hasattr(task, 'id'):
@@ -48,19 +48,16 @@ async def execute_task_with_agent(task):
     for the 'sdlc_orchestrator' role, applies CapabilitiesConfig, and streams
     the chat response for the task provided.
     """
-    config = LocalAgentConfig()
-    capabilities = CapabilitiesConfig()
-    
-    agent = Agent(
-        config=config,
+    config = LocalAgentConfig(
         system_instructions="You are the sdlc_orchestrator. Please execute the following task.",
-        capabilities=capabilities
+        capabilities=CapabilitiesConfig()
     )
     
     task_desc = task.get('description', '') if isinstance(task, dict) else getattr(task, 'description', str(task))
     prompt = f"Execute this task: {task_desc}"
     
-    await agent.chat(prompt)
+    async with Agent(config) as agent:
+        await agent.chat(prompt)
 
 async def main_loop():
     """

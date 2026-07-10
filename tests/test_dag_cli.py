@@ -73,7 +73,7 @@ def test_cli_edge_add(sample_dag_file):
     runner = CliRunner()
     result = runner.invoke(cli, [
         "edge", "add", "--file", sample_dag_file, 
-        "--source", "n2", "--target", "n1", "--type", "depends_on"
+        "--source", "n2", "--target", "n1", "--type", "writes"
     ])
     assert result.exit_code == 0
     

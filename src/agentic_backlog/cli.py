@@ -406,9 +406,6 @@ def sync_cmd(args):
 async def _run_architect_subagent(inbox_files):
     from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
     import os
-    config = LocalAgentConfig()
-    capabilities = CapabilitiesConfig()
-    
     prompt_path = os.path.join(".agents", "agents", "sdlc_architect", "system_prompt.md")
     try:
         with open(prompt_path, "r", encoding="utf-8") as f:
@@ -416,15 +413,15 @@ async def _run_architect_subagent(inbox_files):
     except FileNotFoundError:
         system_instructions = "You are the Technical Architect."
         
-    agent = Agent(
-        config=config,
+    config = LocalAgentConfig(
         system_instructions=system_instructions,
-        capabilities=capabilities
+        capabilities=CapabilitiesConfig()
     )
     
     files_str = ", ".join(inbox_files)
     prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to intention-dag.yaml and move the processed files to specs/."
-    await agent.chat(prompt)
+    async with Agent(config) as agent:
+        await agent.chat(prompt)
 
 def plan_cmd(args):
     import os
