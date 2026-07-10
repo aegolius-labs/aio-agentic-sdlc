@@ -9,6 +9,7 @@ class NodeType(str, Enum):
     COMPONENT = "component"
     ENDPOINT = "endpoint"
     ENTITY = "entity"
+    AGENT = "agent"
 
 class EdgeType(str, Enum):
     CONTAINS = "contains"

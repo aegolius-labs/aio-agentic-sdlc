@@ -1,132 +1,138 @@
 metadata:
-  name: "AIO Agentic SDLC"
-  version: "1.0.0"
-
+  name: AIO Agentic SDLC
+  version: 1.0.0
 nodes:
-  - id: "aio-agentic-sdlc-system"
-    type: "system"
-    domain: "sdlc"
-    name: "AIO Agentic SDLC System"
-    description: "Dual-DAG reconciliation engine for autonomous software development"
-    
-  - id: "orchestrator-loop"
-    type: "container"
-    domain: "orchestration"
-    name: "Agentic Orchestrator Loop"
-    description: "Main orchestrator binding the calculated Diff to the SDLC Pipeline"
-
-  - id: "dag-engine"
-    type: "container"
-    domain: "core"
-    name: "DAG Engine Container"
-    description: "Core container for DAG management and difference calculation"
-
-  - id: "qa-swarm-orchestrator"
-    type: "module"
-    domain: "qa"
-    name: "QA Swarm Orchestrator"
-    description: "Manages a swarm of specialized QA subagents to ensure bulletproof code generation"
-    
-  - id: "diffing-engine"
-    type: "component"
-    domain: "core"
-    name: "Diffing Engine"
-    description: "Calculates the Diff by superimposing Intention DAG over Reality DAG"
-
-  - id: "reality-dag-generator"
-    type: "component"
-    domain: "core"
-    name: "Reality DAG Generator"
-    description: "Generates an accurate, real-time graph of the existing codebase"
-
-  - id: "parallel-task-runner"
-    type: "component"
-    domain: "orchestration"
-    name: "Parallel Task Runner"
-    description: "Spawns concurrent subagents for unblocked items in the backlog, handling DAG concurrency and merge conflicts"
-
-  - id: "operational-modes-config"
-    type: "entity"
-    domain: "orchestration"
-    name: "Operational Modes Config"
-    description: "Configuration for approval gates vs bypass mode for continuous delivery"
-
-  - id: "sdlc-intake-agent"
-    type: "agent"
-    domain: "ux"
-    name: "SDLC Intake Agent"
-    description: "Chats with the user, distills ideas into specs, and updates intention-dag.yaml safely without writing execution code"
-
-  - id: "cli-entrypoint"
-    type: "component"
-    domain: "ux"
-    name: "CLI Entrypoint"
-    description: "Exposes plan and apply commands to run the DiffingEngine and Orchestrator Loop"
-
+- id: aio-agentic-sdlc-system
+  type: system
+  name: AIO Agentic SDLC System
+  domain: sdlc
+  description: Dual-DAG reconciliation engine for autonomous software development
+- id: orchestrator-loop
+  type: container
+  name: Agentic Orchestrator Loop
+  domain: orchestration
+  description: Main orchestrator binding the calculated Diff to the SDLC Pipeline
+- id: dag-engine
+  type: container
+  name: DAG Engine Container
+  domain: core
+  description: Core container for DAG management and difference calculation
+- id: qa-swarm-orchestrator
+  type: module
+  name: QA Swarm Orchestrator
+  domain: qa
+  description: Manages a swarm of specialized QA subagents to ensure bulletproof code
+    generation
+- id: diffing-engine
+  type: component
+  name: Diffing Engine
+  domain: core
+  description: Calculates the Diff by superimposing Intention DAG over Reality DAG
+- id: reality-dag-generator
+  type: component
+  name: Reality DAG Generator
+  domain: core
+  description: Generates an accurate, real-time graph of the existing codebase
+- id: parallel-task-runner
+  type: component
+  name: Parallel Task Runner
+  domain: orchestration
+  description: Spawns concurrent subagents for unblocked items in the backlog, handling
+    DAG concurrency and merge conflicts
+- id: operational-modes-config
+  type: entity
+  name: Operational Modes Config
+  domain: orchestration
+  description: Configuration for approval gates vs bypass mode for continuous delivery
+- id: sdlc-intake-agent
+  type: agent
+  name: SDLC Intake Agent
+  domain: ux
+  description: Chats with the user, distills ideas into PRDs, and writes them to the inbox/ directory safely without writing execution code
+- id: sdlc-architect-agent
+  type: agent
+  name: SDLC Architect Agent
+  domain: core
+  description: Reads PRDs from inbox/, performs technical research, maps new architectural nodes into intention-dag.yaml, and moves processed PRDs to specs/.
+- id: inbox-directory
+  type: entity
+  name: Inbox Directory
+  domain: ux
+  description: Directory containing new, unprocessed Product Requirement Documents (PRDs).
+- id: cli-entrypoint
+  type: component
+  name: CLI Entrypoint
+  domain: ux
+  description: Exposes plan and apply commands to run the DiffingEngine and Orchestrator
+    Loop
+- id: subagent-output-templates
+  type: entity
+  name: Subagent Output Templates
+  domain: orchestration
+  description: Structured reporting templates for each subagent so the Orchestrator
+    can compile a clean, human-readable summary of the entire parallel session.
 edges:
-  - source: "aio-agentic-sdlc-system"
-    target: "orchestrator-loop"
-    type: "contains"
-    
-  - source: "aio-agentic-sdlc-system"
-    target: "dag-engine"
-    type: "contains"
-
-  - source: "orchestrator-loop"
-    target: "parallel-task-runner"
-    type: "contains"
-
-  - source: "orchestrator-loop"
-    target: "qa-swarm-orchestrator"
-    type: "contains"
-
-  - source: "dag-engine"
-    target: "diffing-engine"
-    type: "contains"
-
-  - source: "dag-engine"
-    target: "reality-dag-generator"
-    type: "contains"
-    
-  - source: "orchestrator-loop"
-    target: "operational-modes-config"
-    type: "reads"
-    description: "Reads configuration to determine if user approval is required"
-
-  - source: "orchestrator-loop"
-    target: "diffing-engine"
-    type: "calls"
-    description: "Requests the dynamically generated backlog (Diff)"
-    
-  - source: "diffing-engine"
-    target: "reality-dag-generator"
-    type: "depends_on"
-    description: "Requires the current reality DAG to calculate differences"
-
-  - source: "parallel-task-runner"
-    target: "diffing-engine"
-    type: "reads"
-    description: "Reads unblocked tasks from the calculated diff"
-
-  - source: "parallel-task-runner"
-    target: "qa-swarm-orchestrator"
-    type: "calls"
-    description: "Triggers QA validation after executing parallel tasks"
-
-  - source: "aio-agentic-sdlc-system"
-    target: "sdlc-intake-agent"
-    type: "contains"
-
-  - source: "aio-agentic-sdlc-system"
-    target: "cli-entrypoint"
-    type: "contains"
-
-  - source: "cli-entrypoint"
-    target: "diffing-engine"
-    type: "calls"
-    description: "Runs the DiffingEngine and outputs generated backlog/diff via plan command"
-
-  - source: "cli-entrypoint"
-    target: "orchestrator-loop"
-    type: "calls"
-    description: "Executes the orchestrator_loop via apply command"
+- source: aio-agentic-sdlc-system
+  target: orchestrator-loop
+  type: contains
+- source: aio-agentic-sdlc-system
+  target: dag-engine
+  type: contains
+- source: orchestrator-loop
+  target: parallel-task-runner
+  type: contains
+- source: orchestrator-loop
+  target: qa-swarm-orchestrator
+  type: contains
+- source: dag-engine
+  target: diffing-engine
+  type: contains
+- source: dag-engine
+  target: reality-dag-generator
+  type: contains
+- source: orchestrator-loop
+  target: operational-modes-config
+  type: reads
+  description: Reads configuration to determine if user approval is required
+- source: orchestrator-loop
+  target: diffing-engine
+  type: calls
+  description: Requests the dynamically generated backlog (Diff)
+- source: diffing-engine
+  target: reality-dag-generator
+  type: depends_on
+  description: Requires the current reality DAG to calculate differences
+- source: parallel-task-runner
+  target: diffing-engine
+  type: reads
+  description: Reads unblocked tasks from the calculated diff
+- source: parallel-task-runner
+  target: qa-swarm-orchestrator
+  type: calls
+  description: Triggers QA validation after executing parallel tasks
+- source: aio-agentic-sdlc-system
+  target: sdlc-intake-agent
+  type: contains
+- source: aio-agentic-sdlc-system
+  target: sdlc-architect-agent
+  type: contains
+- source: sdlc-intake-agent
+  target: inbox-directory
+  type: writes
+  description: Intake agent writes PRDs to inbox
+- source: sdlc-architect-agent
+  target: inbox-directory
+  type: reads
+  description: Architect reads PRDs from inbox
+- source: aio-agentic-sdlc-system
+  target: cli-entrypoint
+  type: contains
+- source: cli-entrypoint
+  target: diffing-engine
+  type: calls
+  description: Runs the DiffingEngine and outputs generated backlog/diff via plan
+    command
+- source: cli-entrypoint
+  target: orchestrator-loop
+  type: calls
+  description: Executes the orchestrator_loop via apply command

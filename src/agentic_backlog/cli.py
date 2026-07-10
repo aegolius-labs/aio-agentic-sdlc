@@ -403,11 +403,42 @@ def sync_cmd(args):
         print(f"Error syncing with GitHub: {e}", file=sys.stderr)
         sys.exit(1)
 
+async def _run_architect_subagent(inbox_files):
+    from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
+    import os
+    config = LocalAgentConfig()
+    capabilities = CapabilitiesConfig()
+    
+    prompt_path = os.path.join(".agents", "agents", "sdlc_architect", "system_prompt.md")
+    try:
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            system_instructions = f.read()
+    except FileNotFoundError:
+        system_instructions = "You are the Technical Architect."
+        
+    agent = Agent(
+        config=config,
+        system_instructions=system_instructions,
+        capabilities=capabilities
+    )
+    
+    files_str = ", ".join(inbox_files)
+    prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to intention-dag.yaml and move the processed files to specs/."
+    await agent.chat(prompt)
+
 def plan_cmd(args):
+    import os
+    import glob
+    import asyncio
     from .dag_manager import DAGManager
     from .diffing_engine import DiffingEngine
     import json
     try:
+        if os.path.exists("inbox") and os.path.isdir("inbox"):
+            inbox_files = glob.glob(os.path.join("inbox", "*.md"))
+            if inbox_files:
+                asyncio.run(_run_architect_subagent(inbox_files))
+                
         intention_dag = DAGManager.load("intention-dag.yaml")
         reality_dag = DAGManager.load("reality-dag.yaml")
         engine = DiffingEngine(intention_dag, reality_dag)
