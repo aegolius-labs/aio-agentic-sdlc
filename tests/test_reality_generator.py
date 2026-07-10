@@ -2,8 +2,8 @@ import os
 import tempfile
 import pytest
 
-from agentic_backlog.reality_dag_generator import RealityDAGGenerator
-from agentic_backlog.dag_models import NodeType, EdgeType
+from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
+from aio_agentic_sdlc.dag_models import NodeType, EdgeType
 
 def test_reality_generator_basic():
     with tempfile.TemporaryDirectory() as tmpdir:

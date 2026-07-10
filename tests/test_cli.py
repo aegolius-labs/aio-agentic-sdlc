@@ -1,11 +1,11 @@
 import pytest
 import json
 from unittest.mock import patch, MagicMock
-from agentic_backlog.cli import main
+from aio_agentic_sdlc.cli import main
 
 def test_cli_plan(capsys):
     with patch('sys.argv', ['cli', 'plan']):
-        with patch('agentic_backlog.cli.plan_cmd') as mock_plan:
+        with patch('aio_agentic_sdlc.cli.plan_cmd') as mock_plan:
             try:
                 main()
             except SystemExit:
@@ -16,10 +16,10 @@ def test_cli_plan(capsys):
 @patch('os.path.isdir')
 @patch('glob.glob')
 @patch('asyncio.run')
-@patch('agentic_backlog.dag_manager.DAGManager')
-@patch('agentic_backlog.diffing_engine.DiffingEngine')
+@patch('aio_agentic_sdlc.dag_manager.DAGManager')
+@patch('aio_agentic_sdlc.diffing_engine.DiffingEngine')
 def test_plan_cmd_with_inbox_files(mock_diff_engine, mock_dag_manager, mock_asyncio_run, mock_glob, mock_isdir, mock_exists):
-    from agentic_backlog.cli import plan_cmd
+    from aio_agentic_sdlc.cli import plan_cmd
     
     mock_exists.return_value = True
     mock_isdir.return_value = True
@@ -36,10 +36,10 @@ def test_plan_cmd_with_inbox_files(mock_diff_engine, mock_dag_manager, mock_asyn
     mock_diff_instance.calculate_diff.assert_called_once()
 
 @patch('os.path.exists')
-@patch('agentic_backlog.dag_manager.DAGManager')
-@patch('agentic_backlog.diffing_engine.DiffingEngine')
+@patch('aio_agentic_sdlc.dag_manager.DAGManager')
+@patch('aio_agentic_sdlc.diffing_engine.DiffingEngine')
 def test_plan_cmd_without_inbox_files(mock_diff_engine, mock_dag_manager, mock_exists):
-    from agentic_backlog.cli import plan_cmd
+    from aio_agentic_sdlc.cli import plan_cmd
     
     mock_exists.return_value = False
     
@@ -54,7 +54,7 @@ def test_plan_cmd_without_inbox_files(mock_diff_engine, mock_dag_manager, mock_e
 
 def test_cli_apply(capsys):
     with patch('sys.argv', ['cli', 'apply']):
-        with patch('agentic_backlog.cli.apply_cmd') as mock_apply:
+        with patch('aio_agentic_sdlc.cli.apply_cmd') as mock_apply:
             try:
                 main()
             except SystemExit:

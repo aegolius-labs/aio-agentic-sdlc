@@ -1,8 +1,8 @@
 import asyncio
 from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
-from agentic_backlog.dag_manager import DAGManager
-from agentic_backlog.diffing_engine import DiffingEngine
-from agentic_backlog import core
+from aio_agentic_sdlc.dag_manager import DAGManager
+from aio_agentic_sdlc.diffing_engine import DiffingEngine
+from aio_agentic_sdlc import core
 
 def ingest_diff():
     """

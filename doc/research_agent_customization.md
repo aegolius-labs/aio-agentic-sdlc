@@ -71,10 +71,10 @@ MCP is the undisputed king of tool integration. Any tool logic should be exposed
 
 ---
 
-## Synthesis & Implementation Strategy for `agentic-backlog`
+## Synthesis & Implementation Strategy for `aio-agentic-sdlc`
 
-To ensure `agentic-backlog` works optimally across all platforms, we should implement a **Single Source of Truth (SSoT) + Generator Pattern**:
+To ensure `aio-agentic-sdlc` works optimally across all platforms, we should implement a **Single Source of Truth (SSoT) + Generator Pattern**:
 
-1. **Behavioral Rules SSoT**: Maintain a single configuration file (e.g., `agentic_backlog_rules.md` or embedded in the python package) containing the behavioral instruction: "Do not assume immediate implementation. Log feature ideas to the backlog."
-2. **Installation CLI**: Implement an initialization command (e.g., `agentic-backlog init`) that asks the user for their IDE stacks and automatically generates `CLAUDE.md`, `.cursor/rules/backlog.mdc`, or `AGENTS.md` injected with the SSoT rules.
-3. **Technical Skill**: Keep `.agents/skills/agentic-backlog/SKILL.md` strictly focused on technical execution via MCP.
+1. **Behavioral Rules SSoT**: Maintain a single configuration file (e.g., `aio_agentic_sdlc_rules.md` or embedded in the python package) containing the behavioral instruction: "Do not assume immediate implementation. Log feature ideas to the backlog."
+2. **Installation CLI**: Implement an initialization command (e.g., `aio-agentic-sdlc init`) that asks the user for their IDE stacks and automatically generates `CLAUDE.md`, `.cursor/rules/backlog.mdc`, or `AGENTS.md` injected with the SSoT rules.
+3. **Technical Skill**: Keep `.agents/skills/aio-agentic-sdlc/SKILL.md` strictly focused on technical execution via MCP.

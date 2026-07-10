@@ -30,7 +30,7 @@ The Two-Stage Pipeline aims to split the requirements gathering and architectura
   - Allowed tools: Reading PRDs, updating DAG files, and moving files.
 
 ### Step 4: CLI `plan` Refactor
-- **File to Update:** `src/agentic_backlog/cli.py` (specifically `plan_cmd`)
+- **File to Update:** `src/aio_agentic_sdlc/cli.py` (specifically `plan_cmd`)
 - **Changes:**
   1. Add logic to check if `inbox/` directory exists and has any Markdown files.
   2. If files exist:
@@ -43,7 +43,7 @@ The Two-Stage Pipeline aims to split the requirements gathering and architectura
      - Print the Execution Backlog (diff) to the terminal.
 
 ### Step 5: Verify CLI `apply` command
-- **File to Review:** `src/agentic_backlog/cli.py` and `src/agentic_backlog/orchestrator_loop.py`
+- **File to Review:** `src/aio_agentic_sdlc/cli.py` and `src/aio_agentic_sdlc/orchestrator_loop.py`
 - **Changes:** No functional changes required for `apply`. It will execute the calculated diff as usual.
 
 ## 3. Future Considerations
