@@ -48,17 +48,20 @@ nodes:
   type: agent
   name: SDLC Intake Agent
   domain: ux
-  description: Chats with the user, distills ideas into PRDs, and writes them to the inbox/ directory safely without writing execution code
+  description: Chats with the user, distills ideas into PRDs, and writes them to the
+    inbox/ directory safely without writing execution code
 - id: sdlc-architect-agent
   type: agent
   name: SDLC Architect Agent
   domain: core
-  description: Reads PRDs from inbox/, performs technical research, maps new architectural nodes into intention-dag.yaml, and moves processed PRDs to specs/.
+  description: Reads PRDs from inbox/, performs technical research, maps new architectural
+    nodes into intention-dag.yaml, and moves processed PRDs to specs/.
 - id: inbox-directory
   type: entity
   name: Inbox Directory
   domain: ux
-  description: Directory containing new, unprocessed Product Requirement Documents (PRDs).
+  description: Directory containing new, unprocessed Product Requirement Documents
+    (PRDs).
 - id: cli-entrypoint
   type: component
   name: CLI Entrypoint
@@ -71,6 +74,19 @@ nodes:
   domain: orchestration
   description: Structured reporting templates for each subagent so the Orchestrator
     can compile a clean, human-readable summary of the entire parallel session.
+- id: agent-format-migrator
+  type: component
+  name: Agent Format Migrator
+  domain: core
+  description: Tooling to scan .agents/agents/ for legacy agent.json and system_prompt.md
+    files, consolidate them into agent.md with YAML frontmatter, and delete the legacy
+    files.
+- id: unified-agent-definitions
+  type: entity
+  name: Unified Agent Definitions
+  domain: core
+  description: Standardized agent definitions using the unified agent.md format with
+    YAML frontmatter and markdown instructions.
 edges:
 - source: aio-agentic-sdlc-system
   target: orchestrator-loop
@@ -136,3 +152,13 @@ edges:
   target: orchestrator-loop
   type: calls
   description: Executes the orchestrator_loop via apply command
+- source: aio-agentic-sdlc-system
+  target: agent-format-migrator
+  type: contains
+- source: aio-agentic-sdlc-system
+  target: unified-agent-definitions
+  type: contains
+- source: agent-format-migrator
+  target: unified-agent-definitions
+  type: writes
+  description: Normalizes agent configurations into the unified agent.md format.

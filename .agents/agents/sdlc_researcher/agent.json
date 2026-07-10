@@ -1,7 +1,0 @@
-{
-  "name": "sdlc_researcher",
-  "description": "Subagent responsible for deep technical research, prioritizing official documentation and academic papers, and producing traceable research artifacts.",
-  "enable_mcp_tools": true,
-  "enable_subagent_tools": false,
-  "enable_write_tools": true
-}
