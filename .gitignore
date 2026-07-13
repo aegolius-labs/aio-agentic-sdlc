@@ -55,4 +55,8 @@ sandbox/
 test_sandbox/
 
 # Local Memory
-.agents/rules/global_memory.md
+.agents/rules/global_memory.mdtest_archiver_scratch/
+test_race/
+test_symlink/
+test_symlink_attack
+inbox/test_*.md
