@@ -419,7 +419,7 @@ async def _run_architect_subagent(inbox_files):
     )
     
     files_str = ", ".join(inbox_files)
-    prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to intention-dag.yaml and move the processed files to specs/."
+    prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to intention-dag.yaml."
     async with Agent(config) as agent:
         await agent.chat(prompt)
 
@@ -429,12 +429,44 @@ def plan_cmd(args):
     import asyncio
     from .dag_manager import DAGManager
     from .diffing_engine import DiffingEngine
+    from .archiver import PRDArchiver
     import json
     try:
         if os.path.exists("inbox") and os.path.isdir("inbox"):
             inbox_files = glob.glob(os.path.join("inbox", "*.md"))
             if inbox_files:
                 asyncio.run(_run_architect_subagent(inbox_files))
+                archiver = PRDArchiver()
+                
+                # Check if PRDs were reflected in intention-dag.yaml
+                dag_nodes = set()
+                try:
+                    import yaml
+                    with open("intention-dag.yaml", "r", encoding="utf-8") as f:
+                        content = f.read()
+                        dag_data = yaml.safe_load(content) or {}
+                    nodes = dag_data.get("nodes", [])
+                    if isinstance(nodes, list):
+                        for n in nodes:
+                            if isinstance(n, dict):
+                                if "id" in n: dag_nodes.add(n["id"])
+                                if "name" in n: dag_nodes.add(n["name"])
+                            else:
+                                dag_nodes.add(str(n))
+                    elif isinstance(nodes, dict):
+                        dag_nodes.update(nodes.keys())
+                except Exception:
+                    pass
+
+                for file_path in inbox_files:
+                    try:
+                        filename = os.path.basename(file_path)
+                        if filename in dag_nodes:
+                            archiver.archive(file_path)
+                        else:
+                            print(f"Warning: PRD {filename} was not reflected in intention-dag.yaml. Skipping archive.", file=sys.stderr)
+                    except Exception as e:
+                        print(f"Error archiving {file_path}: {e}", file=sys.stderr)
                 
         intention_dag = DAGManager.load("intention-dag.yaml")
         reality_dag = DAGManager.load("reality-dag.yaml")

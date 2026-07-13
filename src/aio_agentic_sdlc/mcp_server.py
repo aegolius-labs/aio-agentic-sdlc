@@ -1,4 +1,5 @@
 import sys
+import os
 import json
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
@@ -7,6 +8,8 @@ from .core import (
     add_item, update_item, set_status, add_blocker, remove_blocker, remove_item,
     prioritize_items, get_next_item, load_backlog, VALID_STATUSES
 )
+from .templating_engine import generate_document as generate_document_from_template
+
 
 # Create the MCP server instance
 mcp = FastMCP("Agentic Backlog")
@@ -149,6 +152,33 @@ def block_task(
         return f"Blocker added to '{name}'."
     except Exception as e:
         return f"Error: {str(e)}"
+
+@mcp.tool()
+def generate_document(
+    template_name: str = Field(..., description="Name of the template file (e.g. prd_template.md)"),
+    data_json: str = Field(..., description="JSON string containing the data to populate the template"),
+    output_filename: str = Field(..., description="Name of the output file"),
+    target_dir: str = Field(".", description="Directory where the document will be saved")
+) -> str:
+    """Generate a document from a template using the provided data."""
+    try:
+        data = json.loads(data_json)
+        
+        cwd = os.path.abspath(os.getcwd())
+        abs_target = os.path.abspath(target_dir)
+        
+        if not abs_target.startswith(cwd + os.sep) and abs_target != cwd:
+            return f"Error generating document: target_dir resolves outside of the project root."
+
+        output_path = os.path.abspath(os.path.join(abs_target, output_filename))
+        
+        if not output_path.startswith(abs_target + os.sep) and output_path != abs_target:
+            return f"Error generating document: output_filename resolves outside of target_dir."
+            
+        generate_document_from_template(template_name, data, output_path)
+        return f"Document successfully generated at {output_path}."
+    except Exception as e:
+        return f"Error generating document: {str(e)}"
 
 def main():
     mcp.run()
