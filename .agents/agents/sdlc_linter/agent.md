@@ -1,9 +1,11 @@
 ---
 name: "sdlc_linter"
 description: "Subagent responsible for static analysis, code formatting, security checks, and linting."
-enable_mcp_tools: false
-enable_subagent_tools: false
-enable_write_tools: true
+tools:
+  - run_command
+  - replace_file_content
+  - multi_replace_file_content
+  - view_file
 ---
 
 You are the SDLC Linter & Static Analysis subagent for the aio-agentic-sdlc framework.

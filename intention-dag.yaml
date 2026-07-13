@@ -209,6 +209,28 @@ nodes:
   domain: ux
   description: CLI and MCP entrypoint for safely reporting framework version before
     initialization.
+- id: archive-directory
+  type: entity
+  name: Archive Directory
+  domain: core
+  description: Storage for successfully processed Product Requirement Documents (PRDs).
+- id: prd-archiver
+  type: component
+  name: PRD Archiver
+  domain: core
+  description: Automates moving processed PRDs from inbox/ to archive/.
+- id: templates-directory
+  type: entity
+  name: Templates Directory
+  domain: core
+  description: Centralized storage for structured Markdown templates (PRD, SDD, Research
+    Spike).
+- id: artifact-templating-engine
+  type: component
+  name: Artifact Templating Engine
+  domain: core
+  description: Programmatically generates standardized documentation artifacts from
+    structured data.
 edges:
 - source: aio-agentic-sdlc-system
   target: orchestrator-loop
@@ -389,3 +411,49 @@ edges:
 - source: cli-entrypoint
   target: version-command
   type: calls
+- source: aio-agentic-sdlc-system
+  target: archive-directory
+  type: contains
+- source: aio-agentic-sdlc-system
+  target: prd-archiver
+  type: contains
+- source: prd-archiver
+  target: inbox-directory
+  type: reads
+- source: prd-archiver
+  target: archive-directory
+  type: writes
+- source: sdlc-architect-agent
+  target: prd-archiver
+  type: calls
+  description: Triggers archival after processing a PRD
+- source: aio-agentic-sdlc-system
+  target: templates-directory
+  type: contains
+- source: aio-agentic-sdlc-system
+  target: artifact-templating-engine
+  type: contains
+- source: artifact-templating-engine
+  target: templates-directory
+  type: reads
+- source: sdlc-intake-agent
+  target: artifact-templating-engine
+  type: calls
+  description: Generates standardized PRDs
+- source: sdlc-architect-agent
+  target: artifact-templating-engine
+  type: calls
+  description: Generates standardized SDDs
+- source: sdlc-researcher-agent
+  target: artifact-templating-engine
+  type: calls
+  description: Generates standardized Research Spikes
+- source: artifact-templating-engine
+  target: inbox-directory
+  type: writes
+- source: artifact-templating-engine
+  target: specs-directory
+  type: writes
+- source: artifact-templating-engine
+  target: research-spikes-directory
+  type: writes
