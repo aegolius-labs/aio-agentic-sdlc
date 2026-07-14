@@ -1,10 +1,4756 @@
 {
-  "core": {
-    "mode": "local"
+  "nodes": {
+    "Create System 'AIO Agentic SDLC System'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: aio-agentic-sdlc-system\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Container 'Agentic Orchestrator Loop'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: orchestrator-loop\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Container 'DAG Engine Container'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: dag-engine\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Module 'QA Swarm Orchestrator'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: qa-swarm-orchestrator\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Diffing Engine'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: diffing-engine\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Reality DAG Generator'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: reality-dag-generator\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Parallel Task Runner'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: parallel-task-runner\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Operational Modes Config'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: operational-modes-config\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Agent 'SDLC Intake Agent'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: sdlc-intake-agent\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Agent 'SDLC Architect Agent'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: sdlc-architect-agent\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Inbox Directory'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: inbox-directory\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'CLI Entrypoint'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: cli-entrypoint\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Subagent Output Templates'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: subagent-output-templates\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Agent Format Migrator'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: agent-format-migrator\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Unified Agent Definitions'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: unified-agent-definitions\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Unified Configuration File'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: aio-sdlc-config\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Agent Personas Config'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: agent-personas-config\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Commercial Licensing Enforcer'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: commercial-licensing-enforcer\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'EULA & Privacy Prompt'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: eula-privacy-prompt\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Endpoint 'Merchant of Record API'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: mor-licensing-api\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Daemon Watcher'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: daemon-watcher\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Container 'MCP Server'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: mcp-server\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Specs Directory'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: specs-directory\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Agent 'Implementer Agent'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: implementer-agent\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Variance Report Router'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: variance-report-router\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Approval Gate'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: approval-gate\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Conflict Resolution Manager'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: conflict-resolution-manager\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Agent 'Specialized QA Agents'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: specialized-qa-agents\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Agent 'SDLC Researcher Agent'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: sdlc-researcher-agent\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Research Spikes Directory'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: research-spikes-directory\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Session Report Compiler'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: session-report-compiler\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Telemetry Module'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: telemetry-module\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Endpoint 'Telemetry Backend'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: telemetry-backend\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'TUI Dashboard'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: tui-dashboard\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Shared State Store'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: shared-state-store\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Version Command'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: version-command\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Archive Directory'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: archive-directory\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'PRD Archiver'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: prd-archiver\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Entity 'Templates Directory'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: templates-directory\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Create Component 'Artifact Templating Engine'": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 3,
+      "category": "Architecture",
+      "description": "Node ID: artifact-templating-engine\nMissing node in Reality DAG.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove System 'System'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: system_root\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'archiver.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.archiver\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'PRDArchiver'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.archiver.PRDArchiver\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component '__init__'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.__init__\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'archive'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.archiver.PRDArchiver.archive\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'cli.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'init_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.init_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.add_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.update_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'prioritize_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.prioritize_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'export_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.export_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'status_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.status_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'block_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.block_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'unblock_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.unblock_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.remove_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'next_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.next_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'sync_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.sync_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'plan_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.plan_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'apply_cmd'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.cli.apply_cmd\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'main'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.main\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'config.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.config\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'load_config'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.config.load_config\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'save_config'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.config.save_config\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'is_github_mode'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.config.is_github_mode\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_github_config'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.config.get_github_config\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'core.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'validate_hierarchy'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.validate_hierarchy\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'load_backlog'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.load_backlog\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'save_backlog'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.save_backlog\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_edges'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.get_edges\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_requires'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.get_requires\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'set_requires'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.set_requires\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_parent'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.get_parent\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'set_parent'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.set_parent\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'ensure_dependencies'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.ensure_dependencies\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'prioritize_items'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.prioritize_items\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_next_item'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.get_next_item\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_item'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.add_item\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_item'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.update_item\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'set_status'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.set_status\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_blocker'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.add_blocker\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_blocker'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.remove_blocker\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_item'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.core.remove_item\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'dag_cli.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'cli'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.cli\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'validate'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.validate\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'diff'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.diff\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'generate_reality'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.generate_reality\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'node'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.node\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'node_add'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.node_add\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'node_update'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.node_update\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'node_remove'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.node_remove\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'node_list'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.node_list\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'edge'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.edge\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'edge_add'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.edge_add\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'edge_remove'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_cli.edge_remove\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'dag_manager.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'DAGManager'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'load'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.load\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'save'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.save\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_node'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.add_node\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_node'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.update_node\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_node'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.remove_node\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_node'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.get_node\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'find_nodes'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.find_nodes\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_edge'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.add_edge\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_edge'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_manager.DAGManager.remove_edge\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'dag_models.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_models\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'NodeType'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_models.NodeType\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'EdgeType'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_models.EdgeType\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Entity 'Metadata'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_models.Metadata\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Entity 'Node'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_models.Node\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Entity 'Edge'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.dag_models.Edge\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'detect.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.detect\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'detect_frameworks'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.detect.detect_frameworks\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'seed_from_openspec'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.detect.seed_from_openspec\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'seed_from_speckit'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.detect.seed_from_speckit\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'generate_seed_backlog'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.detect.generate_seed_backlog\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'diffing_engine.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.diffing_engine\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'DiffingEngine'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.diffing_engine.DiffingEngine\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'calculate_diff'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.diffing_engine.DiffingEngine.calculate_diff\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'github.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'GitHubClient'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'execute'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.execute\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_repo_id'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.get_repo_id\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_repository_issue_types'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.get_repository_issue_types\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_owner_id'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.get_owner_id\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'create_project_v2'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.create_project_v2\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_project_v2_info'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.get_project_v2_info\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'create_custom_field'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.create_custom_field\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'ensure_backlog_fields'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.ensure_backlog_fields\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'create_issue'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.create_issue\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_project_item'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.add_project_item\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_item_field'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.update_item_field\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'fetch_all_items'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github.GitHubClient.fetch_all_items\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'github_core.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_item_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.add_item_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_item_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.update_item_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'set_status_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.set_status_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_blocker_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.add_blocker_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_blocker_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.remove_blocker_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_item_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.remove_item_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'sync_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.sync_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'prioritize_items_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.prioritize_items_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_next_item_github'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.github_core.get_next_item_github\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'mcp_server.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'read_current_backlog'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.read_current_backlog\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'read_hierarchy_rules'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.read_hierarchy_rules\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'pick_next_task_prompt'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.pick_next_task_prompt\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_next_task'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.get_next_task\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'add_task'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.add_task\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_task'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.update_task\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'update_task_status'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.update_task_status\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'remove_task'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.remove_task\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'prioritize_backlog'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.prioritize_backlog\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'block_task'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.mcp_server.block_task\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'generate_document'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.templating_engine.generate_document\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'orchestrator_loop.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.orchestrator_loop\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'ingest_diff'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.orchestrator_loop.ingest_diff\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'execute_task_with_agent'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'main_loop'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.orchestrator_loop.main_loop\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'reality_dag_generator.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'TreeSitterVisitor'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'visit'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'visit_decorated_definition'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_decorated_definition\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'visit_class_definition'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_class_definition\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'visit_function_definition'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_function_definition\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'visit_import_statement'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_statement\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'visit_import_from_statement'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_from_statement\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'RealityDAGGenerator'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'parse_python_file'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.parse_python_file\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'generate'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.generate\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'templating_engine.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.templating_engine\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'get_project_root'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.templating_engine.get_project_root\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module '__init__.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: aio_agentic_sdlc.__init__\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Module 'markdown_parser.py'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: utils.markdown_parser\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Remove Component 'extract_h2'": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Node ID: utils.markdown_parser.extract_h2\nNode exists in Reality but not in Intention.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'orchestrator-loop' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to orchestrator-loop.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'dag-engine' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to dag-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'parallel-task-runner' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from orchestrator-loop to parallel-task-runner.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'qa-swarm-orchestrator' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from orchestrator-loop to qa-swarm-orchestrator.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'dag-engine' to 'diffing-engine' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from dag-engine to diffing-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'dag-engine' to 'reality-dag-generator' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from dag-engine to reality-dag-generator.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'operational-modes-config' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from orchestrator-loop to operational-modes-config.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'diffing-engine' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from orchestrator-loop to diffing-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'diffing-engine' to 'reality-dag-generator' (depends_on)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge depends_on from diffing-engine to reality-dag-generator.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'parallel-task-runner' to 'diffing-engine' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from parallel-task-runner to diffing-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'parallel-task-runner' to 'qa-swarm-orchestrator' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from parallel-task-runner to qa-swarm-orchestrator.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'sdlc-intake-agent' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to sdlc-intake-agent.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'sdlc-architect-agent' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to sdlc-architect-agent.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-intake-agent' to 'inbox-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from sdlc-intake-agent to inbox-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-intake-agent' to 'inbox-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from sdlc-intake-agent to inbox-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-intake-agent' to 'archive-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from sdlc-intake-agent to archive-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-architect-agent' to 'inbox-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from sdlc-architect-agent to inbox-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'cli-entrypoint' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to cli-entrypoint.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'cli-entrypoint' to 'diffing-engine' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from cli-entrypoint to diffing-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'cli-entrypoint' to 'orchestrator-loop' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from cli-entrypoint to orchestrator-loop.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'agent-format-migrator' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to agent-format-migrator.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'unified-agent-definitions' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to unified-agent-definitions.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'agent-format-migrator' to 'unified-agent-definitions' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from agent-format-migrator to unified-agent-definitions.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'aio-sdlc-config' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to aio-sdlc-config.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-sdlc-config' to 'agent-personas-config' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-sdlc-config to agent-personas-config.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-intake-agent' to 'agent-personas-config' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from sdlc-intake-agent to agent-personas-config.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'cli-entrypoint' to 'eula-privacy-prompt' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from cli-entrypoint to eula-privacy-prompt.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'cli-entrypoint' to 'commercial-licensing-enforcer' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from cli-entrypoint to commercial-licensing-enforcer.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'commercial-licensing-enforcer' to 'mor-licensing-api' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from commercial-licensing-enforcer to mor-licensing-api.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'cli-entrypoint' to 'daemon-watcher' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from cli-entrypoint to daemon-watcher.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'daemon-watcher' to 'inbox-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from daemon-watcher to inbox-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'daemon-watcher' to 'sdlc-architect-agent' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from daemon-watcher to sdlc-architect-agent.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'mcp-server' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to mcp-server.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'mcp-server' to 'diffing-engine' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from mcp-server to diffing-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'mcp-server' to 'version-command' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from mcp-server to version-command.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-architect-agent' to 'specs-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from sdlc-architect-agent to specs-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'diffing-engine' to 'specs-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from diffing-engine to specs-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'parallel-task-runner' to 'implementer-agent' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from parallel-task-runner to implementer-agent.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'implementer-agent' to 'specs-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from implementer-agent to specs-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'implementer-agent' to 'variance-report-router' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from implementer-agent to variance-report-router.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'variance-report-router' to 'sdlc-architect-agent' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from variance-report-router to sdlc-architect-agent.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'approval-gate' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from orchestrator-loop to approval-gate.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'approval-gate' to 'operational-modes-config' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from approval-gate to operational-modes-config.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'parallel-task-runner' to 'conflict-resolution-manager' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from parallel-task-runner to conflict-resolution-manager.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'qa-swarm-orchestrator' to 'specialized-qa-agents' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from qa-swarm-orchestrator to specialized-qa-agents.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-architect-agent' to 'sdlc-researcher-agent' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from sdlc-architect-agent to sdlc-researcher-agent.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-researcher-agent' to 'research-spikes-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from sdlc-researcher-agent to research-spikes-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-architect-agent' to 'research-spikes-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from sdlc-architect-agent to research-spikes-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'session-report-compiler' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from orchestrator-loop to session-report-compiler.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'session-report-compiler' to 'subagent-output-templates' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from session-report-compiler to subagent-output-templates.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'telemetry-module' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to telemetry-module.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'telemetry-module' to 'telemetry-backend' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from telemetry-module to telemetry-backend.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'telemetry-module' to 'aio-sdlc-config' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from telemetry-module to aio-sdlc-config.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'tui-dashboard' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to tui-dashboard.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'tui-dashboard' to 'shared-state-store' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from tui-dashboard to shared-state-store.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'orchestrator-loop' to 'shared-state-store' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from orchestrator-loop to shared-state-store.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'cli-entrypoint' to 'version-command' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from cli-entrypoint to version-command.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'archive-directory' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to archive-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'prd-archiver' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to prd-archiver.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'prd-archiver' to 'inbox-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from prd-archiver to inbox-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'prd-archiver' to 'archive-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from prd-archiver to archive-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-architect-agent' to 'prd-archiver' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from sdlc-architect-agent to prd-archiver.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'templates-directory' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to templates-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'aio-agentic-sdlc-system' to 'artifact-templating-engine' (contains)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge contains from aio-agentic-sdlc-system to artifact-templating-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'artifact-templating-engine' to 'templates-directory' (reads)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge reads from artifact-templating-engine to templates-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-intake-agent' to 'artifact-templating-engine' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from sdlc-intake-agent to artifact-templating-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-architect-agent' to 'artifact-templating-engine' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from sdlc-architect-agent to artifact-templating-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'sdlc-researcher-agent' to 'artifact-templating-engine' (calls)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge calls from sdlc-researcher-agent to artifact-templating-engine.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'artifact-templating-engine' to 'inbox-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from artifact-templating-engine to inbox-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'artifact-templating-engine' to 'specs-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from artifact-templating-engine to specs-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Connect 'artifact-templating-engine' to 'research-spikes-directory' (writes)": {
+      "item_type": "Task",
+      "impact": 3,
+      "effort": 2,
+      "category": "Integration",
+      "description": "Missing edge writes from artifact-templating-engine to research-spikes-directory.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.archiver' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.archiver found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.archiver' from 'aio_agentic_sdlc.archiver.PRDArchiver' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.archiver to aio_agentic_sdlc.archiver.PRDArchiver found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.archiver.PRDArchiver' from 'aio_agentic_sdlc.archiver.PRDArchiver.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.archiver.PRDArchiver to aio_agentic_sdlc.archiver.PRDArchiver.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.archiver.PRDArchiver' from 'aio_agentic_sdlc.archiver.PRDArchiver.archive' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.archiver.PRDArchiver to aio_agentic_sdlc.archiver.PRDArchiver.archive found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.cli' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.cli found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.init_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.init_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.add_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.add_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.update_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.update_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.prioritize_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.prioritize_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.export_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.export_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.status_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.status_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.block_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.block_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.unblock_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.unblock_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.remove_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.remove_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.next_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.next_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.sync_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.sync_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.plan_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.plan_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.apply_cmd' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.apply_cmd found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.cli' from 'aio_agentic_sdlc.cli.main' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.cli to aio_agentic_sdlc.cli.main found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.config' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.config found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.config' from 'aio_agentic_sdlc.config.load_config' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.config to aio_agentic_sdlc.config.load_config found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.config' from 'aio_agentic_sdlc.config.save_config' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.config to aio_agentic_sdlc.config.save_config found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.config' from 'aio_agentic_sdlc.config.is_github_mode' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.config to aio_agentic_sdlc.config.is_github_mode found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.config' from 'aio_agentic_sdlc.config.get_github_config' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.config to aio_agentic_sdlc.config.get_github_config found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.core' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.core found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.validate_hierarchy' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.validate_hierarchy found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.load_backlog' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.load_backlog found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.save_backlog' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.save_backlog found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.get_edges' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.get_edges found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.get_requires' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.get_requires found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.set_requires' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.set_requires found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.get_parent' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.get_parent found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.set_parent' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.set_parent found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.ensure_dependencies' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.ensure_dependencies found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.prioritize_items' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.prioritize_items found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.get_next_item' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.get_next_item found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.add_item' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.add_item found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.update_item' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.update_item found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.set_status' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.set_status found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.add_blocker' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.add_blocker found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.remove_blocker' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.remove_blocker found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.core' from 'aio_agentic_sdlc.core.remove_item' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.core to aio_agentic_sdlc.core.remove_item found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.dag_cli' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.dag_cli found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_manager' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_manager found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_models' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_models found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.diffing_engine' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.diffing_engine found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.reality_dag_generator' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.reality_dag_generator found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.cli' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.cli found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.validate' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.validate found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.diff' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.diff found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.generate_reality' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.generate_reality found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.node' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.node found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.node_add' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.node_add found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.node_update' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.node_update found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.node_remove' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.node_remove found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.node_list' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.node_list found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.edge' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.edge found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.edge_add' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.edge_add found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_cli' from 'aio_agentic_sdlc.dag_cli.edge_remove' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_cli to aio_agentic_sdlc.dag_cli.edge_remove found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.dag_manager' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.dag_manager found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager' from 'aio_agentic_sdlc.dag_models' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.dag_manager to aio_agentic_sdlc.dag_models found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager' from 'aio_agentic_sdlc.dag_manager.DAGManager' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager to aio_agentic_sdlc.dag_manager.DAGManager found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.load' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.load found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.save' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.save found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.validate' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.validate found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.add_node' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.add_node found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.update_node' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.update_node found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.remove_node' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.remove_node found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.get_node' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.get_node found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.find_nodes' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.find_nodes found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.add_edge' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.add_edge found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.remove_edge' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.remove_edge found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_manager.DAGManager' from 'aio_agentic_sdlc.dag_manager.DAGManager.get_edges' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_manager.DAGManager to aio_agentic_sdlc.dag_manager.DAGManager.get_edges found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.dag_models' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.dag_models found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_models' from 'aio_agentic_sdlc.dag_models.NodeType' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_models to aio_agentic_sdlc.dag_models.NodeType found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_models' from 'aio_agentic_sdlc.dag_models.EdgeType' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_models to aio_agentic_sdlc.dag_models.EdgeType found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_models' from 'aio_agentic_sdlc.dag_models.Metadata' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_models to aio_agentic_sdlc.dag_models.Metadata found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_models' from 'aio_agentic_sdlc.dag_models.Node' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_models to aio_agentic_sdlc.dag_models.Node found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.dag_models' from 'aio_agentic_sdlc.dag_models.Edge' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.dag_models to aio_agentic_sdlc.dag_models.Edge found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.detect' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.detect found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.detect' from 'aio_agentic_sdlc.detect.detect_frameworks' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.detect to aio_agentic_sdlc.detect.detect_frameworks found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.detect' from 'aio_agentic_sdlc.detect.seed_from_openspec' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.detect to aio_agentic_sdlc.detect.seed_from_openspec found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.detect' from 'aio_agentic_sdlc.detect.seed_from_speckit' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.detect to aio_agentic_sdlc.detect.seed_from_speckit found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.detect' from 'aio_agentic_sdlc.detect.generate_seed_backlog' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.detect to aio_agentic_sdlc.detect.generate_seed_backlog found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.diffing_engine' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.diffing_engine found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.diffing_engine' from 'aio_agentic_sdlc.dag_manager' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.diffing_engine to aio_agentic_sdlc.dag_manager found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.diffing_engine' from 'aio_agentic_sdlc.dag_models' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.diffing_engine to aio_agentic_sdlc.dag_models found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.diffing_engine' from 'aio_agentic_sdlc.diffing_engine.DiffingEngine' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.diffing_engine to aio_agentic_sdlc.diffing_engine.DiffingEngine found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.diffing_engine.DiffingEngine' from 'aio_agentic_sdlc.diffing_engine.DiffingEngine.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.diffing_engine.DiffingEngine to aio_agentic_sdlc.diffing_engine.DiffingEngine.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.diffing_engine.DiffingEngine' from 'aio_agentic_sdlc.diffing_engine.DiffingEngine.calculate_diff' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.diffing_engine.DiffingEngine to aio_agentic_sdlc.diffing_engine.DiffingEngine.calculate_diff found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github' from 'aio_agentic_sdlc.github.GitHubClient' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github to aio_agentic_sdlc.github.GitHubClient found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.execute' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.execute found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.get_repo_id' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.get_repo_id found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.get_repository_issue_types' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.get_repository_issue_types found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.get_owner_id' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.get_owner_id found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.create_project_v2' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.create_project_v2 found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.get_project_v2_info' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.get_project_v2_info found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.create_custom_field' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.create_custom_field found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.ensure_backlog_fields' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.ensure_backlog_fields found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.create_issue' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.create_issue found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.add_project_item' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.add_project_item found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.update_item_field' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.update_item_field found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github.GitHubClient' from 'aio_agentic_sdlc.github.GitHubClient.fetch_all_items' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github.GitHubClient to aio_agentic_sdlc.github.GitHubClient.fetch_all_items found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.github_core' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.github_core found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.add_item_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.add_item_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.update_item_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.update_item_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.set_status_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.set_status_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.add_blocker_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.add_blocker_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.remove_blocker_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.remove_blocker_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.remove_item_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.remove_item_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.sync_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.sync_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.prioritize_items_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.prioritize_items_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.github_core' from 'aio_agentic_sdlc.github_core.get_next_item_github' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.github_core to aio_agentic_sdlc.github_core.get_next_item_github found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.mcp_server' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.mcp_server found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.read_current_backlog' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.read_current_backlog found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.read_hierarchy_rules' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.read_hierarchy_rules found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.pick_next_task_prompt' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.pick_next_task_prompt found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.get_next_task' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.get_next_task found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.add_task' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.add_task found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.update_task' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.update_task found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.update_task_status' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.update_task_status found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.remove_task' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.remove_task found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.prioritize_backlog' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.prioritize_backlog found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.block_task' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.block_task found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.generate_document' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.generate_document found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.mcp_server' from 'aio_agentic_sdlc.mcp_server.main' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.mcp_server to aio_agentic_sdlc.mcp_server.main found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.orchestrator_loop' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.orchestrator_loop found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.orchestrator_loop' from 'aio_agentic_sdlc.dag_manager' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.orchestrator_loop to aio_agentic_sdlc.dag_manager found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.orchestrator_loop' from 'aio_agentic_sdlc.diffing_engine' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.orchestrator_loop to aio_agentic_sdlc.diffing_engine found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.orchestrator_loop' from 'aio_agentic_sdlc.orchestrator_loop.ingest_diff' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.orchestrator_loop to aio_agentic_sdlc.orchestrator_loop.ingest_diff found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.orchestrator_loop' from 'aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.orchestrator_loop to aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.orchestrator_loop' from 'aio_agentic_sdlc.orchestrator_loop.main_loop' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.orchestrator_loop to aio_agentic_sdlc.orchestrator_loop.main_loop found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.reality_dag_generator' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.reality_dag_generator found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator' from 'aio_agentic_sdlc.dag_manager' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.reality_dag_generator to aio_agentic_sdlc.dag_manager found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator' from 'aio_agentic_sdlc.dag_models' (depends_on)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge depends_on from aio_agentic_sdlc.reality_dag_generator to aio_agentic_sdlc.dag_models found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_decorated_definition' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_decorated_definition found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_class_definition' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_class_definition found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_function_definition' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_function_definition found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_statement' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_statement found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor' from 'aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_from_statement' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor to aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_from_statement found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator' from 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator to aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator' from 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator to aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator' from 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.parse_python_file' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator to aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.parse_python_file found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator' from 'aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.generate' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator to aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.generate found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.templating_engine' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.templating_engine found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.templating_engine' from 'aio_agentic_sdlc.templating_engine.get_project_root' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.templating_engine to aio_agentic_sdlc.templating_engine.get_project_root found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'aio_agentic_sdlc.templating_engine' from 'aio_agentic_sdlc.templating_engine.generate_document' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from aio_agentic_sdlc.templating_engine to aio_agentic_sdlc.templating_engine.generate_document found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'aio_agentic_sdlc.__init__' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to aio_agentic_sdlc.__init__ found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'system_root' from 'utils.markdown_parser' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from system_root to utils.markdown_parser found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    },
+    "Disconnect 'utils.markdown_parser' from 'utils.markdown_parser.extract_h2' (contains)": {
+      "item_type": "Task",
+      "impact": 1,
+      "effort": 2,
+      "category": "Cleanup",
+      "description": "Extraneous edge contains from utils.markdown_parser to utils.markdown_parser.extract_h2 found in Reality.",
+      "status": "New",
+      "blockers": [],
+      "scores": {}
+    }
   },
-  "github": {
-    "repo": "aegolius-labs/aio-agentic-sdlc-cli",
-    "project_number": 3,
-    "is_org": true
-  }
+  "edges": [
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'orchestrator-loop' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'orchestrator-loop' (contains)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'dag-engine' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'dag-engine' (contains)",
+      "to": "Create Container 'DAG Engine Container'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'parallel-task-runner' (contains)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'parallel-task-runner' (contains)",
+      "to": "Create Component 'Parallel Task Runner'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'qa-swarm-orchestrator' (contains)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'qa-swarm-orchestrator' (contains)",
+      "to": "Create Module 'QA Swarm Orchestrator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'dag-engine' to 'diffing-engine' (contains)",
+      "to": "Create Container 'DAG Engine Container'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'dag-engine' to 'diffing-engine' (contains)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'dag-engine' to 'reality-dag-generator' (contains)",
+      "to": "Create Container 'DAG Engine Container'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'dag-engine' to 'reality-dag-generator' (contains)",
+      "to": "Create Component 'Reality DAG Generator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'operational-modes-config' (reads)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'operational-modes-config' (reads)",
+      "to": "Create Entity 'Operational Modes Config'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'diffing-engine' (calls)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'diffing-engine' (calls)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'diffing-engine' to 'reality-dag-generator' (depends_on)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'diffing-engine' to 'reality-dag-generator' (depends_on)",
+      "to": "Create Component 'Reality DAG Generator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'diffing-engine' (reads)",
+      "to": "Create Component 'Parallel Task Runner'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'diffing-engine' (reads)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'qa-swarm-orchestrator' (calls)",
+      "to": "Create Component 'Parallel Task Runner'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'qa-swarm-orchestrator' (calls)",
+      "to": "Create Module 'QA Swarm Orchestrator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'sdlc-intake-agent' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'sdlc-intake-agent' (contains)",
+      "to": "Create Agent 'SDLC Intake Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'sdlc-architect-agent' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'sdlc-architect-agent' (contains)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'inbox-directory' (writes)",
+      "to": "Create Agent 'SDLC Intake Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'inbox-directory' (writes)",
+      "to": "Create Entity 'Inbox Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'inbox-directory' (reads)",
+      "to": "Create Agent 'SDLC Intake Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'inbox-directory' (reads)",
+      "to": "Create Entity 'Inbox Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'archive-directory' (reads)",
+      "to": "Create Agent 'SDLC Intake Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'archive-directory' (reads)",
+      "to": "Create Entity 'Archive Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'inbox-directory' (reads)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'inbox-directory' (reads)",
+      "to": "Create Entity 'Inbox Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'cli-entrypoint' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'cli-entrypoint' (contains)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'diffing-engine' (calls)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'diffing-engine' (calls)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'orchestrator-loop' (calls)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'orchestrator-loop' (calls)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'agent-format-migrator' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'agent-format-migrator' (contains)",
+      "to": "Create Component 'Agent Format Migrator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'unified-agent-definitions' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'unified-agent-definitions' (contains)",
+      "to": "Create Entity 'Unified Agent Definitions'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'agent-format-migrator' to 'unified-agent-definitions' (writes)",
+      "to": "Create Component 'Agent Format Migrator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'agent-format-migrator' to 'unified-agent-definitions' (writes)",
+      "to": "Create Entity 'Unified Agent Definitions'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'aio-sdlc-config' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'aio-sdlc-config' (contains)",
+      "to": "Create Entity 'Unified Configuration File'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-sdlc-config' to 'agent-personas-config' (contains)",
+      "to": "Create Entity 'Unified Configuration File'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-sdlc-config' to 'agent-personas-config' (contains)",
+      "to": "Create Entity 'Agent Personas Config'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'agent-personas-config' (reads)",
+      "to": "Create Agent 'SDLC Intake Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'agent-personas-config' (reads)",
+      "to": "Create Entity 'Agent Personas Config'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'eula-privacy-prompt' (calls)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'eula-privacy-prompt' (calls)",
+      "to": "Create Component 'EULA & Privacy Prompt'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'commercial-licensing-enforcer' (calls)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'commercial-licensing-enforcer' (calls)",
+      "to": "Create Component 'Commercial Licensing Enforcer'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'commercial-licensing-enforcer' to 'mor-licensing-api' (calls)",
+      "to": "Create Component 'Commercial Licensing Enforcer'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'commercial-licensing-enforcer' to 'mor-licensing-api' (calls)",
+      "to": "Create Endpoint 'Merchant of Record API'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'daemon-watcher' (calls)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'daemon-watcher' (calls)",
+      "to": "Create Component 'Daemon Watcher'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'daemon-watcher' to 'inbox-directory' (reads)",
+      "to": "Create Component 'Daemon Watcher'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'daemon-watcher' to 'inbox-directory' (reads)",
+      "to": "Create Entity 'Inbox Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'daemon-watcher' to 'sdlc-architect-agent' (calls)",
+      "to": "Create Component 'Daemon Watcher'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'daemon-watcher' to 'sdlc-architect-agent' (calls)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'mcp-server' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'mcp-server' (contains)",
+      "to": "Create Container 'MCP Server'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'mcp-server' to 'diffing-engine' (reads)",
+      "to": "Create Container 'MCP Server'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'mcp-server' to 'diffing-engine' (reads)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'mcp-server' to 'version-command' (contains)",
+      "to": "Create Container 'MCP Server'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'mcp-server' to 'version-command' (contains)",
+      "to": "Create Component 'Version Command'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'specs-directory' (writes)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'specs-directory' (writes)",
+      "to": "Create Entity 'Specs Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'diffing-engine' to 'specs-directory' (reads)",
+      "to": "Create Component 'Diffing Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'diffing-engine' to 'specs-directory' (reads)",
+      "to": "Create Entity 'Specs Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'implementer-agent' (calls)",
+      "to": "Create Component 'Parallel Task Runner'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'implementer-agent' (calls)",
+      "to": "Create Agent 'Implementer Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'implementer-agent' to 'specs-directory' (reads)",
+      "to": "Create Agent 'Implementer Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'implementer-agent' to 'specs-directory' (reads)",
+      "to": "Create Entity 'Specs Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'implementer-agent' to 'variance-report-router' (calls)",
+      "to": "Create Agent 'Implementer Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'implementer-agent' to 'variance-report-router' (calls)",
+      "to": "Create Component 'Variance Report Router'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'variance-report-router' to 'sdlc-architect-agent' (calls)",
+      "to": "Create Component 'Variance Report Router'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'variance-report-router' to 'sdlc-architect-agent' (calls)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'approval-gate' (calls)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'approval-gate' (calls)",
+      "to": "Create Component 'Approval Gate'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'approval-gate' to 'operational-modes-config' (reads)",
+      "to": "Create Component 'Approval Gate'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'approval-gate' to 'operational-modes-config' (reads)",
+      "to": "Create Entity 'Operational Modes Config'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'conflict-resolution-manager' (calls)",
+      "to": "Create Component 'Parallel Task Runner'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'parallel-task-runner' to 'conflict-resolution-manager' (calls)",
+      "to": "Create Component 'Conflict Resolution Manager'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'qa-swarm-orchestrator' to 'specialized-qa-agents' (calls)",
+      "to": "Create Module 'QA Swarm Orchestrator'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'qa-swarm-orchestrator' to 'specialized-qa-agents' (calls)",
+      "to": "Create Agent 'Specialized QA Agents'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'sdlc-researcher-agent' (calls)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'sdlc-researcher-agent' (calls)",
+      "to": "Create Agent 'SDLC Researcher Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-researcher-agent' to 'research-spikes-directory' (writes)",
+      "to": "Create Agent 'SDLC Researcher Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-researcher-agent' to 'research-spikes-directory' (writes)",
+      "to": "Create Entity 'Research Spikes Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'research-spikes-directory' (reads)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'research-spikes-directory' (reads)",
+      "to": "Create Entity 'Research Spikes Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'session-report-compiler' (calls)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'session-report-compiler' (calls)",
+      "to": "Create Component 'Session Report Compiler'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'session-report-compiler' to 'subagent-output-templates' (reads)",
+      "to": "Create Component 'Session Report Compiler'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'session-report-compiler' to 'subagent-output-templates' (reads)",
+      "to": "Create Entity 'Subagent Output Templates'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'telemetry-module' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'telemetry-module' (contains)",
+      "to": "Create Component 'Telemetry Module'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'telemetry-module' to 'telemetry-backend' (calls)",
+      "to": "Create Component 'Telemetry Module'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'telemetry-module' to 'telemetry-backend' (calls)",
+      "to": "Create Endpoint 'Telemetry Backend'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'telemetry-module' to 'aio-sdlc-config' (reads)",
+      "to": "Create Component 'Telemetry Module'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'telemetry-module' to 'aio-sdlc-config' (reads)",
+      "to": "Create Entity 'Unified Configuration File'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'tui-dashboard' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'tui-dashboard' (contains)",
+      "to": "Create Component 'TUI Dashboard'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'tui-dashboard' to 'shared-state-store' (reads)",
+      "to": "Create Component 'TUI Dashboard'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'tui-dashboard' to 'shared-state-store' (reads)",
+      "to": "Create Entity 'Shared State Store'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'shared-state-store' (writes)",
+      "to": "Create Container 'Agentic Orchestrator Loop'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'orchestrator-loop' to 'shared-state-store' (writes)",
+      "to": "Create Entity 'Shared State Store'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'version-command' (calls)",
+      "to": "Create Component 'CLI Entrypoint'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'cli-entrypoint' to 'version-command' (calls)",
+      "to": "Create Component 'Version Command'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'archive-directory' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'archive-directory' (contains)",
+      "to": "Create Entity 'Archive Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'prd-archiver' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'prd-archiver' (contains)",
+      "to": "Create Component 'PRD Archiver'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'prd-archiver' to 'inbox-directory' (reads)",
+      "to": "Create Component 'PRD Archiver'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'prd-archiver' to 'inbox-directory' (reads)",
+      "to": "Create Entity 'Inbox Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'prd-archiver' to 'archive-directory' (writes)",
+      "to": "Create Component 'PRD Archiver'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'prd-archiver' to 'archive-directory' (writes)",
+      "to": "Create Entity 'Archive Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'prd-archiver' (calls)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'prd-archiver' (calls)",
+      "to": "Create Component 'PRD Archiver'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'templates-directory' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'templates-directory' (contains)",
+      "to": "Create Entity 'Templates Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'artifact-templating-engine' (contains)",
+      "to": "Create System 'AIO Agentic SDLC System'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'aio-agentic-sdlc-system' to 'artifact-templating-engine' (contains)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'templates-directory' (reads)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'templates-directory' (reads)",
+      "to": "Create Entity 'Templates Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'artifact-templating-engine' (calls)",
+      "to": "Create Agent 'SDLC Intake Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-intake-agent' to 'artifact-templating-engine' (calls)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'artifact-templating-engine' (calls)",
+      "to": "Create Agent 'SDLC Architect Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-architect-agent' to 'artifact-templating-engine' (calls)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-researcher-agent' to 'artifact-templating-engine' (calls)",
+      "to": "Create Agent 'SDLC Researcher Agent'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'sdlc-researcher-agent' to 'artifact-templating-engine' (calls)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'inbox-directory' (writes)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'inbox-directory' (writes)",
+      "to": "Create Entity 'Inbox Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'specs-directory' (writes)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'specs-directory' (writes)",
+      "to": "Create Entity 'Specs Directory'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'research-spikes-directory' (writes)",
+      "to": "Create Component 'Artifact Templating Engine'",
+      "relation": "requires"
+    },
+    {
+      "from": "Connect 'artifact-templating-engine' to 'research-spikes-directory' (writes)",
+      "to": "Create Entity 'Research Spikes Directory'",
+      "relation": "requires"
+    }
+  ]
 }

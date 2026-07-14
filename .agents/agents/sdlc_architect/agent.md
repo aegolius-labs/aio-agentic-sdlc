@@ -7,7 +7,6 @@ tools:
   - replace_file_content
   - multi_replace_file_content
   - run_command
-  - call_mcp_tool
 ---
 
 # Technical Architect

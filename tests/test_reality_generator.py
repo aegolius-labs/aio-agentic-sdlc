@@ -35,23 +35,23 @@ def list_users():
         # Verify nodes
         node_ids = {n.id: n for n in dag.nodes.values()}
         
-        assert "system_root" in node_ids
-        assert node_ids["system_root"].type == NodeType.SYSTEM
+        assert generator._id_to_uuid("system_root") in node_ids
+        assert node_ids[generator._id_to_uuid("system_root")].type == NodeType.SYSTEM
         
-        assert "main" in node_ids
-        assert node_ids["main"].type == NodeType.MODULE
+        assert generator._id_to_uuid("main") in node_ids
+        assert node_ids[generator._id_to_uuid("main")].type == NodeType.MODULE
         
-        assert "main.UserModel" in node_ids
-        assert node_ids["main.UserModel"].type == NodeType.ENTITY
+        assert generator._id_to_uuid("main.UserModel") in node_ids
+        assert node_ids[generator._id_to_uuid("main.UserModel")].type == NodeType.ENTITY
         
-        assert "main.UserService" in node_ids
-        assert node_ids["main.UserService"].type == NodeType.COMPONENT
+        assert generator._id_to_uuid("main.UserService") in node_ids
+        assert node_ids[generator._id_to_uuid("main.UserService")].type == NodeType.COMPONENT
         
-        assert "main.UserService.get_user" in node_ids
-        assert node_ids["main.UserService.get_user"].type == NodeType.COMPONENT
+        assert generator._id_to_uuid("main.UserService.get_user") in node_ids
+        assert node_ids[generator._id_to_uuid("main.UserService.get_user")].type == NodeType.COMPONENT
         
-        assert "main.list_users" in node_ids
-        assert node_ids["main.list_users"].type == NodeType.ENDPOINT
+        assert generator._id_to_uuid("main.list_users") in node_ids
+        assert node_ids[generator._id_to_uuid("main.list_users")].type == NodeType.ENDPOINT
         
         # Verify edges
         edges = dag.edges
@@ -59,11 +59,11 @@ def list_users():
         def has_edge(source, target, type):
             return any(e.source == source and e.target == target and e.type == type for e in edges)
             
-        assert has_edge("system_root", "main", EdgeType.CONTAINS)
-        assert has_edge("main", "main.UserModel", EdgeType.CONTAINS)
-        assert has_edge("main", "main.UserService", EdgeType.CONTAINS)
-        assert has_edge("main.UserService", "main.UserService.get_user", EdgeType.CONTAINS)
-        assert has_edge("main", "main.list_users", EdgeType.CONTAINS)
+        assert has_edge(generator._id_to_uuid("system_root"), generator._id_to_uuid("main"), EdgeType.CONTAINS)
+        assert has_edge(generator._id_to_uuid("main"), generator._id_to_uuid("main.UserModel"), EdgeType.CONTAINS)
+        assert has_edge(generator._id_to_uuid("main"), generator._id_to_uuid("main.UserService"), EdgeType.CONTAINS)
+        assert has_edge(generator._id_to_uuid("main.UserService"), generator._id_to_uuid("main.UserService.get_user"), EdgeType.CONTAINS)
+        assert has_edge(generator._id_to_uuid("main"), generator._id_to_uuid("main.list_users"), EdgeType.CONTAINS)
         
         # Depends on
         # Note: os and datetime are not part of the nodes, so they should be filtered out by the generator.
@@ -85,4 +85,4 @@ def test_reality_generator_depends_on():
         def has_edge(source, target, type):
             return any(e.source == source and e.target == target and e.type == type for e in dag.edges)
             
-        assert has_edge("main", "utils", EdgeType.DEPENDS_ON)
+        assert has_edge(generator._id_to_uuid("main"), generator._id_to_uuid("utils"), EdgeType.DEPENDS_ON)

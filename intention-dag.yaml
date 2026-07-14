@@ -2,7 +2,7 @@ metadata:
   name: AIO Agentic SDLC
   version: 1.0.0
 nodes:
-- id: aio-agentic-sdlc-system
+- id: system_root
   type: system
   name: AIO Agentic SDLC System
   domain: sdlc
@@ -231,11 +231,23 @@ nodes:
   domain: core
   description: Programmatically generates standardized documentation artifacts from
     structured data.
+- id: traceability-validator
+  type: component
+  name: Traceability Validator
+  domain: qa
+  description: Automatically validates that Node IDs (GUID/Integer) consistently align
+    across intention DAG, reality DAG, specs, and codebase.
+- id: dag-schema-migrator
+  type: component
+  name: DAG Schema Migrator
+  domain: core
+  description: Tooling to migrate existing DAG schema states to enforce strict GUID/Integer
+    node IDs and eliminate fuzzy string matching.
 edges:
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: orchestrator-loop
   type: contains
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: dag-engine
   type: contains
 - source: orchestrator-loop
@@ -270,21 +282,29 @@ edges:
   target: qa-swarm-orchestrator
   type: calls
   description: Triggers QA validation after executing parallel tasks
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: sdlc-intake-agent
   type: contains
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: sdlc-architect-agent
   type: contains
 - source: sdlc-intake-agent
   target: inbox-directory
   type: writes
   description: Intake agent writes PRDs to inbox
+- source: sdlc-intake-agent
+  target: inbox-directory
+  type: reads
+  description: Intake agent reads existing PRDs to check for overlaps
+- source: sdlc-intake-agent
+  target: archive-directory
+  type: reads
+  description: Intake agent reads archived PRDs to check for historical overlaps
 - source: sdlc-architect-agent
   target: inbox-directory
   type: reads
   description: Architect reads PRDs from inbox
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: cli-entrypoint
   type: contains
 - source: cli-entrypoint
@@ -296,17 +316,17 @@ edges:
   target: orchestrator-loop
   type: calls
   description: Executes the orchestrator_loop via apply command
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: agent-format-migrator
   type: contains
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: unified-agent-definitions
   type: contains
 - source: agent-format-migrator
   target: unified-agent-definitions
   type: writes
   description: Normalizes agent configurations into the unified agent.md format.
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: aio-sdlc-config
   type: contains
 - source: aio-sdlc-config
@@ -333,7 +353,7 @@ edges:
 - source: daemon-watcher
   target: sdlc-architect-agent
   type: calls
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: mcp-server
   type: contains
 - source: mcp-server
@@ -389,7 +409,7 @@ edges:
 - source: session-report-compiler
   target: subagent-output-templates
   type: reads
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: telemetry-module
   type: contains
 - source: telemetry-module
@@ -399,7 +419,7 @@ edges:
   target: aio-sdlc-config
   type: reads
   description: Checks for opt-out flags
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: tui-dashboard
   type: contains
 - source: tui-dashboard
@@ -411,10 +431,10 @@ edges:
 - source: cli-entrypoint
   target: version-command
   type: calls
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: archive-directory
   type: contains
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: prd-archiver
   type: contains
 - source: prd-archiver
@@ -427,10 +447,10 @@ edges:
   target: prd-archiver
   type: calls
   description: Triggers archival after processing a PRD
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: templates-directory
   type: contains
-- source: aio-agentic-sdlc-system
+- source: system_root
   target: artifact-templating-engine
   type: contains
 - source: artifact-templating-engine
@@ -457,3 +477,21 @@ edges:
 - source: artifact-templating-engine
   target: research-spikes-directory
   type: writes
+- source: system_root
+  target: traceability-validator
+  type: contains
+- source: qa-swarm-orchestrator
+  target: traceability-validator
+  type: calls
+  description: Invokes traceability validation during QA to ensure Node ID alignment.
+- source: dag-engine
+  target: traceability-validator
+  type: calls
+  description: Validates Node ID constraints during DAG parsing and manipulation.
+- source: system_root
+  target: dag-schema-migrator
+  type: contains
+- source: cli-entrypoint
+  target: dag-schema-migrator
+  type: calls
+  description: Executes one-off migrations of DAG schemas to strict Node IDs.

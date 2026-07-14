@@ -1,0 +1,35 @@
+import os
+import yaml
+from aio_agentic_sdlc.cli import migrate_ids_cmd
+
+class DummyArgs:
+    pass
+
+def test_migrate_ids_maintains_cross_file_consistency(tmpdir, monkeypatch):
+    monkeypatch.chdir(tmpdir)
+
+    intention_data = {
+        "nodes": [{"id": "shared-node-1", "type": "module", "name": "Shared"}],
+        "edges": []
+    }
+    reality_data = {
+        "nodes": [{"id": "shared-node-1", "type": "module", "name": "Shared"}],
+        "edges": []
+    }
+
+    with open("intention-dag.yaml", "w") as f:
+        yaml.dump(intention_data, f)
+    with open("reality-dag.yaml", "w") as f:
+        yaml.dump(reality_data, f)
+
+    migrate_ids_cmd(DummyArgs())
+
+    with open("intention-dag.yaml", "r") as f:
+        int_data = yaml.safe_load(f)
+    with open("reality-dag.yaml", "r") as f:
+        real_data = yaml.safe_load(f)
+
+    int_id = int_data["nodes"][0]["id"]
+    real_id = real_data["nodes"][0]["id"]
+
+    assert int_id == real_id, f"IDs diverged! Intention: {int_id}, Reality: {real_id}"

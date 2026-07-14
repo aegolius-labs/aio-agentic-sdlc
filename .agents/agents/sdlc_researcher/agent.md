@@ -3,7 +3,6 @@ name: "sdlc_researcher"
 description: "Subagent responsible for deep technical research, prioritizing official documentation and academic papers, and producing traceable research artifacts."
 tools:
   - run_command
-  - call_mcp_tool
   - write_to_file
   - view_file
   - grep_search
