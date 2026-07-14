@@ -207,6 +207,67 @@ def check_duplicate_prd(
     except Exception as e:
         return f"Error checking for duplicates: {str(e)}"
 
+@mcp.tool()
+def validate_traceability(project_path: str = Field(".", description="Absolute path to the project directory")) -> str:
+    """Validate that the specs/ directory aligns with the mathematical DAGs via GUID frontmatter."""
+    try:
+        from .core import TraceabilityValidator
+        intention_path = os.path.join(project_path, "intention-dag.yaml")
+        reality_path = os.path.join(project_path, "reality-dag.yaml")
+        specs_dir = os.path.join(project_path, "specs")
+        code_dir = os.path.join(project_path, "src")
+        validator = TraceabilityValidator(intention_path=intention_path, reality_path=reality_path, specs_dir=specs_dir, code_dir=code_dir)
+        errors = validator.validate()
+        if not errors:
+            return "Traceability validation passed. No drift detected."
+        return "Traceability Drift Detected:\n" + "\n".join(errors)
+    except Exception as e:
+        return f"Error validating traceability: {str(e)}"
+
+@mcp.tool()
+def promote_spec(
+    feature_name: str = Field(..., description="The name of the feature spec file (e.g. feature-123.md)"),
+    project_path: str = Field(".", description="Absolute path to the project directory")
+) -> str:
+    """Move a validated micro-spec from changes/ to the canonical specs/ directory."""
+    try:
+        import shutil
+        changes_dir = os.path.join(project_path, "changes")
+        specs_dir = os.path.join(project_path, "specs")
+        os.makedirs(specs_dir, exist_ok=True)
+        
+        src_path = os.path.join(changes_dir, feature_name)
+        dst_path = os.path.join(specs_dir, feature_name)
+        
+        if not os.path.exists(src_path):
+            return f"Error: Spec '{feature_name}' not found in changes/ directory."
+            
+        shutil.move(src_path, dst_path)
+        return f"Successfully promoted spec '{feature_name}' to specs/."
+    except Exception as e:
+        return f"Error promoting spec: {str(e)}"
+
+@mcp.tool()
+def generate_reality(
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+    output: str = Field("reality-dag.yaml", description="Output filename for the Reality DAG"),
+    system: str = Field("system_root", description="System root context for DAG generation")
+) -> str:
+    """Scan the codebase and update the Reality DAG via dag-tool."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["uv", "run", "dag-tool", "generate-reality", "--dir", project_path, "--output", output, "--system", system],
+            cwd=project_path, capture_output=True, text=True
+        )
+        if result.returncode == 0:
+            return f"Reality DAG successfully generated at {output}.\n{result.stdout}"
+        else:
+            return f"Error generating Reality DAG (Exit Code {result.returncode}):\n{result.stderr}"
+    except Exception as e:
+        return f"Error executing dag-tool: {str(e)}"
+
+
 def main():
     mcp.run()
 
