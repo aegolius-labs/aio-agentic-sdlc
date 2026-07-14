@@ -43,11 +43,10 @@ def get_db(project_path: str) -> sqlite3.Connection:
     return db
 
 def sync_documents(project_path: str, db: sqlite3.Connection):
-    """Scan inbox/ and archive/ and update embeddings for new/modified/deleted .md files."""
-    inbox_path = os.path.join(project_path, "inbox", "*.md")
-    archive_path = os.path.join(project_path, "archive", "*.md")
+    """Scan specs/ and update embeddings for new/modified/deleted .md files."""
+    specs_path = os.path.join(project_path, "specs", "**", "*.md")
     
-    files = glob.glob(inbox_path) + glob.glob(archive_path)
+    files = glob.glob(specs_path, recursive=True)
     
     cursor = db.cursor()
     # Get existing metadata

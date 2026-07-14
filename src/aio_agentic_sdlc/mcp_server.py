@@ -191,7 +191,7 @@ def check_duplicate_prd(
     project_path: str = Field(".", description="Absolute path to the project directory"),
     similarity_threshold: float = Field(0.2, description="Cosine distance threshold (lower = more strict similarity, 0.2 means 80% similar)")
 ) -> str:
-    """Check if the proposed PRD content is semantically similar to any existing PRDs in inbox/ or archive/."""
+    """Check if the proposed PRD content is semantically similar to any existing PRDs in specs/."""
     try:
         from .semantic_dedup import find_duplicate_prds
         results = find_duplicate_prds(proposed_content, project_path, similarity_threshold)
