@@ -38,6 +38,13 @@ class MarkdownAgentParser(BaseFileParser):
 
                     if name and is_agent:
                         agent_id = name
+                        
+                        # Extract Node ID from metadata (if present)
+                        if 'metadata' in data and isinstance(data['metadata'], dict):
+                            node_id = data['metadata'].get('node_id')
+                            if node_id:
+                                agent_id = node_id
+                                
                         generator._add_node(
                             id=agent_id,
                             node_type=NodeType.AGENT,

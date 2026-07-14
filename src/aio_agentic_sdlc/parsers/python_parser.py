@@ -1,15 +1,18 @@
 import os
-from tree_sitter import Language, Parser
+import re
+from tree_sitter import Language, Parser, Query, QueryCursor
 import tree_sitter_python as tspython
 from aio_agentic_sdlc.dag_models import NodeType, EdgeType
 from .base import BaseFileParser
 
 PYTHON_LANGUAGE = Language(tspython.language())
+NODE_ID_PATTERN = re.compile(r'#\s*aio-sdlc-node:\s*([a-f0-9\-]+)', re.IGNORECASE)
 
 class TreeSitterParser(BaseFileParser):
     def __init__(self, language: Language, visitor_class: type):
         self.parser = Parser(language)
         self.visitor_class = visitor_class
+        self.query = Query(language, "(comment) @comment")
 
     def parse(self, generator, file_path: str):
         try:
@@ -20,7 +23,18 @@ class TreeSitterParser(BaseFileParser):
             
         tree = self.parser.parse(bytes(content, 'utf8'))
         
-        module_id = generator._resolve_module_id(file_path)
+        module_uuid = None
+        cursor = QueryCursor(self.query)
+        captures = cursor.captures(tree.root_node)
+        
+        for node in captures.get('comment', []):
+            text = node.text.decode('utf8')
+            match = NODE_ID_PATTERN.search(text)
+            if match:
+                module_uuid = match.group(1)
+                break
+                
+        module_id = module_uuid if module_uuid else generator._resolve_module_id(file_path)
         
         generator._add_node(
             id=module_id,
