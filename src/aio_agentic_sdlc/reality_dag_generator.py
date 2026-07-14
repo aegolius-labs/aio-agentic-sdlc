@@ -190,10 +190,19 @@ class RealityDAGGenerator:
             description="Root project system"
         )
         
+    def _id_to_uuid(self, id_str: str) -> str:
+        import uuid
+        try:
+            uuid.UUID(id_str)
+            return id_str
+        except ValueError:
+            return str(uuid.uuid5(uuid.NAMESPACE_DNS, id_str))
+
     def _add_node(self, id: str, node_type: NodeType, name: str, domain: str = None, description: str = None, attributes: Dict[str, Any] = None):
-        if id not in self.nodes:
-            self.nodes[id] = DAGNode(
-                id=id,
+        uid = self._id_to_uuid(id)
+        if uid not in self.nodes:
+            self.nodes[uid] = DAGNode(
+                id=uid,
                 type=node_type,
                 name=name,
                 domain=domain,
@@ -202,10 +211,12 @@ class RealityDAGGenerator:
             )
 
     def _add_edge(self, source: str, target: str, edge_type: EdgeType, description: str = None):
+        u_source = self._id_to_uuid(source)
+        u_target = self._id_to_uuid(target)
         for edge in self.edges:
-            if edge.source == source and edge.target == target and edge.type == edge_type:
+            if edge.source == u_source and edge.target == u_target and edge.type == edge_type:
                 return
-        self.edges.append(Edge(source=source, target=target, type=edge_type, description=description))
+        self.edges.append(Edge(source=u_source, target=u_target, type=edge_type, description=description))
 
     def _resolve_module_id(self, file_path: str) -> str:
         rel_path = os.path.relpath(file_path, self.root_dir)

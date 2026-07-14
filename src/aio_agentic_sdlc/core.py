@@ -445,3 +445,50 @@ def remove_item(name, project_path="."):
             item['blockers'].remove(name)
             
     save_backlog(data, project_path)
+
+import os
+import yaml
+
+class TraceabilityValidator:
+    def __init__(self, intention_path="intention-dag.yaml", reality_path="reality-dag.yaml", specs_dir="specs", code_dir="src"):
+        self.intention_path = intention_path
+        self.reality_path = reality_path
+        self.specs_dir = specs_dir
+        self.code_dir = code_dir
+
+    def validate(self):
+        errors = []
+        intention_ids = self._get_dag_ids(self.intention_path)
+        reality_ids = self._get_dag_ids(self.reality_path)
+        
+        # 1. Intention vs Reality
+        if os.path.exists(self.reality_path):
+            for i_id in intention_ids:
+                if i_id not in reality_ids:
+                    errors.append(f"Traceability Error: Intention Node {i_id} is missing in Reality DAG.")
+                    
+            for r_id in reality_ids:
+                if r_id not in intention_ids:
+                    errors.append(f"Traceability Error: Reality Node {r_id} is missing in Intention DAG.")
+                    
+        # 2. Specs linkage
+        if os.path.exists(self.specs_dir):
+            for filename in os.listdir(self.specs_dir):
+                if filename.endswith(".md"):
+                    filepath = os.path.join(self.specs_dir, filename)
+                    with open(filepath, "r", encoding="utf-8") as f:
+                        content = f.read()
+                        found = any(i_id in content for i_id in intention_ids)
+                        if not found and intention_ids:
+                            errors.append(f"Traceability Error: Spec {filename} does not reference any known Node ID.")
+
+        return errors
+
+    def _get_dag_ids(self, path):
+        if not os.path.exists(path):
+            return set()
+        with open(path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+            nodes = data.get("nodes", [])
+            return {str(n.get("id")) for n in nodes if isinstance(n, dict) and "id" in n}
+

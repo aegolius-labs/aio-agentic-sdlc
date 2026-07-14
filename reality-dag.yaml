@@ -6,6 +6,24 @@ nodes:
   type: system
   name: System
   description: Root project system
+- id: aio_agentic_sdlc.archiver
+  type: module
+  name: archiver.py
+  description: Python module aio_agentic_sdlc.archiver
+- id: aio_agentic_sdlc.archiver.PRDArchiver
+  type: component
+  name: PRDArchiver
+  description: Class PRDArchiver
+- id: aio_agentic_sdlc.archiver.PRDArchiver.__init__
+  type: component
+  name: __init__
+  description: Function __init__
+- id: aio_agentic_sdlc.archiver.PRDArchiver.archive
+  type: component
+  name: archive
+  description: "\n        Moves a file to the archive directory.\n        If a file\
+    \ with the same name exists, it appends a timestamp to prevent overwriting.\n\
+    \        Returns the new path of the archived file.\n        "
 - id: aio_agentic_sdlc.cli
   type: module
   name: cli.py
@@ -54,6 +72,14 @@ nodes:
   type: component
   name: sync_cmd
   description: Function sync_cmd
+- id: aio_agentic_sdlc.cli.plan_cmd
+  type: component
+  name: plan_cmd
+  description: Function plan_cmd
+- id: aio_agentic_sdlc.cli.apply_cmd
+  type: component
+  name: apply_cmd
+  description: Function apply_cmd
 - id: aio_agentic_sdlc.cli.main
   type: component
   name: main
@@ -311,9 +337,9 @@ nodes:
 - id: aio_agentic_sdlc.diffing_engine.DiffingEngine
   type: component
   name: DiffingEngine
-  description: 'Computes the difference between an Intention DAG and a Reality DAG,
-
-    generating a backlog of tasks required to reconcile Reality with Intention.'
+  description: "\n    Computes the difference between an Intention DAG and a Reality\
+    \ DAG,\n    generating a backlog of tasks required to reconcile Reality with Intention.\n\
+    \    "
 - id: aio_agentic_sdlc.diffing_engine.DiffingEngine.__init__
   type: component
   name: __init__
@@ -321,9 +347,8 @@ nodes:
 - id: aio_agentic_sdlc.diffing_engine.DiffingEngine.calculate_diff
   type: component
   name: calculate_diff
-  description: 'Calculates the diff between Intention DAG and Reality DAG.
-
-    Returns a dictionary representing Backlog items.'
+  description: "\n        Calculates the diff between Intention DAG and Reality DAG.\n\
+    \        Returns a dictionary representing Backlog items.\n        "
 - id: aio_agentic_sdlc.github
   type: module
   name: github.py
@@ -470,48 +495,79 @@ nodes:
   type: component
   name: block_task
   description: Add a blocker to a task, preventing it from being worked on.
+- id: aio_agentic_sdlc.mcp_server.generate_document
+  type: component
+  name: generate_document
+  description: Generate a document from a template using the provided data.
 - id: aio_agentic_sdlc.mcp_server.main
   type: component
   name: main
   description: Function main
+- id: aio_agentic_sdlc.orchestrator_loop
+  type: module
+  name: orchestrator_loop.py
+  description: Python module aio_agentic_sdlc.orchestrator_loop
+- id: aio_agentic_sdlc.orchestrator_loop.ingest_diff
+  type: component
+  name: ingest_diff
+  description: "\n    Loads intention/reality DAGs via DAGManager, uses DiffingEngine\
+    \ to calculate the diff,\n    and merges the resulting tasks and edges into the\
+    \ local backlog (backlog.json)\n    using core.load_backlog and core.save_backlog,\
+    \ followed by core.prioritize_items.\n    "
+- id: aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent
+  type: component
+  name: execute_task_with_agent
+  description: "\n    Instantiates the Agent using LocalAgentConfig. Configures system_instructions\n\
+    \    for the 'sdlc_orchestrator' role, applies CapabilitiesConfig, and streams\n\
+    \    the chat response for the task provided.\n    "
+- id: aio_agentic_sdlc.orchestrator_loop.main_loop
+  type: component
+  name: main_loop
+  description: "\n    1. Invokes ingest_diff().\n    2. Fetches the highest-priority\
+    \ unblocked task via core.get_next_item().\n    3. Sets task status to 'In Progress'\
+    \ via core.set_status().\n    4. Awaits execute_task_with_agent(task).\n    5.\
+    \ Marks status 'Completed' (or 'Blocked' on failure).\n    "
 - id: aio_agentic_sdlc.reality_dag_generator
   type: module
   name: reality_dag_generator.py
   description: Python module aio_agentic_sdlc.reality_dag_generator
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
   type: component
-  name: PythonASTVisitor
-  description: Class PythonASTVisitor
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.__init__
+  name: TreeSitterVisitor
+  description: Class TreeSitterVisitor
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.__init__
   type: component
   name: __init__
   description: Function __init__
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_ClassDef
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit
   type: component
-  name: visit_ClassDef
-  description: Function visit_ClassDef
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_FunctionDef
+  name: visit
+  description: Function visit
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_decorated_definition
   type: component
-  name: visit_FunctionDef
-  description: Function visit_FunctionDef
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_AsyncFunctionDef
+  name: visit_decorated_definition
+  description: Function visit_decorated_definition
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_class_definition
   type: component
-  name: visit_AsyncFunctionDef
-  description: Function visit_AsyncFunctionDef
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_Import
+  name: visit_class_definition
+  description: Function visit_class_definition
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_function_definition
   type: component
-  name: visit_Import
-  description: Function visit_Import
-- id: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_ImportFrom
+  name: visit_function_definition
+  description: Function visit_function_definition
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_statement
   type: component
-  name: visit_ImportFrom
-  description: Function visit_ImportFrom
+  name: visit_import_statement
+  description: Function visit_import_statement
+- id: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_from_statement
+  type: component
+  name: visit_import_from_statement
+  description: Function visit_import_from_statement
 - id: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator
   type: component
   name: RealityDAGGenerator
-  description: 'Generates a Reality DAG by statically analyzing source code.
-
-    Currently implements a Python AST parser.'
+  description: "\n    Generates a Reality DAG by statically analyzing source code.\n\
+    \    Implements a tree-sitter parser to be stack-agnostic.\n    "
 - id: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.__init__
   type: component
   name: __init__
@@ -524,6 +580,23 @@ nodes:
   type: component
   name: generate
   description: Function generate
+- id: aio_agentic_sdlc.templating_engine
+  type: module
+  name: templating_engine.py
+  description: Python module aio_agentic_sdlc.templating_engine
+- id: aio_agentic_sdlc.templating_engine.get_project_root
+  type: component
+  name: get_project_root
+  description: Returns the project root directory.
+- id: aio_agentic_sdlc.templating_engine.generate_document
+  type: component
+  name: generate_document
+  description: "\n    Generates a document from a Jinja2 template and writes it to\
+    \ output_path.\n    \n    Args:\n        template_name: The name of the template\
+    \ file in the templates/ directory.\n        data: A dictionary of data to populate\
+    \ the template.\n        output_path: The path where the generated document will\
+    \ be saved.\n        \n    Returns:\n        The content of the generated document.\n\
+    \    "
 - id: aio_agentic_sdlc.__init__
   type: module
   name: __init__.py
@@ -535,9 +608,21 @@ nodes:
 - id: utils.markdown_parser.extract_h2
   type: component
   name: extract_h2
-  description: Reads a markdown file and returns a list of strings containing all
-    H2 headers (lines starting with '## ').
+  description: "\n    Reads a markdown file and returns a list of strings containing\
+    \ all H2 headers (lines starting with '## ').\n    "
 edges:
+- source: system_root
+  target: aio_agentic_sdlc.archiver
+  type: contains
+- source: aio_agentic_sdlc.archiver
+  target: aio_agentic_sdlc.archiver.PRDArchiver
+  type: contains
+- source: aio_agentic_sdlc.archiver.PRDArchiver
+  target: aio_agentic_sdlc.archiver.PRDArchiver.__init__
+  type: contains
+- source: aio_agentic_sdlc.archiver.PRDArchiver
+  target: aio_agentic_sdlc.archiver.PRDArchiver.archive
+  type: contains
 - source: system_root
   target: aio_agentic_sdlc.cli
   type: contains
@@ -573,6 +658,12 @@ edges:
   type: contains
 - source: aio_agentic_sdlc.cli
   target: aio_agentic_sdlc.cli.sync_cmd
+  type: contains
+- source: aio_agentic_sdlc.cli
+  target: aio_agentic_sdlc.cli.plan_cmd
+  type: contains
+- source: aio_agentic_sdlc.cli
+  target: aio_agentic_sdlc.cli.apply_cmd
   type: contains
 - source: aio_agentic_sdlc.cli
   target: aio_agentic_sdlc.cli.main
@@ -902,7 +993,28 @@ edges:
   target: aio_agentic_sdlc.mcp_server.block_task
   type: contains
 - source: aio_agentic_sdlc.mcp_server
+  target: aio_agentic_sdlc.mcp_server.generate_document
+  type: contains
+- source: aio_agentic_sdlc.mcp_server
   target: aio_agentic_sdlc.mcp_server.main
+  type: contains
+- source: system_root
+  target: aio_agentic_sdlc.orchestrator_loop
+  type: contains
+- source: aio_agentic_sdlc.orchestrator_loop
+  target: aio_agentic_sdlc.dag_manager
+  type: depends_on
+- source: aio_agentic_sdlc.orchestrator_loop
+  target: aio_agentic_sdlc.diffing_engine
+  type: depends_on
+- source: aio_agentic_sdlc.orchestrator_loop
+  target: aio_agentic_sdlc.orchestrator_loop.ingest_diff
+  type: contains
+- source: aio_agentic_sdlc.orchestrator_loop
+  target: aio_agentic_sdlc.orchestrator_loop.execute_task_with_agent
+  type: contains
+- source: aio_agentic_sdlc.orchestrator_loop
+  target: aio_agentic_sdlc.orchestrator_loop.main_loop
   type: contains
 - source: system_root
   target: aio_agentic_sdlc.reality_dag_generator
@@ -914,25 +1026,28 @@ edges:
   target: aio_agentic_sdlc.dag_models
   type: depends_on
 - source: aio_agentic_sdlc.reality_dag_generator
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
   type: contains
-- source: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.__init__
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.__init__
   type: contains
-- source: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_ClassDef
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit
   type: contains
-- source: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_FunctionDef
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_decorated_definition
   type: contains
-- source: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_AsyncFunctionDef
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_class_definition
   type: contains
-- source: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_Import
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_function_definition
   type: contains
-- source: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor
-  target: aio_agentic_sdlc.reality_dag_generator.PythonASTVisitor.visit_ImportFrom
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_statement
+  type: contains
+- source: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor
+  target: aio_agentic_sdlc.reality_dag_generator.TreeSitterVisitor.visit_import_from_statement
   type: contains
 - source: aio_agentic_sdlc.reality_dag_generator
   target: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator
@@ -945,6 +1060,15 @@ edges:
   type: contains
 - source: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator
   target: aio_agentic_sdlc.reality_dag_generator.RealityDAGGenerator.generate
+  type: contains
+- source: system_root
+  target: aio_agentic_sdlc.templating_engine
+  type: contains
+- source: aio_agentic_sdlc.templating_engine
+  target: aio_agentic_sdlc.templating_engine.get_project_root
+  type: contains
+- source: aio_agentic_sdlc.templating_engine
+  target: aio_agentic_sdlc.templating_engine.generate_document
   type: contains
 - source: system_root
   target: aio_agentic_sdlc.__init__

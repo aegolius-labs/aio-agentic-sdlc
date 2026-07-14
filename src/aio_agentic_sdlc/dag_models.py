@@ -26,7 +26,7 @@ class Metadata(BaseModel):
     version: str
 
 class Node(BaseModel):
-    id: str
+    id: str = Field(pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
     type: NodeType
     name: str
     domain: Optional[str] = None
@@ -34,7 +34,7 @@ class Node(BaseModel):
     attributes: Optional[Dict[str, Any]] = None
 
 class Edge(BaseModel):
-    source: str
-    target: str
+    source: str = Field(pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
+    target: str = Field(pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
     type: EdgeType
     description: Optional[str] = None

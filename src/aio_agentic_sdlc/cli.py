@@ -487,6 +487,52 @@ def apply_cmd(args):
         print(f"Error during apply: {e}", file=sys.stderr)
         sys.exit(1)
 
+def migrate_ids_cmd(args):
+    import os
+    import uuid
+    import yaml
+
+    id_map = {}
+
+    def migrate_file(filepath):
+        if not os.path.exists(filepath):
+            return
+        print(f"Migrating {filepath}...")
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+
+        nodes = data.get("nodes", [])
+        edges = data.get("edges", [])
+        
+        migrated_count = 0
+        for node in nodes:
+            old_id = str(node.get("id", ""))
+            try:
+                # check if already a valid UUID
+                uuid.UUID(old_id)
+            except ValueError:
+                # generate a new UUID
+                if old_id not in id_map:
+                    id_map[old_id] = str(uuid.uuid4())
+                node["id"] = id_map[old_id]
+                migrated_count += 1
+
+        for edge in edges:
+            old_source = str(edge.get("source", ""))
+            old_target = str(edge.get("target", ""))
+            if old_source in id_map:
+                edge["source"] = id_map[old_source]
+            if old_target in id_map:
+                edge["target"] = id_map[old_target]
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, sort_keys=False, default_flow_style=False)
+        print(f"Migrated {migrated_count} node IDs in {filepath}.")
+
+    migrate_file("intention-dag.yaml")
+    migrate_file("reality-dag.yaml")
+    print("Migration complete.")
+
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
@@ -554,6 +600,8 @@ def main():
     
     p_apply = subparsers.add_parser('apply', help="Apply the diff and run the SDLC orchestrator loop")
 
+    p_migrate = subparsers.add_parser('migrate-ids', help="Migrate existing DAG schemas to enforce strict GUID node IDs")
+
     args = parser.parse_args()
 
     try:
@@ -570,6 +618,7 @@ def main():
         elif args.command == 'sync': sync_cmd(args)
         elif args.command == 'plan': plan_cmd(args)
         elif args.command == 'apply': apply_cmd(args)
+        elif args.command == 'migrate-ids': migrate_ids_cmd(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

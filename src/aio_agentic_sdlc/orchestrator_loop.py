@@ -20,19 +20,23 @@ def ingest_diff():
     
     backlog = core.load_backlog() or {}
     
-    existing_items = {item['id']: item for item in backlog.get('items', [])}
-    for task in tasks.values() if isinstance(tasks, dict) else tasks:
-        if isinstance(task, dict) and 'id' in task:
-            existing_items[task['id']] = task
+    existing_items = backlog.get('nodes', {})
+    for task_name, task in (tasks.items() if isinstance(tasks, dict) else tasks):
+        if isinstance(task, dict):
+            task['id'] = task.get('id', task_name)
+            task['name'] = task.get('name', task_name)
+            existing_items[task['name']] = task
         elif hasattr(task, 'id'):
-            existing_items[task.id] = task.__dict__
+            existing_items[getattr(task, 'name', task.id)] = task.__dict__
     
-    backlog['items'] = list(existing_items.values())
+    backlog['nodes'] = existing_items
     
-    existing_edges = {(e['source'], e['target']): e for e in backlog.get('edges', [])}
+    existing_edges = {(e.get('source', e.get('from')), e.get('target', e.get('to'))): e for e in backlog.get('edges', [])}
     for edge in edges:
-        if isinstance(edge, dict) and 'source' in edge and 'target' in edge:
-             existing_edges[(edge['source'], edge['target'])] = edge
+        if isinstance(edge, dict) and ('source' in edge or 'from' in edge):
+             src = edge.get('source', edge.get('from'))
+             tgt = edge.get('target', edge.get('to'))
+             existing_edges[(src, tgt)] = edge
         elif hasattr(edge, 'source') and hasattr(edge, 'target'):
              existing_edges[(edge.source, edge.target)] = edge.__dict__
             
