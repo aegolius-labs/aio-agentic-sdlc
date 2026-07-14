@@ -43,7 +43,7 @@ def get_db(project_path: str) -> sqlite3.Connection:
     return db
 
 def sync_documents(project_path: str, db: sqlite3.Connection):
-    """Scan inbox/ and archive/ and update embeddings for new/modified .md files."""
+    """Scan inbox/ and archive/ and update embeddings for new/modified/deleted .md files."""
     inbox_path = os.path.join(project_path, "inbox", "*.md")
     archive_path = os.path.join(project_path, "archive", "*.md")
     
@@ -56,27 +56,45 @@ def sync_documents(project_path: str, db: sqlite3.Connection):
     
     to_insert = []
     to_update = []
+    to_delete = []
+    current_files = set()
     
     for filepath in files:
         stat = os.stat(filepath)
         mtime = stat.st_mtime
         
-        # Check if file needs embedding
         rel_path = os.path.relpath(filepath, project_path)
+        current_files.add(rel_path)
+        
+        # Check if file needs embedding
         if rel_path not in existing:
             to_insert.append((rel_path, filepath, mtime))
         elif mtime > existing[rel_path]["last_modified"]:
             to_update.append((existing[rel_path]["rowid"], rel_path, filepath, mtime))
             
-    if not to_insert and not to_update:
+    # Check for deleted files
+    for rel_path, data in existing.items():
+        if rel_path not in current_files:
+            to_delete.append(data["rowid"])
+            
+    if not to_insert and not to_update and not to_delete:
         return
         
     model = get_model()
     
+    # Process deletions
+    for rowid in to_delete:
+        cursor.execute("DELETE FROM prd_metadata WHERE rowid = ?", (rowid,))
+        cursor.execute("DELETE FROM prd_embeddings WHERE rowid = ?", (rowid,))
+    
     # Process insertions
     for rel_path, filepath, mtime in to_insert:
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read()
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+        except UnicodeDecodeError:
+            continue
+            
         embedding = model.encode([content])[0]
         
         # Insert metadata to get rowid
@@ -87,8 +105,12 @@ def sync_documents(project_path: str, db: sqlite3.Connection):
         
     # Process updates
     for rowid, rel_path, filepath, mtime in to_update:
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read()
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+        except UnicodeDecodeError:
+            continue
+            
         embedding = model.encode([content])[0]
         
         cursor.execute("UPDATE prd_metadata SET last_modified = ? WHERE rowid = ?", (mtime, rowid))

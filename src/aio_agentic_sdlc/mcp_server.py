@@ -175,6 +175,11 @@ def generate_document(
         if not output_path.startswith(abs_target + os.sep) and output_path != abs_target:
             return f"Error generating document: output_filename resolves outside of target_dir."
             
+        # Security: Prevent overwriting internal/sensitive folders
+        rel_output = os.path.relpath(output_path, cwd).replace('\\', '/')
+        if rel_output.startswith('.agents/') or rel_output.startswith('src/') or rel_output.startswith('.git/'):
+            return f"Error generating document: Cannot generate documents inside protected directories (.agents, src, .git)."
+            
         generate_document_from_template(template_name, data, output_path)
         return f"Document successfully generated at {output_path}."
     except Exception as e:
