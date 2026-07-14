@@ -86,3 +86,33 @@ def test_reality_generator_depends_on():
             return any(e.source == source and e.target == target and e.type == type for e in dag.edges)
             
         assert has_edge(generator._id_to_uuid("main"), generator._id_to_uuid("utils"), EdgeType.DEPENDS_ON)
+
+def test_reality_generator_agents():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        agents_dir = os.path.join(tmpdir, ".agents", "agents")
+        os.makedirs(agents_dir, exist_ok=True)
+        agent_content = """---
+name: ArchitectAgent
+type: agent
+description: An agent that designs architecture.
+---
+# Some body
+"""
+        with open(os.path.join(agents_dir, "architect.md"), "w", encoding="utf-8") as f:
+            f.write(agent_content)
+
+        generator = RealityDAGGenerator(root_dir=tmpdir, system_name="TestSystem")
+        dag = generator.generate()
+
+        node_ids = {n.id: n for n in dag.nodes.values()}
+        
+        agent_id = generator._id_to_uuid("ArchitectAgent")
+        assert agent_id in node_ids
+        assert node_ids[agent_id].type == NodeType.AGENT
+        assert node_ids[agent_id].name == "ArchitectAgent"
+        assert node_ids[agent_id].description == "An agent that designs architecture."
+
+        def has_edge(source, target, type):
+            return any(e.source == source and e.target == target and e.type == type for e in dag.edges)
+            
+        assert has_edge(generator._id_to_uuid("system_root"), agent_id, EdgeType.CONTAINS)
