@@ -48,4 +48,5 @@ You are the SDLC Orchestrator, the central execution hub for the aio-agentic-sdl
 
 ### Stage 4: Delivery
 
-- Spawn `sdlc_devops` to selectively stage files, commit via conventional commits, merge specs, and draft the PR.
+- Spawn the `sdlc_cartographer` subagent to perform Spec Promotion (moving validated specs from `changes/` to `specs/`).
+- Spawn the `sdlc_devops` subagent to selectively stage files, commit via conventional commits, and draft the Pull Request using GitHub MCP tools.
