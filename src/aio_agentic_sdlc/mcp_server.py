@@ -180,6 +180,28 @@ def generate_document(
     except Exception as e:
         return f"Error generating document: {str(e)}"
 
+@mcp.tool()
+def check_duplicate_prd(
+    proposed_content: str = Field(..., description="The content of the proposed PRD to check for duplicates"),
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+    similarity_threshold: float = Field(0.2, description="Cosine distance threshold (lower = more strict similarity, 0.2 means 80% similar)")
+) -> str:
+    """Check if the proposed PRD content is semantically similar to any existing PRDs in inbox/ or archive/."""
+    try:
+        from .semantic_dedup import find_duplicate_prds
+        results = find_duplicate_prds(proposed_content, project_path, similarity_threshold)
+        if not results:
+            return "No duplicates found."
+        
+        output = "Potential duplicates found:\n"
+        for res in results:
+            output += f"- {res['filepath']} (Similarity: {res['similarity_score']:.2f})\n"
+        return output
+    except ImportError:
+        return "Error: Semantic search dependencies not installed. Ensure sentence-transformers and sqlite-vec are available."
+    except Exception as e:
+        return f"Error checking for duplicates: {str(e)}"
+
 def main():
     mcp.run()
 
