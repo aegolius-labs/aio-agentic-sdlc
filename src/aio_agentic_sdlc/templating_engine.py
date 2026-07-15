@@ -21,12 +21,12 @@ def generate_document(template_name: str, data: Dict[str, Any], output_path: str
     Returns:
         The content of the generated document.
     """
-    # Prefer cwd if templates/ exists there, else use project root
+    # Prefer cwd if templates/ exists there, else use package templates
     cwd_templates = Path.cwd() / "templates"
     if cwd_templates.exists():
         templates_dir = cwd_templates
     else:
-        templates_dir = get_project_root() / "templates"
+        templates_dir = Path(__file__).parent / "templates"
         
     if not templates_dir.exists():
         raise FileNotFoundError(f"Templates directory not found at {templates_dir}")
