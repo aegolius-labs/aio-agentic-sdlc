@@ -7,8 +7,8 @@ tools:
   - grep_search
   - invoke_subagent
   - manage_subagents
+  - call_mcp_tool
   - send_message
-  - mcp_agentic_backlog_get_next_item
 ---
 
 # SDLC Orchestrator
@@ -37,7 +37,7 @@ You are the SDLC Orchestrator, the central execution hub for the aio-agentic-sdl
 
 - Spawn the `sdlc_cartographer` subagent to generate the Reality DAG and validate traceability.
 - Resolve any flagged Drift according to the Drift Triage principle.
-- Use the `mcp_agentic_backlog_get_next_item` tool to pull the highest priority unblocked node from the DAG.
+- Use the `call_mcp_tool to invoke get_next_item` tool to pull the highest priority unblocked node from the DAG.
 
 ### Stage 3: Delegation & QA Loop
 

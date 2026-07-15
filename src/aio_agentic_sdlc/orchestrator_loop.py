@@ -1,3 +1,4 @@
+# aio-sdlc-node: 54b91d55-08fe-48df-be35-445be7cd1e46
 import asyncio
 from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
 from aio_agentic_sdlc.dag_manager import DAGManager
@@ -7,11 +8,11 @@ from aio_agentic_sdlc import core
 def ingest_diff():
     """
     Loads intention/reality DAGs via DAGManager, uses DiffingEngine to calculate the diff,
-    and merges the resulting tasks and edges into the local backlog (backlog.json)
+    and merges the resulting tasks and edges into the local backlog (.aio-agentic-sdlc/backlog.json)
     using core.load_backlog and core.save_backlog, followed by core.prioritize_items.
     """
-    intention_dag = DAGManager.load("intention-dag.yaml")
-    reality_dag = DAGManager.load("reality-dag.yaml")
+    intention_dag = DAGManager.load(".aio-agentic-sdlc/intention-dag.yaml")
+    reality_dag = DAGManager.load(".aio-agentic-sdlc/reality-dag.yaml")
     
     diffing_engine = DiffingEngine(intention_dag, reality_dag)
     diff = diffing_engine.calculate_diff()

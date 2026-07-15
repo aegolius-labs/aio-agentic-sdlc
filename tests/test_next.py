@@ -30,6 +30,8 @@ def _make_item(impact, effort, status="New", blockers=None, requires=None, **ext
 
 
 def _save(items_dict):
+    import os
+    os.makedirs('.aio-agentic-sdlc', exist_ok=True)
     save_backlog({"items": items_dict})
 
 

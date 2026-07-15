@@ -67,6 +67,8 @@ def _save(items_dict):
         if "item_type" not in node:
             node["item_type"] = "Task"
         nodes[name] = node
+    import os
+    os.makedirs('.aio-agentic-sdlc', exist_ok=True)
     save_backlog({"nodes": nodes, "edges": edges})
 
 

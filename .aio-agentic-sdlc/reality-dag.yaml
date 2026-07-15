@@ -6,10 +6,6 @@ nodes:
   type: system
   name: system_root
   description: Root project system
-- id: 6326452f-594d-5b5d-9270-4179a156d894
-  type: module
-  name: create_report.py
-  description: Module create_report
 - id: e116dca3-9dae-5d26-b586-49bf50b1305c
   type: module
   name: fix3.py
@@ -94,83 +90,6 @@ nodes:
   type: component
   name: replace_in_file
   description: Function replace_in_file
-- id: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  type: module
-  name: reality_dag_copy.py
-  description: Module reality_dag_copy
-- id: 244c897f-1d82-5bc6-92bc-891e4b962d42
-  type: component
-  name: BaseFileParser
-  description: Class BaseFileParser
-- id: c8152fda-96e2-5997-bbb9-99e63dfe7218
-  type: component
-  name: parse
-  description: Function parse
-- id: d65a3132-e5c9-5048-8b20-ea0dd00fe24c
-  type: component
-  name: TreeSitterParser
-  description: Class TreeSitterParser
-- id: dae46737-7562-5656-a8b7-6b287c6f30b5
-  type: component
-  name: __init__
-  description: Function __init__
-- id: e9c5383e-7a0b-5351-8be7-4e9dc8cfc778
-  type: component
-  name: parse
-  description: Function parse
-- id: b67568b1-85e7-53ef-b752-f8cced865874
-  type: component
-  name: MarkdownAgentParser
-  description: Class MarkdownAgentParser
-- id: cf38b390-4e6c-511c-a76a-8ea23db512cb
-  type: component
-  name: parse
-  description: Function parse
-- id: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  type: component
-  name: TreeSitterVisitor
-  description: Class TreeSitterVisitor
-- id: e78cd142-e434-592c-81d7-808b667f547e
-  type: component
-  name: __init__
-  description: Function __init__
-- id: ce731ad8-4563-5198-bcf4-f7cdc50b7066
-  type: component
-  name: visit
-  description: Function visit
-- id: c061d8fc-3b16-5e54-8cd2-894da57a6c78
-  type: component
-  name: visit_decorated_definition
-  description: Function visit_decorated_definition
-- id: 6fab4d91-3440-5e7e-ad71-67f3372f3a58
-  type: component
-  name: visit_class_definition
-  description: Function visit_class_definition
-- id: 6443fd33-7e6a-5d45-b712-f633aa67969d
-  type: component
-  name: visit_function_definition
-  description: Function visit_function_definition
-- id: 0f77c60b-b5cb-5c8f-accd-4525d8026104
-  type: component
-  name: visit_import_statement
-  description: Function visit_import_statement
-- id: 08f46781-1e5f-5aae-b6d7-6c4ca7b8edb9
-  type: component
-  name: visit_import_from_statement
-  description: Function visit_import_from_statement
-- id: 6cb3bf65-5eae-563d-9a9b-bf8bed4bea12
-  type: component
-  name: RealityDAGGenerator
-  description: "\n    Generates a Reality DAG by statically analyzing source code.\n\
-    \    Implements a tree-sitter parser to be stack-agnostic.\n    "
-- id: 67445436-f78f-531c-a14d-6b5acf7d92b5
-  type: component
-  name: __init__
-  description: Function __init__
-- id: 8df8040e-eaa6-53fc-b03c-89a14332a75a
-  type: component
-  name: generate
-  description: Function generate
 - id: fb685752-4afc-5f62-a958-9771c6830055
   type: module
   name: scratch.py
@@ -199,7 +118,7 @@ nodes:
   type: agent
   name: sdlc_intake
   description: Acts as a product manager. Distills user requirements into formal Product
-    Requirement Documents (PRDs) and writes them to the inbox/ directory.
+    Requirement Documents (PRDs) and writes them to the specs/<feature-name>/ directory.
 - id: 6d9e067b-64b4-5188-9e71-6b66a981676b
   type: agent
   name: sdlc_linter
@@ -220,6 +139,11 @@ nodes:
   name: sdlc_researcher
   description: Subagent responsible for deep technical and product viability research,
     acting as a Research Swarm Orchestrator.
+- id: 1f2db192-e092-5b9f-b281-878f83be11a1
+  type: agent
+  name: sdlc_scribe
+  description: Subagent responsible for updating user-facing documentation (README,
+    CONTRIBUTING, docs/) to align with reality before delivery.
 - id: 9d2592a0-4972-5f47-9bdc-3dcfbc6bb18d
   type: module
   name: test_missing_fields.py
@@ -14891,6 +14815,24 @@ nodes:
   type: component
   name: generate_document
   description: Generate a document from a template using the provided data.
+- id: 02702c9c-f095-5993-ac3a-6223c055b941
+  type: component
+  name: check_duplicate_prd
+  description: Check if the proposed PRD content is semantically similar to any existing
+    PRDs in specs/.
+- id: 6dfd771b-0f2d-56bf-9ce9-714b1f7f3887
+  type: component
+  name: validate_traceability
+  description: Validate that the specs/ directory aligns with the mathematical DAGs
+    via GUID frontmatter.
+- id: afd197bc-17a5-5220-a429-9351b8417e9d
+  type: component
+  name: promote_spec
+  description: Move a validated micro-spec from changes/ to the canonical specs/ directory.
+- id: 47a75c78-9576-5a40-bf45-eb1af4114e09
+  type: component
+  name: generate_reality
+  description: Scan the codebase and update the Reality DAG via dag-tool.
 - id: f5e29b19-f15e-58aa-9438-30e772912751
   type: component
   name: main
@@ -14936,6 +14878,28 @@ nodes:
   type: component
   name: generate
   description: Function generate
+- id: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  type: module
+  name: semantic_dedup.py
+  description: Module src.aio_agentic_sdlc.semantic_dedup
+- id: 27d4b108-db4e-5e0b-8ab3-20ce969a9e9b
+  type: component
+  name: get_model
+  description: Function get_model
+- id: 9615e392-aee7-5f1e-b01d-0a49d97cd062
+  type: component
+  name: get_db
+  description: Function get_db
+- id: fbf875e6-7c1b-5d5c-8687-a4cc20342dbe
+  type: component
+  name: sync_documents
+  description: Scan specs/ and update embeddings for new/modified/deleted .md files.
+- id: 78731c65-6497-566e-9df6-ee22d88861c8
+  type: component
+  name: find_duplicate_prds
+  description: "\n    Search for similar PRDs.\n    Returns a list of matching documents.\n\
+    \    Note: threshold is cosine distance (0 to 2). Smaller is more similar.\n \
+    \   Distance of 0.2 means 0.8 cosine similarity.\n    "
 - id: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
   type: module
   name: templating_engine.py
@@ -15394,6 +15358,22 @@ nodes:
   type: endpoint
   name: test_cli_unconditional_archival_edge_case
   description: Function test_cli_unconditional_archival_edge_case
+- id: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  type: module
+  name: test_guid_extractor_adversarial.py
+  description: Module tests.test_guid_extractor_adversarial
+- id: bd1801d9-8dc5-5005-9203-5d1a5a16a4ea
+  type: component
+  name: test_python_malformed_hex_uuid_crash
+  description: Function test_python_malformed_hex_uuid_crash
+- id: 55603daf-5845-5523-91d4-2a66ba45c24f
+  type: component
+  name: test_markdown_invalid_uuid_crash
+  description: Function test_markdown_invalid_uuid_crash
+- id: 566f025c-8865-59e6-8b26-65ec98ca28f3
+  type: component
+  name: test_markdown_integer_uuid_crash
+  description: Function test_markdown_integer_uuid_crash
 - id: def5f46c-9492-58bf-830d-0bef09e1b4e4
   type: module
   name: test_guid_validation_adversarial.py
@@ -15641,6 +15621,18 @@ nodes:
   type: component
   name: test_reality_generator_agents
   description: Function test_reality_generator_agents
+- id: f3f6cf2e-53d4-55ce-8236-0eafd085c905
+  type: component
+  name: test_reality_generator_python_guid_extraction
+  description: Function test_reality_generator_python_guid_extraction
+- id: 1c27a5d8-bfbb-50a5-984f-f80714abd540
+  type: component
+  name: test_reality_generator_agent_guid_extraction
+  description: Function test_reality_generator_agent_guid_extraction
+- id: 3acc05d8-0792-569c-843b-93f8bee063ab
+  type: component
+  name: test_reality_generator_agent_numeric_guid_extraction
+  description: Function test_reality_generator_agent_numeric_guid_extraction
 - id: 3cb65517-d8e5-5788-97c8-d5b205108d15
   type: module
   name: test_security.py
@@ -15747,9 +15739,6 @@ nodes:
   description: Module tests.__init__
 edges:
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
-  target: 6326452f-594d-5b5d-9270-4179a156d894
-  type: contains
-- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: e116dca3-9dae-5d26-b586-49bf50b1305c
   type: contains
 - source: e116dca3-9dae-5d26-b586-49bf50b1305c
@@ -15813,63 +15802,6 @@ edges:
   target: 59f30603-2a66-5cf4-9697-886b5f4dff71
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
-  target: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  type: contains
-- source: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  target: 244c897f-1d82-5bc6-92bc-891e4b962d42
-  type: contains
-- source: 244c897f-1d82-5bc6-92bc-891e4b962d42
-  target: c8152fda-96e2-5997-bbb9-99e63dfe7218
-  type: contains
-- source: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  target: d65a3132-e5c9-5048-8b20-ea0dd00fe24c
-  type: contains
-- source: d65a3132-e5c9-5048-8b20-ea0dd00fe24c
-  target: dae46737-7562-5656-a8b7-6b287c6f30b5
-  type: contains
-- source: d65a3132-e5c9-5048-8b20-ea0dd00fe24c
-  target: e9c5383e-7a0b-5351-8be7-4e9dc8cfc778
-  type: contains
-- source: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  target: b67568b1-85e7-53ef-b752-f8cced865874
-  type: contains
-- source: b67568b1-85e7-53ef-b752-f8cced865874
-  target: cf38b390-4e6c-511c-a76a-8ea23db512cb
-  type: contains
-- source: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  target: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: e78cd142-e434-592c-81d7-808b667f547e
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: ce731ad8-4563-5198-bcf4-f7cdc50b7066
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: c061d8fc-3b16-5e54-8cd2-894da57a6c78
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: 6fab4d91-3440-5e7e-ad71-67f3372f3a58
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: 6443fd33-7e6a-5d45-b712-f633aa67969d
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: 0f77c60b-b5cb-5c8f-accd-4525d8026104
-  type: contains
-- source: f4dd97e9-29a9-54ed-9c2d-930c950a8d27
-  target: 08f46781-1e5f-5aae-b6d7-6c4ca7b8edb9
-  type: contains
-- source: b088211e-21bb-54e3-87c9-4d1e0e18df25
-  target: 6cb3bf65-5eae-563d-9a9b-bf8bed4bea12
-  type: contains
-- source: 6cb3bf65-5eae-563d-9a9b-bf8bed4bea12
-  target: 67445436-f78f-531c-a14d-6b5acf7d92b5
-  type: contains
-- source: 6cb3bf65-5eae-563d-9a9b-bf8bed4bea12
-  target: 8df8040e-eaa6-53fc-b03c-89a14332a75a
-  type: contains
-- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: fb685752-4afc-5f62-a958-9771c6830055
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
@@ -15898,6 +15830,9 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: bdf19ef6-c810-53c0-8562-914d4bc3b507
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1f2db192-e092-5b9f-b281-878f83be11a1
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 9d2592a0-4972-5f47-9bdc-3dcfbc6bb18d
@@ -25650,6 +25585,18 @@ edges:
   target: de46d3a7-8d56-5a59-b4cd-52abbbdb82bc
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 02702c9c-f095-5993-ac3a-6223c055b941
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 6dfd771b-0f2d-56bf-9ce9-714b1f7f3887
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: afd197bc-17a5-5220-a429-9351b8417e9d
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 47a75c78-9576-5a40-bf45-eb1af4114e09
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: f5e29b19-f15e-58aa-9438-30e772912751
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
@@ -25675,6 +25622,21 @@ edges:
   type: contains
 - source: 5f9d3dc7-cd7e-5402-86cd-356a4b6846fb
   target: 2f305d49-796d-553c-b67c-daf04ff09189
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: 27d4b108-db4e-5e0b-8ab3-20ce969a9e9b
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: 9615e392-aee7-5f1e-b01d-0a49d97cd062
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: fbf875e6-7c1b-5d5c-8687-a4cc20342dbe
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: 78731c65-6497-566e-9df6-ee22d88861c8
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
@@ -26016,6 +25978,18 @@ edges:
   target: c963a71c-aa12-5d19-8634-f480b5b585b8
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  type: contains
+- source: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  target: bd1801d9-8dc5-5005-9203-5d1a5a16a4ea
+  type: contains
+- source: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  target: 55603daf-5845-5523-91d4-2a66ba45c24f
+  type: contains
+- source: 7f6f0ca3-5e2c-54b1-8334-9829e34152e2
+  target: 566f025c-8865-59e6-8b26-65ec98ca28f3
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: def5f46c-9492-58bf-830d-0bef09e1b4e4
   type: contains
 - source: def5f46c-9492-58bf-830d-0bef09e1b4e4
@@ -26200,6 +26174,15 @@ edges:
   type: contains
 - source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
   target: 615c27a9-bb15-5367-8b7b-a9e423b2ac6c
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: f3f6cf2e-53d4-55ce-8236-0eafd085c905
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 1c27a5d8-bfbb-50a5-984f-f80714abd540
+  type: contains
+- source: a94c937a-7ce3-5bc7-911e-6b0a2c78fa65
+  target: 3acc05d8-0792-569c-843b-93f8bee063ab
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 3cb65517-d8e5-5788-97c8-d5b205108d15

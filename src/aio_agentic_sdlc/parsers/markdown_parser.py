@@ -1,3 +1,4 @@
+# aio-sdlc-node: a937dc0f-c261-461a-975f-03950289be88
 import os
 import yaml
 from aio_agentic_sdlc.dag_models import NodeType, EdgeType

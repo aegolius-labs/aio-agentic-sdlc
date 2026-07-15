@@ -212,8 +212,8 @@ def validate_traceability(project_path: str = Field(".", description="Absolute p
     """Validate that the specs/ directory aligns with the mathematical DAGs via GUID frontmatter."""
     try:
         from .core import TraceabilityValidator
-        intention_path = os.path.join(project_path, "intention-dag.yaml")
-        reality_path = os.path.join(project_path, "reality-dag.yaml")
+        intention_path = os.path.join(project_path, ".aio-agentic-sdlc/intention-dag.yaml")
+        reality_path = os.path.join(project_path, ".aio-agentic-sdlc/reality-dag.yaml")
         specs_dir = os.path.join(project_path, "specs")
         code_dir = os.path.join(project_path, "src")
         validator = TraceabilityValidator(intention_path=intention_path, reality_path=reality_path, specs_dir=specs_dir, code_dir=code_dir)
@@ -250,7 +250,7 @@ def promote_spec(
 @mcp.tool()
 def generate_reality(
     project_path: str = Field(".", description="Absolute path to the project directory"),
-    output: str = Field("reality-dag.yaml", description="Output filename for the Reality DAG"),
+    output: str = Field(".aio-agentic-sdlc/reality-dag.yaml", description="Output filename for the Reality DAG"),
     system: str = Field("system_root", description="System root context for DAG generation")
 ) -> str:
     """Scan the codebase and update the Reality DAG via dag-tool."""

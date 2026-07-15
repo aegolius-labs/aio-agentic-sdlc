@@ -11,7 +11,7 @@ from .github_core import (
     remove_blocker_github, remove_item_github
 )
 
-BACKLOG_FILE = 'backlog.json'
+BACKLOG_FILE = '.aio-agentic-sdlc/backlog.json'
 VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
 
 def _get_status(item):
@@ -450,7 +450,7 @@ import os
 import yaml
 
 class TraceabilityValidator:
-    def __init__(self, intention_path="intention-dag.yaml", reality_path="reality-dag.yaml", specs_dir="specs", code_dir="src"):
+    def __init__(self, intention_path=".aio-agentic-sdlc/intention-dag.yaml", reality_path=".aio-agentic-sdlc/reality-dag.yaml", specs_dir="specs", code_dir="src"):
         self.intention_path = intention_path
         self.reality_path = reality_path
         self.specs_dir = specs_dir

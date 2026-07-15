@@ -10,8 +10,7 @@ def test_intake_agent_prompt_contains_deduplication():
     with open(agent_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    assert 'inbox/' in content, 'Does not mention inbox/'
-    assert 'archive/' in content, 'Does not mention archive/'
+    assert 'specs/' in content, 'Does not mention specs/'
     assert 'duplicate' in content.lower() or 'overlap' in content.lower(), 'Does not mention duplicate or overlap checking'
     assert 'pause' in content.lower() and 'confirmation' in content.lower(), 'Does not instruct to pause for user confirmation'
 

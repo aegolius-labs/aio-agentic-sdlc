@@ -1,3 +1,4 @@
+# aio-sdlc-node: f24b7477-032b-4f93-abcf-9b1c70627900
 #!/usr/bin/env python3
 import os
 import sys
@@ -12,7 +13,7 @@ from .core import (
     prioritize_items, get_next_item
 )
 
-BACKLOG_FILE = 'backlog.json'
+BACKLOG_FILE = '.aio-agentic-sdlc/backlog.json'
 
 STATUS_BADGES = {
     'New': '🆕',
@@ -93,6 +94,13 @@ def _inject_platform_rules(platforms_str):
 from .config import save_config, load_config
 
 def init_cmd(args):
+    # Eagerly create the Unified Dotfolder Workspace structure
+    import os
+    root = '.aio-agentic-sdlc'
+    os.makedirs(root, exist_ok=True)
+    for d in ['inbox', 'specs', 'changes', 'archive', 'research-spikes']:
+        os.makedirs(os.path.join(root, d), exist_ok=True)
+
     is_github = getattr(args, 'github', False)
     
     print("\n--- Agentic-Backlog Initialization ---")
@@ -419,7 +427,7 @@ async def _run_architect_subagent(inbox_files):
     )
     
     files_str = ", ".join(inbox_files)
-    prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to intention-dag.yaml."
+    prompt = f"Process the following PRDs from the inbox/ directory: {files_str}. Map them to .aio-agentic-sdlc/intention-dag.yaml."
     async with Agent(config) as agent:
         await agent.chat(prompt)
 
@@ -438,11 +446,11 @@ def plan_cmd(args):
                 asyncio.run(_run_architect_subagent(inbox_files))
                 archiver = PRDArchiver()
                 
-                # Check if PRDs were reflected in intention-dag.yaml
+                # Check if PRDs were reflected in .aio-agentic-sdlc/intention-dag.yaml
                 dag_nodes = set()
                 try:
                     import yaml
-                    with open("intention-dag.yaml", "r", encoding="utf-8") as f:
+                    with open(".aio-agentic-sdlc/intention-dag.yaml", "r", encoding="utf-8") as f:
                         content = f.read()
                         dag_data = yaml.safe_load(content) or {}
                     nodes = dag_data.get("nodes", [])
@@ -464,12 +472,12 @@ def plan_cmd(args):
                         if filename in dag_nodes:
                             archiver.archive(file_path)
                         else:
-                            print(f"Warning: PRD {filename} was not reflected in intention-dag.yaml. Skipping archive.", file=sys.stderr)
+                            print(f"Warning: PRD {filename} was not reflected in .aio-agentic-sdlc/intention-dag.yaml. Skipping archive.", file=sys.stderr)
                     except Exception as e:
                         print(f"Error archiving {file_path}: {e}", file=sys.stderr)
                 
-        intention_dag = DAGManager.load("intention-dag.yaml")
-        reality_dag = DAGManager.load("reality-dag.yaml")
+        intention_dag = DAGManager.load(".aio-agentic-sdlc/intention-dag.yaml")
+        reality_dag = DAGManager.load(".aio-agentic-sdlc/reality-dag.yaml")
         engine = DiffingEngine(intention_dag, reality_dag)
         diff = engine.calculate_diff()
         print(json.dumps(diff, indent=2))
@@ -529,21 +537,21 @@ def migrate_ids_cmd(args):
             yaml.dump(data, f, sort_keys=False, default_flow_style=False)
         print(f"Migrated {migrated_count} node IDs in {filepath}.")
 
-    migrate_file("intention-dag.yaml")
-    migrate_file("reality-dag.yaml")
+    migrate_file(".aio-agentic-sdlc/intention-dag.yaml")
+    migrate_file(".aio-agentic-sdlc/reality-dag.yaml")
     print("Migration complete.")
 
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
 
-    p_init = subparsers.add_parser('init', help="Initialize backlog.json or github configuration")
+    p_init = subparsers.add_parser('init', help="Initialize .aio-agentic-sdlc/backlog.json or github configuration")
     p_init.add_argument('--empty', action='store_true', help="Skip auto-detecting frameworks for seed items")
     p_init.add_argument('--github', action='store_true', help="Initialize in GitHub mode")
     p_init.add_argument('--github-repo', help="GitHub repository in owner/repo format")
     p_init.add_argument('--github-project', type=int, help="GitHub Project V2 number")
     p_init.add_argument('--github-is-user', dest='github_is_org', action='store_false', help="Indicate the project owner is a user instead of an organization")
-    p_init.add_argument('--dry-run', action='store_true', help="Skip archiving backlog.json during GitHub mode initialization")
+    p_init.add_argument('--dry-run', action='store_true', help="Skip archiving .aio-agentic-sdlc/backlog.json during GitHub mode initialization")
     p_init.add_argument('--platforms', help="Comma-separated platforms to generate rules for (claude, cursor, copilot, antigravity, agile)")
 
     p_add = subparsers.add_parser('add', help="Add an item")

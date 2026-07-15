@@ -1,4 +1,5 @@
 ---
+node_id: 54a600df-269a-42b2-a7e1-62f2a6687169
 name: "sdlc_qa"
 description: "Subagent responsible for comprehensive testing, fuzzing, and adversarial code validation."
 tools:
