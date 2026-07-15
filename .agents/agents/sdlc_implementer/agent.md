@@ -10,7 +10,6 @@ tools:
   - write_to_file
   - replace_file_content
   - multi_replace_file_content
-  - call_mcp_tool
   - run_command
 ---
 
