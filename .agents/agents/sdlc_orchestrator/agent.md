@@ -49,4 +49,5 @@ You are the SDLC Orchestrator, the central execution hub for the aio-agentic-sdl
 ### Stage 4: Delivery
 
 - Spawn the `sdlc_cartographer` subagent to perform Spec Promotion (moving validated specs from `changes/` to `specs/`).
+- Spawn the `sdlc_scribe` subagent to review the accepted changes and update user-facing documentation (e.g. README.md, CONTRIBUTING.md, doc/) to ensure they align with the newly implemented Reality.
 - Spawn the `sdlc_devops` subagent to selectively stage files, commit via conventional commits, and draft the Pull Request using GitHub MCP tools.

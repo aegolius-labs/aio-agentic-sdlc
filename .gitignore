@@ -62,3 +62,9 @@ test_race/
 test_symlink/
 test_symlink_attack
 inbox/test_*.md
+
+# QA
+.qa-sandbox/
+
+# Backlog JSON State
+backlog.json
