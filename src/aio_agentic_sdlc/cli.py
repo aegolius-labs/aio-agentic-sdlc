@@ -241,7 +241,6 @@ def init_cmd(args):
     else:
         print(f"File {BACKLOG_FILE} already exists. Schema updated.")
         
-    _inject_agent_skills()
     platforms_arg = getattr(args, 'platforms', None)
     if platforms_arg:
         _inject_platform_rules(platforms_arg)
