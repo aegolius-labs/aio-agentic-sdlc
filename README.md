@@ -64,6 +64,11 @@ uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb init
 uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb export
 ```
 
-## Integrations (OpenSpec & Spec-Kit)
+## Spec-Driven Development (SDD)
 
-`aio-agentic-sdlc` natively integrates with **Open-Spec** and **Spec-Kit** frameworks. When you run `aio-agentic-sdlc init` inside a workspace utilizing these frameworks (e.g. detecting `tasks.md` or `specs/*.md` files), the CLI will automatically parse your Markdown checklists and seed them dynamically into the resulting JSON tracking structure.
+`aio-agentic-sdlc` utilizes its own Spec-Driven Development (SDD) framework to bridge the gap between high-level architectural planning and deterministic code execution. 
+
+Instead of relying on token-heavy LLM context windows or external integrations, the framework strictly enforces:
+- **Intention DAG (I-DAG)**: A graph-based structural representation of planned features and dependencies.
+- **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic.
+- **Canonical Traceability**: PRDs (Product Requirement Documents) in the `specs/` directory are firmly anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift automatically and execute Just-In-Time (JIT) TDD loops with zero hallucination.
