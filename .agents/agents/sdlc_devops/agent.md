@@ -1,11 +1,10 @@
 ---
 name: "sdlc_devops"
 description: "Subagent responsible for strict VCS operations, selective staging, Conventional Commits, Conventional Branches, and Pull Request generation."
-enable_mcp_tools: true
 tools:
-  - run_command
-  - view_file
-  - grep_search
+  - command(*)
+  - read_file(*)
+  - mcp(github-mcp-server/*)
 ---
 
 # SDLC DevOps
