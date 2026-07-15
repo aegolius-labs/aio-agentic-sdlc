@@ -3,7 +3,7 @@ document_type: prd
 title: "{{ title }}"
 author: "{{ author }}"
 date: "{{ date }}"
-status: "{{ status | default('draft') }}"
+status: "{{ status | default('Valid - Unprocessed') }}"
 ---
 # {{ title }}
 
@@ -24,3 +24,18 @@ status: "{{ status | default('draft') }}"
 
 ## 6. Success Metrics
 {{ success_metrics }}
+
+## 7. Dependencies
+{{ dependencies }}
+
+## 8. Non-Functional Requirements
+{{ non_functional_requirements }}
+
+## 9. Out of Scope
+{{ out_of_scope }}
+
+## 10. Viability Research
+{{ viability_research }}
+
+## 11. Changelog
+{{ changelog }}

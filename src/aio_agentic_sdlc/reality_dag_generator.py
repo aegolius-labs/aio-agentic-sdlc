@@ -28,6 +28,7 @@ class RealityDAGGenerator:
         
     def _id_to_uuid(self, id_str: str) -> str:
         import uuid
+        id_str = str(id_str)
         try:
             uuid.UUID(id_str)
             return id_str

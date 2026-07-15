@@ -4,6 +4,15 @@ A deterministic, 3-Dimensional Impact/Effort/Dependency backlog manager designed
 
 It replaces token-heavy LLM prioritization of Markdown files with a strict, deterministic JSON-based tracking system. It calculates recursive dependency scores, performs topological sorting to ensure prerequisites come first, and auto-generates human-readable Markdown exports.
 
+## Architectural Highlights
+
+The `aio-agentic-sdlc` framework includes several built-in features that ensure deterministic, secure, and traceable agentic operations:
+
+- **Canonical GUID Traceability**: Node IDs map natively and consistently across your PRDs, codebase comments, and DAG structures.
+- **QA Sandbox Isolation**: QA agents operate strictly within robust `.qa-sandbox/<session-id>/` environments to ensure they cannot leak or destructively modify core source files.
+- **MCP Server Integration**: Downstream subagents securely interact with the system via integrated MCP servers, most notably the Agentic Backlog server.
+- **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
+
 ## Licensing Note
 
 This project is intended for **Personal / Non-Commercial Use Only**. When you publish this to GitHub, it is highly recommended to select a license like the **PolyForm Noncommercial License 1.0.0** or **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** from the GitHub license templates.
@@ -55,6 +64,12 @@ uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb init
 uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb export
 ```
 
-## Integrations (OpenSpec & Spec-Kit)
+## Spec-Driven Development (SDD)
 
-`aio-agentic-sdlc` natively integrates with **Open-Spec** and **Spec-Kit** frameworks. When you run `aio-agentic-sdlc init` inside a workspace utilizing these frameworks (e.g. detecting `tasks.md` or `specs/*.md` files), the CLI will automatically parse your Markdown checklists and seed them dynamically into the resulting JSON tracking structure.
+`aio-agentic-sdlc` utilizes its own Spec-Driven Development (SDD) framework to bridge the gap between high-level architectural planning and deterministic code execution.
+
+Instead of relying on token-heavy LLM context windows or external integrations, the framework strictly enforces:
+
+- **Intention DAG (I-DAG)**: A graph-based structural representation of planned features and dependencies.
+- **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic.
+- **Canonical Traceability**: PRDs (Product Requirement Documents) in the `specs/` directory are firmly anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift automatically and execute Just-In-Time (JIT) TDD loops with zero hallucination.
