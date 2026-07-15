@@ -6,8 +6,8 @@ tools:
   - invoke_subagent
   - send_message
   - ask_question
-  - mcp_aio_agentic_sdlc_generate_document
-  - mcp_aio_agentic_sdlc_check_duplicate_prd
+  - mcp_agentic_backlog_generate_document
+  - mcp_agentic_backlog_check_duplicate_prd
 ---
 
 # Intake Agent (sdlc_intake)
