@@ -1,0 +1,14 @@
+interface:
+  display_name: "AIO Agentic SDLC"
+  short_description: "Plan and execute a traceable agentic SDLC"
+  default_prompt: "Use $manage-sdlc to plan and execute this change through the dual-DAG workflow."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "aio-agentic-sdlc"
+      description: "Deterministic backlog, document, DAG, and traceability tools"
+      transport: "stdio"
+
+policy:
+  allow_implicit_invocation: true

@@ -57,3 +57,31 @@ def test_mcp_generate_document_error(tmp_path):
         assert "Template 'missing.md' not found" in result
     finally:
         os.chdir(old_cwd)
+
+
+def test_mcp_generate_document_uses_explicit_project_path(tmp_path):
+    project = tmp_path / "project"
+    process_cwd = tmp_path / "plugin-cache"
+    (project / "templates").mkdir(parents=True)
+    process_cwd.mkdir()
+    (project / "templates" / "test-template.md").write_text(
+        "Project: {{ name }}", encoding="utf-8"
+    )
+
+    old_cwd = Path.cwd()
+    os.chdir(process_cwd)
+    try:
+        result = generate_document(
+            template_name="test-template.md",
+            data_json=json.dumps({"name": "Codex"}),
+            output_filename="generated.md",
+            target_dir=str(project / "specs"),
+            project_path=str(project),
+        )
+    finally:
+        os.chdir(old_cwd)
+
+    assert "successfully generated" in result
+    assert (project / "specs" / "generated.md").read_text(encoding="utf-8") == (
+        "Project: Codex"
+    )

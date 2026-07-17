@@ -1,7 +1,7 @@
 import os
 import jinja2
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 def get_project_root() -> Path:
     """Returns the project root directory."""
@@ -9,7 +9,12 @@ def get_project_root() -> Path:
     current_dir = Path(__file__).parent
     return current_dir.parent.parent
 
-def generate_document(template_name: str, data: Dict[str, Any], output_path: str) -> str:
+def generate_document(
+    template_name: str,
+    data: Dict[str, Any],
+    output_path: str,
+    templates_dir: Optional[str] = None,
+) -> str:
     """
     Generates a document from a Jinja2 template and writes it to output_path.
     
@@ -17,23 +22,29 @@ def generate_document(template_name: str, data: Dict[str, Any], output_path: str
         template_name: The name of the template file in the templates/ directory.
         data: A dictionary of data to populate the template.
         output_path: The path where the generated document will be saved.
+        templates_dir: Optional explicit template directory. When omitted, prefer the current
+            working directory's templates folder and then the installed project templates.
         
     Returns:
         The content of the generated document.
     """
-    # Prefer cwd if templates/ exists there, else use project root
-    cwd_templates = Path.cwd() / "templates"
-    if cwd_templates.exists():
-        templates_dir = cwd_templates
+    if templates_dir is not None:
+        resolved_templates_dir = Path(templates_dir)
     else:
-        templates_dir = get_project_root() / "templates"
+        cwd_templates = Path.cwd() / "templates"
+        if cwd_templates.exists():
+            resolved_templates_dir = cwd_templates
+        else:
+            resolved_templates_dir = get_project_root() / "templates"
         
-    if not templates_dir.exists():
-        raise FileNotFoundError(f"Templates directory not found at {templates_dir}")
+    if not resolved_templates_dir.exists():
+        raise FileNotFoundError(
+            f"Templates directory not found at {resolved_templates_dir}"
+        )
         
     import jinja2.sandbox
     env = jinja2.sandbox.SandboxedEnvironment(
-        loader=jinja2.FileSystemLoader(str(templates_dir)),
+        loader=jinja2.FileSystemLoader(str(resolved_templates_dir)),
         autoescape=jinja2.select_autoescape(['html', 'xml']),
         undefined=jinja2.StrictUndefined
     )
@@ -41,7 +52,9 @@ def generate_document(template_name: str, data: Dict[str, Any], output_path: str
     try:
         template = env.get_template(template_name)
     except jinja2.TemplateNotFound:
-        raise FileNotFoundError(f"Template '{template_name}' not found in {templates_dir}")
+        raise FileNotFoundError(
+            f"Template '{template_name}' not found in {resolved_templates_dir}"
+        )
         
     try:
         rendered_content = template.render(**data)

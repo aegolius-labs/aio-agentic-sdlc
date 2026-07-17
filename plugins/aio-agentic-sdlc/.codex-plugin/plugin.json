@@ -1,0 +1,38 @@
+{
+  "name": "aio-agentic-sdlc",
+  "version": "0.21.0",
+  "description": "Run a traceable, dual-DAG software delivery workflow with Codex and the AIO Agentic SDLC MCP tools.",
+  "author": {
+    "name": "aegolius-labs",
+    "url": "https://github.com/aegolius-labs"
+  },
+  "homepage": "https://github.com/aegolius-labs/aio-agentic-sdlc",
+  "repository": "https://github.com/aegolius-labs/aio-agentic-sdlc",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": [
+    "agentic-sdlc",
+    "backlog",
+    "dual-dag",
+    "mcp",
+    "spec-driven-development"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "AIO Agentic SDLC",
+    "shortDescription": "Traceable dual-DAG planning and delivery",
+    "longDescription": "Plan requirements, prioritize graph-backed work, orchestrate implementation and QA, and reconcile intention with repository reality.",
+    "developerName": "aegolius-labs",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/aegolius-labs/aio-agentic-sdlc",
+    "defaultPrompt": [
+      "Turn this feature idea into a traceable PRD.",
+      "Run this change through the agentic SDLC pipeline.",
+      "Show me the highest-priority unblocked task."
+    ]
+  }
+}
