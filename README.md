@@ -21,6 +21,13 @@ This project is intended for **Personal / Non-Commercial Use Only**. When you pu
 
 Because `aio-agentic-sdlc` is an agentic-first toolkit, the easiest way to install and integrate the MCP Server into your IDE (VS Code, Cursor, Windsurf, Claude Desktop) is by using `uvx` to fetch the server directly from GitHub. This requires **zero local installation**.
 
+### Codex plugin
+
+Codex users can install the repository-scoped plugin from `.agents/plugins/marketplace.json`. It
+packages the `manage-sdlc` workflow skill and starts this project's MCP server through UV. See the
+[Codex plugin guide](doc/codex-plugin.md) for the architecture, local installation, migration map,
+and validation commands.
+
 Add the following to your IDE's `mcp.json` or equivalent configuration file:
 
 ```json
@@ -29,7 +36,7 @@ Add the following to your IDE's `mcp.json` or equivalent configuration file:
     "command": "uvx",
     "args": [
       "--from",
-      "git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli",
+      "git+https://github.com/aegolius-labs/aio-agentic-sdlc",
       "aio-agentic-sdlc-mcp"
     ]
   }
@@ -41,7 +48,7 @@ Add the following to your IDE's `mcp.json` or equivalent configuration file:
 If you plan to use the CLI frequently and prefer not to type the full `uvx` GitHub URL every time, you can permanently install the CLI globally using `uv`:
 
 ```bash
-uv tool install git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli
+uv tool install git+https://github.com/aegolius-labs/aio-agentic-sdlc
 ```
 
 Once installed, you can invoke the CLI natively:
@@ -60,8 +67,8 @@ agb export
 If you prefer not to install the CLI globally, you can execute commands entirely on-the-fly directly from GitHub:
 
 ```bash
-uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb init
-uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc-cli agb export
+uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc agb init
+uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc agb export
 ```
 
 ## Spec-Driven Development (SDD)

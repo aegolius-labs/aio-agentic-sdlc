@@ -158,29 +158,39 @@ def generate_document(
     template_name: str = Field(..., description="Name of the template file (e.g. prd_template.md)"),
     data_json: str = Field(..., description="JSON string containing the data to populate the template"),
     output_filename: str = Field(..., description="Name of the output file"),
-    target_dir: str = Field(".", description="Directory where the document will be saved")
+    target_dir: str = Field(".", description="Directory where the document will be saved"),
+    project_path: str = Field(".", description="Absolute path to the project directory"),
 ) -> str:
     """Generate a document from a template using the provided data."""
     try:
         data = json.loads(data_json)
+        if not isinstance(project_path, str):
+            project_path = "."
         
-        cwd = os.path.abspath(os.getcwd())
-        abs_target = os.path.abspath(target_dir)
-        
-        if not abs_target.startswith(cwd + os.sep) and abs_target != cwd:
+        project_root = os.path.abspath(project_path)
+        abs_target = os.path.abspath(
+            target_dir if os.path.isabs(target_dir) else os.path.join(project_root, target_dir)
+        )
+
+        if os.path.commonpath([project_root, abs_target]) != project_root:
             return f"Error generating document: target_dir resolves outside of the project root."
 
         output_path = os.path.abspath(os.path.join(abs_target, output_filename))
         
-        if not output_path.startswith(abs_target + os.sep) and output_path != abs_target:
+        if os.path.commonpath([abs_target, output_path]) != abs_target:
             return f"Error generating document: output_filename resolves outside of target_dir."
             
         # Security: Prevent overwriting internal/sensitive folders
-        rel_output = os.path.relpath(output_path, cwd).replace('\\', '/')
+        rel_output = os.path.relpath(output_path, project_root).replace('\\', '/')
         if rel_output.startswith('.agents/') or rel_output.startswith('src/') or rel_output.startswith('.git/'):
             return f"Error generating document: Cannot generate documents inside protected directories (.agents, src, .git)."
             
-        generate_document_from_template(template_name, data, output_path)
+        generate_document_from_template(
+            template_name,
+            data,
+            output_path,
+            templates_dir=os.path.join(project_root, "templates"),
+        )
         return f"Document successfully generated at {output_path}."
     except Exception as e:
         return f"Error generating document: {str(e)}"

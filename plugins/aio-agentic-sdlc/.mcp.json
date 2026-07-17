@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "aio-agentic-sdlc": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/aegolius-labs/aio-agentic-sdlc",
+        "aio-agentic-sdlc-mcp"
+      ],
+      "startup_timeout_sec": 120,
+      "tool_timeout_sec": 300
+    }
+  }
+}
