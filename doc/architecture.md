@@ -6,7 +6,7 @@ This document describes the high-level architecture and data flow of the `aio-ag
 
 > **Note:** Please read [VISION.md](./VISION.md) to understand the foundational North-Star of this project—the Semantic Roadmap Graph—before making architectural changes.
 
-The CLI acts as a deterministic backlog manager using a 3-Dimensional matrix (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. State is persisted in a local JSON DAG (`backlog.json`) and can optionally be projected and synced with GitHub Projects/Issues.
+The CLI acts as a deterministic backlog manager using a 3-Dimensional matrix (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. All framework state is local. External trackers are not authoritative and synchronization support is intentionally absent.
 
 ```mermaid
 graph TD
@@ -19,21 +19,15 @@ graph TD
         CLI --> SDDRecon[SDD Reconciliation Layer]
     end
     
-    subgraph Persistence Layer
-        CLI -->|Checks Mode| Config(load_config)
-        Config -->|Local Mode| LocalStore
-        Config -->|GitHub Mode| GHStore
-        
-        subgraph LocalStore [Local JSON Persistence]
-            ReadJSON(load_backlog) --> FileDB[(backlog.json)]
-            WriteJSON(save_backlog) --> FileDB
-            BackupManager(_create_backup) --> BackupFiles[(Timestamped backups)]
-        end
-        
-        subgraph GHStore [GitHub Integration]
-            ReadGH(Load via API) --> GHIssues[(GitHub Issues & Project V2)]
-            WriteGH(Write via API) --> GHIssues
-        end
+    subgraph Local Persistence
+        CLI --> Intent[(intention-dag.yaml)]
+        CLI --> Reality[(reality-dag.yaml)]
+        CLI --> ReadJSON[load_backlog]
+        ReadJSON --> FileDB[(backlog.json)]
+        CLI --> WriteJSON[atomic save_backlog]
+        WriteJSON --> FileDB
+        CLI --> BackupManager[_create_backup]
+        BackupManager --> BackupFiles[(Timestamped backups)]
     end
 
     Detect -->|Reads local environment| Workspace[Local Project Files]
@@ -47,15 +41,26 @@ graph TD
 
 User invokes a command (e.g., `add`, `update`, `prioritize`, `next`, `status`, `block`, `unblock`, `export`, `init`). The `argparse` router dispatches to the appropriate command handler.
 
-### 2. State Loading
+### 2. Local State Contract
+
+The local files have distinct responsibilities:
+
+- `intention-dag.yaml` is the durable, version-controlled source of truth for intended behavior and canonical GUIDs.
+- `reality-dag.yaml` is a regenerable observation of the repository. It is evidence, not intent.
+- `backlog.json` is a local, gitignored execution queue derived from the difference between the two DAGs. CLI and MCP backlog mutations operate only on this file.
+- `.agentic-backlog.json` is a legacy generated artifact. Runtime code does not read it, and it must not be treated as roadmap state.
+
+Framework tools, rather than hand edits, perform state transitions. External issue trackers may be reintroduced later as one-way projections, but they cannot select or replace the authoritative state.
+
+### 3. State Loading
 
 The command handler reads the current state from `backlog.json` via `load_backlog()`. If the file does not exist, an empty dictionary is returned.
 
-### 3. State Modification & Backup
+### 4. State Modification & Backup
 
-For mutating commands, `_create_backup()` is called immediately to create a timestamped backup before any modifications occur. Backups older than 7 days are pruned automatically.
+For mutating commands, `_create_backup()` is called immediately to create a timestamped backup before any modifications occur. Backups older than 7 days are pruned automatically. Writes use a temporary file followed by an atomic replacement, preserving the previous backlog if serialization is interrupted.
 
-### 4. Prioritization Engine (`_compute_sorted_items`)
+### 5. Prioritization Engine (`_compute_sorted_items`)
 
 When prioritizing or retrieving the next task, the system performs:
 
@@ -65,12 +70,12 @@ When prioritizing or retrieving the next task, the system performs:
 4. **Tie-Breaking**: Items are inserted into a priority queue factoring in their final score and a category weight (Security > Reliability > Business > other).
 5. **Auto-Status**: Any incomplete item with non-empty `blockers` automatically switches to the `Blocked` status.
 
-### 5. State Persistence
+### 6. State Persistence
 
-Depending on the configured mode (`.aio-agentic-sdlc.json`), the final sorted items are either saved to `backlog.json` locally or synchronized directly with GitHub Issues and Projects V2 via the GitHub API.
+The final sorted items are saved to the local `backlog.json`. The `.aio-agentic-sdlc.json` file configures hierarchy and validation behavior; `core.mode` is always `local`.
 
 ## Framework Detection and SDD Reconciliation
 
 The `init` command leverages `detect.py` to inspect the working directory for well-known framework identifiers (e.g., `package.json`, `pyproject.toml`, `Cargo.toml`). If a framework is detected, `generate_seed_backlog()` is invoked to pre-populate boilerplate tasks.
 
-Furthermore, when working alongside Spec-Driven Development (SDD) frameworks like Open-Spec or Spec-Kit, the **SDD Reconciliation Layer** aims to reconcile overlapping feature sets. Since GitHub acts as the authoritative source of truth for the backlog, this layer intelligently synchronizes GitHub issues with local SDD markdown artifacts, satisfying each framework's workflow requirements without risking duplicate states or conflicting priorities.
+Furthermore, when working alongside Spec-Driven Development (SDD) frameworks like Open-Spec or Spec-Kit, the **SDD Reconciliation Layer** aims to reconcile overlapping feature sets. Reconciliation imports useful local artifacts into the local model without promoting either those artifacts or an external tracker above the Intention DAG.

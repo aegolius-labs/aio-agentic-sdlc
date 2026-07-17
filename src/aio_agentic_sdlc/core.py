@@ -4,12 +4,9 @@ import time
 import datetime
 import glob
 import heapq
-from .config import is_github_mode, load_config
-from .github_core import (
-    add_item_github, prioritize_items_github, get_next_item_github,
-    update_item_github, set_status_github, add_blocker_github,
-    remove_blocker_github, remove_item_github
-)
+import tempfile
+
+from .config import load_config
 
 BACKLOG_FILE = 'backlog.json'
 VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
@@ -84,8 +81,22 @@ def load_backlog(project_path="."):
 
 def save_backlog(data, project_path="."):
     file_path = os.path.join(project_path, BACKLOG_FILE)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    fd, temp_path = tempfile.mkstemp(
+        dir=project_path,
+        prefix=f".{BACKLOG_FILE}.",
+        suffix=".tmp",
+        text=True,
+    )
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_path, file_path)
+    except BaseException:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        raise
 
 def _create_backup(project_path="."):
     file_path = os.path.join(project_path, BACKLOG_FILE)
@@ -235,9 +246,6 @@ def _compute_sorted_items(nodes, edges):
     return final_ordered_keys
 
 def prioritize_items(project_path="."):
-    if is_github_mode(project_path):
-        return prioritize_items_github(project_path, _compute_sorted_items)
-
     data = load_backlog(project_path)
     if not data.get('nodes'):
         return False
@@ -260,9 +268,6 @@ def prioritize_items(project_path="."):
     return True
 
 def get_next_item(project_path="."):
-    if is_github_mode(project_path):
-        return get_next_item_github(project_path, _compute_sorted_items)
-
     import copy
     data = load_backlog(project_path)
     if not data.get('nodes'):
@@ -313,9 +318,6 @@ def add_item(name, impact, effort, category, description=None, requires=None, ai
     if not description or not str(description).strip():
         raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
 
-    if is_github_mode(project_path):
-        return add_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path, item_type, parent_id)
-
     data = load_backlog(project_path)
     if name in data.get('nodes', {}):
         raise ValueError(f"Item '{name}' already exists.")
@@ -348,9 +350,6 @@ def update_item(name, impact=None, effort=None, category=None, description=None,
     if description is not None and not str(description).strip():
         raise ValueError("Description cannot be empty. Please provide a detailed description of the task.")
 
-    if is_github_mode(project_path):
-        return update_item_github(name, impact, effort, category, description, requires, ai_driven, status, blockers, project_path, item_type, parent_id)
-
     data = load_backlog(project_path)
     if name not in data.get('nodes', {}):
         raise ValueError(f"Item '{name}' not found.")
@@ -380,9 +379,6 @@ def update_item(name, impact=None, effort=None, category=None, description=None,
     return warnings
 
 def set_status(name, new_status, project_path="."):
-    if is_github_mode(project_path):
-        return set_status_github(name, new_status, project_path)
-
     data = load_backlog(project_path)
     if name not in data.get('nodes', {}):
         raise ValueError(f"Item '{name}' not found.")
@@ -391,9 +387,6 @@ def set_status(name, new_status, project_path="."):
     save_backlog(data, project_path)
 
 def add_blocker(name, reason, project_path="."):
-    if is_github_mode(project_path):
-        return add_blocker_github(name, reason, project_path)
-
     data = load_backlog(project_path)
     if name not in data.get('nodes', {}):
         raise ValueError(f"Item '{name}' not found.")
@@ -408,9 +401,6 @@ def add_blocker(name, reason, project_path="."):
     save_backlog(data, project_path)
 
 def remove_blocker(name, reason, project_path="."):
-    if is_github_mode(project_path):
-        return remove_blocker_github(name, reason, project_path)
-
     data = load_backlog(project_path)
     if name not in data.get('nodes', {}):
         raise ValueError(f"Item '{name}' not found.")
@@ -425,9 +415,6 @@ def remove_blocker(name, reason, project_path="."):
     save_backlog(data, project_path)
 
 def remove_item(name, project_path="."):
-    if is_github_mode(project_path):
-        return remove_item_github(name, project_path)
-
     data = load_backlog(project_path)
     if name not in data.get('nodes', {}):
         raise ValueError(f"Item '{name}' not found.")

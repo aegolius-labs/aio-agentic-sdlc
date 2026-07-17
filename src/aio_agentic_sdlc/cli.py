@@ -90,11 +90,9 @@ def _inject_platform_rules(platforms_str):
             print(f"[WARNING] Unknown platform '{platform}'. Supported: claude, cursor, copilot, antigravity, agile", file=sys.stderr)
 
 
-from .config import save_config, load_config
+from .config import save_config
 
 def init_cmd(args):
-    is_github = getattr(args, 'github', False)
-    
     print("\n--- Agentic-Backlog Initialization ---")
     print("1. Simple Hierarchy: Epic -> Feature -> Task/Bug")
     print("2. Deep Hierarchy: Initiative -> Theme -> Epic -> Feature -> User Story/Tech Story/Bug -> Task -> SubTask")
@@ -136,77 +134,8 @@ def init_cmd(args):
         "hierarchy": hierarchy
     }
 
-    if is_github:
-        repo = getattr(args, 'github_repo')
-        project_num = getattr(args, 'github_project')
-        is_org = getattr(args, 'github_is_org', True)
-        
-        if not repo:
-            print("[ERROR] --github-repo is required when using --github", file=sys.stderr)
-            sys.exit(1)
-            
-        try:
-            from .github import GitHubClient
-            client = GitHubClient()
-            owner, name = repo.split('/')
-            
-            if is_org:
-                print(f"[Info] Checking native Issue Types for org repo {repo}...")
-                issue_types = client.get_repository_issue_types(owner, name)
-                if issue_types:
-                    print(f"[Info] Found {len(issue_types)} native Issue Types in {repo}.")
-                else:
-                    print(f"[Warning] No native Issue Types found. Consider creating them in GitHub settings if desired.")
-            
-            if not project_num:
-                print(f"[Info] No project number provided. Creating new Project V2 for {repo}...")
-                owner_id = client.get_owner_id(owner, is_org)
-                repo_id = client.get_repo_id(owner, name)
-                new_project = client.create_project_v2(owner_id, "Agentic Backlog", repo_id)
-                project_num = new_project["number"]
-                print(f"Success! Created new GitHub Project V2: #{project_num}")
-                
-            print(f"[Info] Initializing GitHub mode for repo: {repo}, project: {project_num}")
-            config["core"]["mode"] = "github"
-            config["github"] = {"repo": repo, "project_number": int(project_num), "is_org": is_org}
-            
-            print("[Info] Verifying project and creating missing fields via GraphQL...")
-            client.ensure_backlog_fields(owner, project_num, is_org)
-            print("Success! Custom fields verified/created in GitHub Project V2.")
-        except Exception as e:
-            print(f"[ERROR] Failed to communicate with GitHub API: {e}", file=sys.stderr)
-            sys.exit(1)
-            
     save_config(config)
     from .core import BACKLOG_FILE, save_backlog
-
-    if is_github and os.path.exists(BACKLOG_FILE):
-        with open(BACKLOG_FILE, 'r', encoding='utf-8') as f:
-            old_data = json.load(f)
-            
-        items_to_sync = old_data.get("nodes") or old_data.get("items", {})
-            
-        if items_to_sync:
-            print(f"[Info] Syncing {len(items_to_sync)} items to GitHub Project...")
-            from .github_core import add_item_github
-            for name, item in items_to_sync.items():
-                print(f"  -> Migrating: {name}")
-                if not getattr(args, 'dry_run', False):
-                    add_item_github(
-                        name=name,
-                        impact=item.get("impact", 1),
-                        effort=item.get("effort", 1),
-                        category=item.get("category", ""),
-                        description=item.get("description", ""),
-                        requires=item.get("requires", []),
-                        ai_driven=item.get("ai_driven", False),
-                        status=item.get("status", "New"),
-                        blockers=item.get("blockers", []),
-                        project_path=".",
-                        item_type=item.get("item_type", "Task"),
-                        parent_id=item.get("parent_id")
-                    )
-            print("Success! Backlog synced to GitHub.")
 
     if not os.path.exists(BACKLOG_FILE):
         nodes = {}
@@ -385,24 +314,6 @@ def next_cmd(args):
     else:
         print(json.dumps(result, indent=2))
 
-def sync_cmd(args):
-    config = load_config(".")
-    if config.get("core", {}).get("mode") != "github":
-        print("Error: 'sync' command is only available in GitHub mode.")
-        sys.exit(1)
-        
-    try:
-        from .github_core import sync_github
-        changes = sync_github(".")
-        print(f"Success! Backlog synced with GitHub Projects V2. ({changes} items updated/added)")
-        
-        # After sync, run prioritize to ensure DAG is updated correctly
-        prioritize_items(".")
-        print("Local DAG re-prioritized based on updated statuses.")
-    except Exception as e:
-        print(f"Error syncing with GitHub: {e}", file=sys.stderr)
-        sys.exit(1)
-
 async def _run_architect_subagent(inbox_files):
     from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
     import os
@@ -537,13 +448,8 @@ def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     subparsers = parser.add_subparsers(dest='command', required=True)
 
-    p_init = subparsers.add_parser('init', help="Initialize backlog.json or github configuration")
+    p_init = subparsers.add_parser('init', help="Initialize the local backlog and configuration")
     p_init.add_argument('--empty', action='store_true', help="Skip auto-detecting frameworks for seed items")
-    p_init.add_argument('--github', action='store_true', help="Initialize in GitHub mode")
-    p_init.add_argument('--github-repo', help="GitHub repository in owner/repo format")
-    p_init.add_argument('--github-project', type=int, help="GitHub Project V2 number")
-    p_init.add_argument('--github-is-user', dest='github_is_org', action='store_false', help="Indicate the project owner is a user instead of an organization")
-    p_init.add_argument('--dry-run', action='store_true', help="Skip archiving backlog.json during GitHub mode initialization")
     p_init.add_argument('--platforms', help="Comma-separated platforms to generate rules for (claude, cursor, copilot, antigravity, agile)")
 
     p_add = subparsers.add_parser('add', help="Add an item")
@@ -594,8 +500,6 @@ def main():
     p_export = subparsers.add_parser('export', help="Export to Markdown")
     p_export.add_argument('--out', default='backlog.md', help="Output file")
 
-    p_sync = subparsers.add_parser('sync', help="Sync local DAG with GitHub Projects V2 statuses and new SDD tasks")
-
     p_plan = subparsers.add_parser('plan', help="Calculate and output the DAG diff (plan)")
     
     p_apply = subparsers.add_parser('apply', help="Apply the diff and run the SDLC orchestrator loop")
@@ -615,7 +519,6 @@ def main():
         elif args.command == 'prioritize': prioritize_cmd(args)
         elif args.command == 'next': next_cmd(args)
         elif args.command == 'export': export_cmd(args)
-        elif args.command == 'sync': sync_cmd(args)
         elif args.command == 'plan': plan_cmd(args)
         elif args.command == 'apply': apply_cmd(args)
         elif args.command == 'migrate-ids': migrate_ids_cmd(args)
