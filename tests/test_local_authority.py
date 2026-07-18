@@ -68,6 +68,8 @@ def test_init_records_local_as_the_only_mode(tmp_path, monkeypatch):
 
 
 def test_failed_backlog_write_preserves_previous_state(tmp_path, monkeypatch):
+    from aio_agentic_sdlc import state
+
     original = {
         "nodes": {
             "Existing": {
@@ -81,10 +83,12 @@ def test_failed_backlog_write_preserves_previous_state(tmp_path, monkeypatch):
     def fail_dump(*_args, **_kwargs):
         raise OSError("simulated interrupted write")
 
-    monkeypatch.setattr(core.json, "dump", fail_dump)
+    monkeypatch.setattr(state.json, "dumps", fail_dump)
+    replacement = core.load_backlog(str(tmp_path))
+    replacement["nodes"] = {}
 
     with pytest.raises(OSError, match="simulated interrupted write"):
-        core.save_backlog({"nodes": {}, "edges": []}, str(tmp_path))
+        core.save_backlog(replacement, str(tmp_path))
 
-    assert core.load_backlog(str(tmp_path)) == original
+    assert core.load_backlog(str(tmp_path))["nodes"] == original["nodes"]
     assert list(tmp_path.glob(".backlog.json.*.tmp")) == []

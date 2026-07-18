@@ -24,8 +24,10 @@ graph TD
         CLI --> Reality[(reality-dag.yaml)]
         CLI --> ReadJSON[load_backlog]
         ReadJSON --> FileDB[(backlog.json)]
-        CLI --> WriteJSON[atomic save_backlog]
+        CLI --> Lock[Cross-process state lock]
+        Lock --> WriteJSON[transactional save_backlog]
         WriteJSON --> FileDB
+        WriteJSON --> Audit[(.aio-sdlc/state-audit.jsonl)]
         CLI --> BackupManager[_create_backup]
         BackupManager --> BackupFiles[(Timestamped backups)]
     end
@@ -48,17 +50,26 @@ The local files have distinct responsibilities:
 - `intention-dag.yaml` is the durable, version-controlled source of truth for intended behavior and canonical GUIDs.
 - `reality-dag.yaml` is a regenerable observation of the repository. It is evidence, not intent.
 - `backlog.json` is a local, gitignored execution queue derived from the difference between the two DAGs. CLI and MCP backlog mutations operate only on this file.
-- `.agentic-backlog.json` is a legacy generated artifact. Runtime code does not read it, and it must not be treated as roadmap state.
+- `.aio-sdlc/state-audit.jsonl` is an append-only, gitignored transaction journal used to reconcile interrupted replacements.
+- `.agentic-backlog.json` is a retired generated artifact. Runtime code does not read it; `aio-sdlc migrate-state --retire-legacy` preserves a hash-named copy under ignored operational state before removing it.
 
 Framework tools, rather than hand edits, perform state transitions. External issue trackers may be reintroduced later as one-way projections, but they cannot select or replace the authoritative state.
 
 ### 3. State Loading
 
-The command handler reads the current state from `backlog.json` via `load_backlog()`. If the file does not exist, an empty dictionary is returned.
+The command handler reads the current state from `backlog.json` via `load_backlog()`. If the file does not exist, a schema-versioned empty envelope is returned. Unversioned `items` or `nodes` documents are migrated deterministically in memory; `aio-sdlc migrate-state` explicitly persists the current schema. A schema newer than the installed framework fails closed.
 
 ### 4. State Modification & Backup
 
-For mutating commands, `_create_backup()` is called immediately to create a timestamped backup before any modifications occur. Backups older than 7 days are pruned automatically. Writes use a temporary file followed by an atomic replacement, preserving the previous backlog if serialization is interrupted.
+For mutating commands, `_create_backup()` is called immediately to create a timestamped backup before any modifications occur. Backups older than 7 days are pruned automatically.
+
+Every backlog contains a monotonic `revision`. A cross-process lock covers the
+compare-and-replace transaction, and stale revisions are rejected instead of
+overwriting newer work. The writer flushes a temporary file, appends a `prepared`
+audit record, atomically replaces the backlog, and appends `committed`. On the next
+read, a prepared transaction without a terminal record is classified by its
+before/after hashes as either `rolled_back` or `recovered_commit`; any other hash
+fails closed.
 
 ### 5. Prioritization Engine (`_compute_sorted_items`)
 
@@ -72,7 +83,7 @@ When prioritizing or retrieving the next task, the system performs:
 
 ### 6. State Persistence
 
-The final sorted items are saved to the local `backlog.json`. The `.aio-agentic-sdlc.json` file configures hierarchy and validation behavior; `core.mode` is always `local`.
+The final sorted items are saved to the local `backlog.json` using schema version 1. The `.aio-agentic-sdlc.json` file configures hierarchy and validation behavior; `core.mode` is always `local`. The transaction implementation and its tradeoffs are recorded in [ADR 0001](adr/0001-versioned-local-state.md).
 
 ## Framework Detection and SDD Reconciliation
 

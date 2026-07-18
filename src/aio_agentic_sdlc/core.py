@@ -4,11 +4,12 @@ import time
 import datetime
 import glob
 import heapq
-import tempfile
 
 from .config import load_config
+from .state import BACKLOG_FILE
+from .state import load_backlog as _load_backlog
+from .state import save_backlog as _save_backlog
 
-BACKLOG_FILE = 'backlog.json'
 VALID_STATUSES = ('New', 'In Progress', 'Completed', 'Blocked')
 
 def _get_status(item):
@@ -53,50 +54,10 @@ def validate_hierarchy(item_type, parent_id, data, project_path):
                     raise ValueError(f"Flex Mode Violation: Child '{item_type}' (Level {level}) must be > Parent '{parent_type}' (Level {parent_level}).")
 
 def load_backlog(project_path="."):
-    file_path = os.path.join(project_path, BACKLOG_FILE)
-    if not os.path.exists(file_path):
-        return {"nodes": {}, "edges": []}
-    with open(file_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        
-    if "items" in data and "nodes" not in data:
-        nodes = {}
-        edges = []
-        for name, item in data["items"].items():
-            nodes[name] = item.copy()
-            if "item_type" not in nodes[name]:
-                nodes[name]["item_type"] = "Task"
-            if "requires" in item:
-                for req in item["requires"]:
-                    edges.append({"from": name, "to": req, "relation": "requires"})
-                del nodes[name]["requires"]
-            if "parent_id" in item and item["parent_id"]:
-                edges.append({"from": name, "to": item["parent_id"], "relation": "parent"})
-                del nodes[name]["parent_id"]
-        return {"nodes": nodes, "edges": edges}
-        
-    if "nodes" not in data: data["nodes"] = {}
-    if "edges" not in data: data["edges"] = []
-    return data
+    return _load_backlog(project_path)
 
-def save_backlog(data, project_path="."):
-    file_path = os.path.join(project_path, BACKLOG_FILE)
-    fd, temp_path = tempfile.mkstemp(
-        dir=project_path,
-        prefix=f".{BACKLOG_FILE}.",
-        suffix=".tmp",
-        text=True,
-    )
-    try:
-        with os.fdopen(fd, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(temp_path, file_path)
-    except BaseException:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-        raise
+def save_backlog(data, project_path=".", *, operation="backlog.save"):
+    return _save_backlog(data, project_path, operation=operation)
 
 def _create_backup(project_path="."):
     file_path = os.path.join(project_path, BACKLOG_FILE)
@@ -264,7 +225,7 @@ def prioritize_items(project_path="."):
         elif _get_status(item) == 'Blocked' and not _get_blockers(item):
             item['status'] = 'New'
 
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.prioritize")
     return True
 
 def get_next_item(project_path="."):
@@ -343,7 +304,7 @@ def add_item(name, impact, effort, category, description=None, requires=None, ai
     }
     set_requires(data, name, requires_list)
     set_parent(data, name, parent_id)
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.add")
     return warnings
 
 def update_item(name, impact=None, effort=None, category=None, description=None, requires=None, ai_driven=None, status=None, blockers=None, project_path=".", item_type=None, parent_id=None):
@@ -375,7 +336,7 @@ def update_item(name, impact=None, effort=None, category=None, description=None,
     if parent_id is not None:
         set_parent(data, name, parent_id)
         
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.update")
     return warnings
 
 def set_status(name, new_status, project_path="."):
@@ -384,7 +345,7 @@ def set_status(name, new_status, project_path="."):
         raise ValueError(f"Item '{name}' not found.")
     _create_backup(project_path)
     data['nodes'][name]['status'] = new_status
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.set-status")
 
 def add_blocker(name, reason, project_path="."):
     data = load_backlog(project_path)
@@ -398,7 +359,7 @@ def add_blocker(name, reason, project_path="."):
     item['blockers'] = blockers
     if _get_status(item) != 'Completed':
         item['status'] = 'Blocked'
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.add-blocker")
 
 def remove_blocker(name, reason, project_path="."):
     data = load_backlog(project_path)
@@ -412,7 +373,7 @@ def remove_blocker(name, reason, project_path="."):
     item['blockers'] = blockers
     if not blockers and _get_status(item) == 'Blocked':
         item['status'] = 'New'
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.remove-blocker")
 
 def remove_item(name, project_path="."):
     data = load_backlog(project_path)
@@ -431,7 +392,7 @@ def remove_item(name, project_path="."):
         if 'blockers' in item and name in item['blockers']:
             item['blockers'].remove(name)
             
-    save_backlog(data, project_path)
+    save_backlog(data, project_path, operation="backlog.remove")
 
 import os
 import yaml

@@ -11,6 +11,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 - **Canonical GUID Traceability**: Node IDs map natively and consistently across your PRDs, codebase comments, and DAG structures.
 - **QA Sandbox Isolation**: QA agents operate strictly within robust `.qa-sandbox/<session-id>/` environments to ensure they cannot leak or destructively modify core source files.
 - **MCP Server Integration**: Downstream subagents securely interact with the system via integrated MCP servers, most notably the Agentic Backlog server.
+- **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
 
 ## Licensing Note
@@ -58,6 +59,7 @@ agb init
 agb add "my-feature" --impact 5 --effort 3 --category "Security"
 agb prioritize
 agb export
+agb migrate-state --retire-legacy
 ```
 
 *(Note: `aio-agentic-sdlc` can also be used if you prefer the full name)*

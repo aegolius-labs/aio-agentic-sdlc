@@ -153,7 +153,7 @@ def init_cmd(args):
                 pass
                 
         data = {"nodes": nodes, "edges": []}
-        save_backlog(data)
+        save_backlog(data, operation="backlog.initialize")
         
         if nodes:
             print(f"Success! Initialized {BACKLOG_FILE} with {len(nodes)} seed items.")
@@ -398,6 +398,15 @@ def apply_cmd(args):
         print(f"Error during apply: {e}", file=sys.stderr)
         sys.exit(1)
 
+
+def migrate_state_cmd(args):
+    from .state import migrate_backlog, retire_legacy_backlog
+
+    result = migrate_backlog(".")
+    if args.retire_legacy:
+        result["legacy"] = retire_legacy_backlog(".")
+    print(json.dumps(result, indent=2))
+
 def migrate_ids_cmd(args):
     import os
     import uuid
@@ -504,6 +513,16 @@ def main():
     
     p_apply = subparsers.add_parser('apply', help="Apply the diff and run the SDLC orchestrator loop")
 
+    p_migrate_state = subparsers.add_parser(
+        'migrate-state',
+        help="Migrate the local execution backlog to the current schema",
+    )
+    p_migrate_state.add_argument(
+        '--retire-legacy',
+        action='store_true',
+        help="Archive and remove the obsolete .agentic-backlog.json artifact",
+    )
+
     p_migrate = subparsers.add_parser('migrate-ids', help="Migrate existing DAG schemas to enforce strict GUID node IDs")
 
     args = parser.parse_args()
@@ -521,6 +540,7 @@ def main():
         elif args.command == 'export': export_cmd(args)
         elif args.command == 'plan': plan_cmd(args)
         elif args.command == 'apply': apply_cmd(args)
+        elif args.command == 'migrate-state': migrate_state_cmd(args)
         elif args.command == 'migrate-ids': migrate_ids_cmd(args)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

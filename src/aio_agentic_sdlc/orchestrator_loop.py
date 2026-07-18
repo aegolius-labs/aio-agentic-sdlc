@@ -42,7 +42,7 @@ def ingest_diff():
             
     backlog['edges'] = list(existing_edges.values())
     
-    core.save_backlog(backlog)
+    core.save_backlog(backlog, operation="backlog.ingest-diff")
     core.prioritize_items()
 
 
