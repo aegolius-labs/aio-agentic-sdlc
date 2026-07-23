@@ -26,6 +26,7 @@ name = "aio-agentic-sdlc"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
+    { name = "filelock" },
     { name = "google-antigravity" },
     { name = "jinja2" },
     { name = "mcp" },
@@ -34,7 +35,6 @@ dependencies = [
     { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pydantic" },
     { name = "pyyaml" },
-    { name = "requests" },
     { name = "sentence-transformers" },
     { name = "sqlite-vec" },
     { name = "tree-sitter" },
@@ -50,13 +50,13 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.0.0" },
+    { name = "filelock", specifier = ">=3.18.0" },
     { name = "google-antigravity" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "mcp", specifier = ">=1.28.0" },
     { name = "numpy", specifier = ">=2.2.6" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "pyyaml", specifier = ">=6.0.0" },
-    { name = "requests", specifier = ">=2.31.0" },
     { name = "sentence-transformers", specifier = ">=5.6.0" },
     { name = "sqlite-vec", specifier = ">=0.1.9" },
     { name = "tree-sitter", specifier = ">=0.21.0" },

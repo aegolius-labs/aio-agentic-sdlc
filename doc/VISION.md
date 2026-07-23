@@ -1,6 +1,6 @@
 # All-in-One Agentic SDLC (aio-agentic-sdlc) Vision & North Star
 
-**The Dual-DAG Reconciliation Engine**
+## The Dual-DAG Reconciliation Engine
 
 The ultimate "North Star" for this project is to evolve beyond passive task tracking into a fully autonomous, **All-in-One Agentic Software Development Life Cycle (SDLC)** orchestrator. It acts as the definitive reconciliation engine between software design and reality.
 
@@ -14,6 +14,6 @@ The ultimate "North Star" for this project is to evolve beyond passive task trac
 ## Implications for Architecture
 
 - **In-House Graph Generation:** Relying on third-party tools (like `graphify`) is insufficient if their output cannot map cleanly to our semantic Intention DAG. Both sides of the equation must speak the same structural language.
-- **Local Persistence is Key:** The local data representing the Intention DAG (e.g., `backlog.json` or a localized graph DB) is a first-class citizen. It serves as the immutable source of truth for the project's intent.
+- **Local Persistence is Key:** The version-controlled `intention-dag.yaml` is the source of truth for project intent. The Reality DAG and execution backlog are local derivatives with explicitly narrower responsibilities.
 - **Hierarchy & Relationships are Fundamental:** Hierarchical types and dependency relationships are not organizational conveniences—they are the critical structural edges required to compute an accurate diff between Intention and Reality.
-- **Remote as a Projection:** While external trackers (GitHub Issues/Projects, Jira) can be supported as remote projections or legacy interfaces, the true state of the work to be done is always derived dynamically from the Dual-DAG Diff.
+- **Remote Projections Are Future Work:** External tracker integrations are currently removed. If reintroduced, they must be one-way projections whose contents cannot override locally derived work.

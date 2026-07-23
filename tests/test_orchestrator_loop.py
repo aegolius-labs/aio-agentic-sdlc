@@ -54,7 +54,7 @@ def test_ingest_diff(mock_dag_manager, mock_diffing_engine, mock_core):
         "items": [],
         "edges": [{"source": "t1", "target": "t2"}],
         "nodes": {'t1': {'id': 't1', 'desc': 'task 1', 'name': 't1'}}
-    })
+    }, operation="backlog.ingest-diff")
     mock_core.prioritize_items.assert_called_once()
 
 def test_ingest_diff_empty(mock_dag_manager, mock_diffing_engine, mock_core):
@@ -64,7 +64,9 @@ def test_ingest_diff_empty(mock_dag_manager, mock_diffing_engine, mock_core):
     
     orchestrator_loop.ingest_diff()
     
-    mock_core.save_backlog.assert_called_once_with({"nodes": {}, "edges": []})
+    mock_core.save_backlog.assert_called_once_with(
+        {"nodes": {}, "edges": []}, operation="backlog.ingest-diff"
+    )
 
 def test_ingest_diff_overlapping_updates(mock_dag_manager, mock_diffing_engine, mock_core):
     mock_diff_eng_inst = mock_diffing_engine.return_value
@@ -102,7 +104,7 @@ def test_ingest_diff_malformed_mocks(mock_dag_manager, mock_diffing_engine, mock
         "items": [],
         "edges": [],
         "nodes": {}
-    })
+    }, operation="backlog.ingest-diff")
 
 @pytest.mark.asyncio
 async def test_execute_task_with_agent(mock_agent):

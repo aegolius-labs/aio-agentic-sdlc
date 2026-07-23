@@ -70,3 +70,7 @@ inbox/test_*.md
 
 # Backlog JSON State
 backlog.json
+.aio-sdlc/
+
+# Local recovery planning (not framework state)
+.aio-sdlc-recovery-roadmap.md
