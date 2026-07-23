@@ -65,6 +65,73 @@ class DAGManager:
                 if dfs(node_id):
                     raise ValueError(f"Cycle detected involving node {node_id}.")
 
+    def validate_intent_ir(self, require_all: bool = True):
+        """Validate Intent IR coverage in addition to the base DAG constraints."""
+        self.validate()
+        if require_all:
+            missing = [node_id for node_id, node in self.nodes.items() if node.intent is None]
+            if missing:
+                raise ValueError(
+                    "Intent IR is missing for node(s): " + ", ".join(sorted(missing))
+                )
+
+    def render_intent_summary(self, node_id: str = None) -> str:
+        """Render an auditable Intent IR review without exposing raw DAG YAML."""
+        if node_id is not None:
+            nodes = [self.get_node(node_id)]
+        else:
+            nodes = list(self.nodes.values())
+
+        nodes = [node for node in nodes if node.intent is not None]
+        if not nodes:
+            return "No nodes contain Intent IR."
+
+        lines = [f"Intent review: {self.metadata.name}"]
+        for node in nodes:
+            intent = node.intent
+            lines.extend(
+                [
+                    "",
+                    f"## {node.name} ({node.id})",
+                    f"Confidence: {intent.confidence:.2f}",
+                    f"Approval: {intent.approval.state.value}",
+                    f"Responsible agent: {intent.responsible_agent}",
+                    f"Generator: {intent.generator_version}",
+                    "Provenance:",
+                ]
+            )
+            for source in intent.provenance:
+                lines.append(
+                    f"- [{source.source_type.value}] {source.reference}: {source.statement}"
+                )
+
+            lines.append("Acceptance criteria:")
+            for criterion in intent.acceptance_criteria:
+                lines.append(f"- {criterion.id}: {criterion.statement}")
+                for evidence in criterion.required_evidence:
+                    lines.append(f"  - Required evidence: {evidence}")
+
+            lines.append("Assumptions:")
+            lines.extend(f"- {assumption}" for assumption in intent.assumptions)
+            if not intent.assumptions:
+                lines.append("- None")
+
+            lines.append("Ambiguities:")
+            for ambiguity in intent.ambiguities:
+                resolution = f"; resolution: {ambiguity.resolution}" if ambiguity.resolution else ""
+                lines.append(f"- [{ambiguity.status.value}] {ambiguity.question}{resolution}")
+            if not intent.ambiguities:
+                lines.append("- None")
+
+            lines.append("Revision history:")
+            for revision in intent.revision_history:
+                lines.append(
+                    f"- r{revision.revision} {revision.recorded_at.isoformat()} "
+                    f"by {revision.actor}: {revision.summary}"
+                )
+
+        return "\n".join(lines)
+
     def add_node(self, node: Node):
         if node.id in self.nodes:
             raise ValueError(f"Node {node.id} already exists.")
@@ -76,7 +143,7 @@ class DAGManager:
         
         node = self.nodes[node_id]
         update_data = {k: v for k, v in kwargs.items() if v is not None}
-        updated_node = node.model_copy(update=update_data)
+        updated_node = Node.model_validate({**node.model_dump(), **update_data})
         self.nodes[node_id] = updated_node
 
     def remove_node(self, node_id: str):

@@ -12,6 +12,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 - **QA Sandbox Isolation**: QA agents operate strictly within robust `.qa-sandbox/<session-id>/` environments to ensure they cannot leak or destructively modify core source files.
 - **MCP Server Integration**: Downstream subagents securely interact with the system via integrated MCP servers, most notably the Agentic Backlog server.
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
+- **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
 - **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
 
 ## Licensing Note
@@ -82,3 +83,13 @@ Instead of relying on token-heavy LLM context windows or external integrations, 
 - **Intention DAG (I-DAG)**: A graph-based structural representation of planned features and dependencies.
 - **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic.
 - **Canonical Traceability**: PRDs (Product Requirement Documents) in the `specs/` directory are firmly anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift automatically and execute Just-In-Time (JIT) TDD loops with zero hallucination.
+
+Intent IR can be validated strictly or reviewed without reading raw YAML:
+
+```bash
+uv run dag-tool validate-intent --file intention-dag.yaml
+uv run dag-tool intent-summary --file intention-dag.yaml
+```
+
+Use `--allow-partial` during migration while legacy nodes do not yet contain Intent IR. Strict
+validation remains the default.

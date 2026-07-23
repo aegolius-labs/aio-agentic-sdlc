@@ -23,6 +23,37 @@ def validate(file):
         click.secho(f"Error validating DAG: {str(e)}", err=True, fg='red')
         sys.exit(1)
 
+
+@cli.command("validate-intent")
+@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
+@click.option(
+    '--require-all/--allow-partial',
+    default=True,
+    help='Require every node to contain Intent IR or allow legacy nodes.',
+)
+def validate_intent(file, require_all):
+    """Validate the Intent IR payloads and coverage of an Intention DAG."""
+    try:
+        manager = DAGManager.load(file)
+        manager.validate_intent_ir(require_all=require_all)
+        click.echo("Intent IR is valid.")
+    except Exception as e:
+        click.secho(f"Error validating Intent IR: {str(e)}", err=True, fg='red')
+        sys.exit(1)
+
+
+@cli.command("intent-summary")
+@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
+@click.option('--node-id', help='Limit the review to one node ID.')
+def intent_summary(file, node_id):
+    """Render a human-readable Intent IR review without raw YAML."""
+    try:
+        manager = DAGManager.load(file)
+        click.echo(manager.render_intent_summary(node_id=node_id))
+    except Exception as e:
+        click.secho(f"Error rendering Intent IR: {str(e)}", err=True, fg='red')
+        sys.exit(1)
+
 @cli.command()
 @click.option('--intention', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
 @click.option('--reality', required=True, type=click.Path(exists=True), help='Path to the Reality DAG yaml file.')

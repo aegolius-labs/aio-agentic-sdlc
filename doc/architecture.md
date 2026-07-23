@@ -20,7 +20,8 @@ graph TD
     end
     
     subgraph Local Persistence
-        CLI --> Intent[(intention-dag.yaml)]
+        CLI --> IntentReview[Intent IR validation and review]
+        IntentReview --> Intent[(intention-dag.yaml)]
         CLI --> Reality[(reality-dag.yaml)]
         CLI --> ReadJSON[load_backlog]
         ReadJSON --> FileDB[(backlog.json)]
@@ -54,6 +55,13 @@ The local files have distinct responsibilities:
 - `.agentic-backlog.json` is a retired generated artifact. Runtime code does not read it; `aio-sdlc migrate-state --retire-legacy` preserves a hash-named copy under ignored operational state before removing it.
 
 Framework tools, rather than hand edits, perform state transitions. External issue trackers may be reintroduced later as one-way projections, but they cannot select or replace the authoritative state.
+
+Intention DAG nodes can embed the versioned Intent IR v1 contract. Intent IR records provenance,
+assumptions, ambiguities, confidence, acceptance criteria and their required evidence, revision
+history, generator ownership, and approval state. Existing nodes remain readable during migration,
+but strict validation requires Intent IR on every node. `dag-tool intent-summary` provides a
+human-readable review surface without exposing raw graph YAML. The schema decision and migration
+tradeoffs are recorded in [ADR 0002](adr/0002-intent-ir-v1.md).
 
 ### 3. State Loading
 
