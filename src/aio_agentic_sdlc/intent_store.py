@@ -19,7 +19,10 @@ def create_intent_node_file(filepath: str | Path, node: Node) -> int:
     """Atomically create one canonical DAG node with validated Intent IR."""
     if node.intent is None:
         raise ValueError("canonical intent node creation requires Intent IR")
-    if len(node.intent.revision_history) != 1 or node.intent.revision_history[0].revision != 1:
+    if (
+        len(node.intent.revision_history) != 1
+        or node.intent.revision_history[0].revision != 1
+    ):
         raise ValueError("new canonical intent node must contain exactly revision 1")
 
     dag_path = Path(filepath).resolve()
@@ -54,7 +57,10 @@ def update_intent_file(
             )
 
         if current is None:
-            if len(intent.revision_history) != 1 or intent.revision_history[0].revision != 1:
+            if (
+                len(intent.revision_history) != 1
+                or intent.revision_history[0].revision != 1
+            ):
                 raise ValueError("new Intent IR must contain exactly revision 1")
         else:
             existing_history = current.revision_history
@@ -64,7 +70,8 @@ def update_intent_file(
                 or proposed_history[:-1] != existing_history
             ):
                 raise ValueError(
-                    "Intent IR revision must preserve existing revision history and append one entry"
+                    "Intent IR revision must preserve existing revision history "
+                    "and append one entry"
                 )
             if proposed_history[-1].revision != current_revision + 1:
                 raise ValueError(

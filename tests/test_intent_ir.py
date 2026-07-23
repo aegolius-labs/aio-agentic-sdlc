@@ -19,7 +19,6 @@ from aio_agentic_sdlc.intent_ir import (
     ProvenanceType,
 )
 
-
 NODE_ID = "00000000-0000-0000-0000-0000000000a1"
 
 
@@ -65,7 +64,14 @@ def _intent_ir() -> IntentIR:
 def test_intent_ir_round_trips_through_dag_yaml(tmp_path):
     manager = DAGManager(
         Metadata(name="Intent", version="1.0"),
-        [Node(id=NODE_ID, type=NodeType.COMPONENT, name="Rate limiter", intent=_intent_ir())],
+        [
+            Node(
+                id=NODE_ID,
+                type=NodeType.COMPONENT,
+                name="Rate limiter",
+                intent=_intent_ir(),
+            )
+        ],
         [],
     )
     path = tmp_path / "intention-dag.yaml"
@@ -167,7 +173,14 @@ def test_strict_intent_validation_reports_nodes_without_intent():
 def test_node_updates_revalidate_intent_ir():
     manager = DAGManager(
         Metadata(name="Intent", version="1.0"),
-        [Node(id=NODE_ID, type=NodeType.COMPONENT, name="Rate limiter", intent=_intent_ir())],
+        [
+            Node(
+                id=NODE_ID,
+                type=NodeType.COMPONENT,
+                name="Rate limiter",
+                intent=_intent_ir(),
+            )
+        ],
         [],
     )
     invalid_intent = _intent_ir().model_dump()
@@ -180,7 +193,14 @@ def test_node_updates_revalidate_intent_ir():
 def test_intent_summary_is_reviewable_without_raw_yaml():
     manager = DAGManager(
         Metadata(name="Intent", version="1.0"),
-        [Node(id=NODE_ID, type=NodeType.COMPONENT, name="Rate limiter", intent=_intent_ir())],
+        [
+            Node(
+                id=NODE_ID,
+                type=NodeType.COMPONENT,
+                name="Rate limiter",
+                intent=_intent_ir(),
+            )
+        ],
         [],
     )
 
@@ -200,7 +220,14 @@ def test_intent_summary_is_reviewable_without_raw_yaml():
 def test_intent_cli_validates_and_summarizes(tmp_path):
     manager = DAGManager(
         Metadata(name="Intent", version="1.0"),
-        [Node(id=NODE_ID, type=NodeType.COMPONENT, name="Rate limiter", intent=_intent_ir())],
+        [
+            Node(
+                id=NODE_ID,
+                type=NodeType.COMPONENT,
+                name="Rate limiter",
+                intent=_intent_ir(),
+            )
+        ],
         [],
     )
     path = tmp_path / "intention-dag.yaml"

@@ -32,7 +32,8 @@ def _revision_two() -> IntentIR:
     data["revision_history"].append(
         {
             "revision": 2,
-            "recorded_at": datetime(2026, 7, 23, tzinfo=timezone.utc) + timedelta(minutes=5),
+            "recorded_at": datetime(2026, 7, 23, tzinfo=timezone.utc)
+            + timedelta(minutes=5),
             "actor": "sdlc_cartographer",
             "generator_version": "aio-agentic-sdlc/0.23",
             "summary": "Clarified the rate-limit key.",
@@ -123,7 +124,9 @@ def test_update_intent_file_rejects_history_rewrite(tmp_path):
         )
 
 
-def test_update_intent_file_preserves_original_on_replace_failure(tmp_path, monkeypatch):
+def test_update_intent_file_preserves_original_on_replace_failure(
+    tmp_path, monkeypatch
+):
     path = tmp_path / "intention-dag.yaml"
     _write_legacy_dag(path)
     before = path.read_bytes()

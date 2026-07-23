@@ -13,7 +13,6 @@ from pydantic import (
     model_validator,
 )
 
-
 NonEmptyStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
 
@@ -89,7 +88,9 @@ class Approval(IntentModel):
 
     @field_validator("approved_at")
     @classmethod
-    def require_timezone_aware_timestamp(cls, value: datetime | None) -> datetime | None:
+    def require_timezone_aware_timestamp(
+        cls, value: datetime | None
+    ) -> datetime | None:
         if value is not None and (value.tzinfo is None or value.utcoffset() is None):
             raise ValueError("approval approved_at must be timezone-aware")
         return value
@@ -128,7 +129,12 @@ class IntentIR(IntentModel):
         if revisions[0] != 1 or any(
             current <= previous for previous, current in zip(revisions, revisions[1:])
         ):
-            raise ValueError("revision history must start at 1 and be strictly increasing")
+            raise ValueError(
+                "revision history must start at 1 and be strictly increasing"
+            )
         if self.revision_history[-1].generator_version != self.generator_version:
-            raise ValueError("latest revision generator_version must match Intent IR generator_version")
+            raise ValueError(
+                "latest revision generator_version must match "
+                "Intent IR generator_version"
+            )
         return self
