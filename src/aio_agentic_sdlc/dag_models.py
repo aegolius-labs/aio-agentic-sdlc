@@ -2,6 +2,8 @@ from enum import Enum
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 
+from aio_agentic_sdlc.intent_ir import IntentIR
+
 class NodeType(str, Enum):
     SYSTEM = "system"
     CONTAINER = "container"
@@ -32,6 +34,7 @@ class Node(BaseModel):
     domain: Optional[str] = None
     description: Optional[str] = None
     attributes: Optional[Dict[str, Any]] = None
+    intent: Optional[IntentIR] = None
 
 class Edge(BaseModel):
     source: str = Field(pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')

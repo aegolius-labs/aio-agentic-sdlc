@@ -15,6 +15,10 @@ Tool names may be namespaced by the Codex host. Match them by the operation name
 | Check PRD overlap | `check_duplicate_prd` | Use the Python API if MCP is unavailable |
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
+| Create intent node | `create_intent_node` | `uv run dag-tool intent create-node ...` |
+| Revise Intent IR | `set_intent` | `uv run dag-tool intent set ...` |
+| Validate Intent IR | `validate_intent` | `uv run dag-tool validate-intent --file ...` |
+| Review Intent IR | `review_intent` | `uv run dag-tool intent-summary --file ...` |
 | Promote accepted spec | `promote_spec` | No manual-move fallback |
 
 Always pass an absolute `project_path`. For `generate_document`, also pass the absolute project
