@@ -13,7 +13,6 @@ from typing import Any
 
 from filelock import FileLock
 
-
 BACKLOG_FILE = "backlog.json"
 AUDIT_FILE = ".aio-sdlc/state-audit.jsonl"
 LOCK_FILE = ".aio-sdlc/state.lock"
@@ -182,13 +181,13 @@ def _migrate_v0_to_v1(data: dict[str, Any]) -> dict[str, Any]:
         nodes = {}
         for name, item in items.items():
             if not isinstance(item, dict):
-                raise BacklogStateError(f"Legacy backlog item '{name}' must be an object.")
+                raise BacklogStateError(
+                    f"Legacy backlog item '{name}' must be an object."
+                )
             node = copy.deepcopy(item)
             node.setdefault("item_type", "Task")
             for requirement in node.pop("requires", []):
-                edges.append(
-                    {"from": name, "to": requirement, "relation": "requires"}
-                )
+                edges.append({"from": name, "to": requirement, "relation": "requires"})
             parent_id = node.pop("parent_id", None)
             if parent_id:
                 edges.append({"from": name, "to": parent_id, "relation": "parent"})
@@ -213,7 +212,9 @@ def migrate_backlog_data(data: dict[str, Any]) -> dict[str, Any]:
 
     version = data.get("schema_version", 0)
     if isinstance(version, bool) or not isinstance(version, int) or version < 0:
-        raise BacklogStateError("Backlog schema_version must be a non-negative integer.")
+        raise BacklogStateError(
+            "Backlog schema_version must be a non-negative integer."
+        )
     if version > CURRENT_BACKLOG_SCHEMA_VERSION:
         raise UnsupportedBacklogSchema(
             f"Backlog schema {version} is newer than supported schema "
@@ -225,7 +226,9 @@ def migrate_backlog_data(data: dict[str, Any]) -> dict[str, Any]:
         if version == 0:
             migrated = _migrate_v0_to_v1(migrated)
         else:
-            raise UnsupportedBacklogSchema(f"No migration is available from schema {version}.")
+            raise UnsupportedBacklogSchema(
+                f"No migration is available from schema {version}."
+            )
         version = migrated["schema_version"]
 
     if not isinstance(migrated.get("nodes"), dict):
@@ -334,9 +337,7 @@ def migrate_backlog(project_path: str = ".") -> dict[str, int | bool]:
         migrated = migrate_backlog_data(raw)
         changed = raw != migrated
         if changed:
-            _save_backlog_unlocked(
-                migrated, project_path, operation="backlog.migrate"
-            )
+            _save_backlog_unlocked(migrated, project_path, operation="backlog.migrate")
         return {
             "from_version": from_version,
             "to_version": CURRENT_BACKLOG_SCHEMA_VERSION,
@@ -368,9 +369,7 @@ def retire_legacy_backlog(
             raise BacklogStateError("Legacy backlog root must be an object.")
 
         digest = hashlib.sha256(payload).hexdigest()
-        archive_relative = (
-            f".aio-sdlc/legacy/agentic-backlog-{digest}.json"
-        )
+        archive_relative = f".aio-sdlc/legacy/agentic-backlog-{digest}.json"
         archive_path = os.path.join(project_path, archive_relative)
         archive_dir = os.path.dirname(archive_path)
         os.makedirs(archive_dir, exist_ok=True)

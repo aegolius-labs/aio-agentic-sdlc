@@ -7,8 +7,8 @@ from aio_agentic_sdlc import core
 from aio_agentic_sdlc.cli import main
 from aio_agentic_sdlc.state import (
     AUDIT_FILE,
-    BacklogConflictError,
     CURRENT_BACKLOG_SCHEMA_VERSION,
+    BacklogConflictError,
     UnsupportedBacklogSchema,
     migrate_backlog,
     retire_legacy_backlog,
