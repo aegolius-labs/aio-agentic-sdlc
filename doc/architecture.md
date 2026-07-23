@@ -63,6 +63,11 @@ but strict validation requires Intent IR on every node. `dag-tool intent-summary
 human-readable review surface without exposing raw graph YAML. The schema decision and migration
 tradeoffs are recorded in [ADR 0002](adr/0002-intent-ir-v1.md).
 
+Intent IR creation and revision are serialized by a lock under `.aio-sdlc/`. Callers provide the
+current node revision; stale writers fail instead of overwriting newer interpretation. Revisions
+must preserve the complete existing history and append exactly one next entry. DAG replacement is
+atomic, so a failed final replace leaves the prior canonical file intact.
+
 ### 3. State Loading
 
 The command handler reads the current state from `backlog.json` via `load_backlog()`. If the file does not exist, a schema-versioned empty envelope is returned. Unversioned `items` or `nodes` documents are migrated deterministically in memory; `aio-sdlc migrate-state` explicitly persists the current schema. A schema newer than the installed framework fails closed.

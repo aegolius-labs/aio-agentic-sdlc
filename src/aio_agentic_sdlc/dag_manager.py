@@ -1,4 +1,6 @@
 import yaml
+import os
+import tempfile
 from typing import List, Dict, Any, Set
 from pydantic import ValidationError
 from aio_agentic_sdlc.dag_models import Metadata, Node, Edge, NodeType, EdgeType
@@ -26,8 +28,23 @@ class DAGManager:
             "nodes": [n.model_dump(mode='json', exclude_none=True) for n in self.nodes.values()],
             "edges": [e.model_dump(mode='json', exclude_none=True) for e in self.edges]
         }
-        with open(filepath, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, sort_keys=False, default_flow_style=False)
+        target = os.path.abspath(filepath)
+        target_dir = os.path.dirname(target) or "."
+        os.makedirs(target_dir, exist_ok=True)
+        fd, temp_path = tempfile.mkstemp(
+            dir=target_dir,
+            prefix=f".{os.path.basename(target)}.",
+            suffix=".tmp",
+        )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                yaml.dump(data, f, sort_keys=False, default_flow_style=False)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temp_path, target)
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
 
     def validate(self):
         # Reference Integrity

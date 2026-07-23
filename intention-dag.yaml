@@ -275,6 +275,340 @@ nodes:
   name: Health Check Endpoint
   domain: orchestration
   description: Lightweight health check endpoint for liveness probes
+- id: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  type: component
+  name: Intent IR v1
+  domain: product-kernel
+  description: Auditable intermediate representation compiled from human intent.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:project-review:roadmap-request
+      statement: Use the AIO SDLC framework to add the recommendations to the project's
+        roadmap and get the project back on track.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#1-build-intent-ir-v1
+      statement: Build a validated, auditable Intent IR with provenance, assumptions,
+        ambiguities, confidence, evidence-bound acceptance criteria, revision history,
+        ownership, and approval state.
+    assumptions:
+    - Intention DAG nodes remain the canonical identity boundary.
+    - Legacy nodes must remain readable during framework-managed migration.
+    ambiguities:
+    - question: Which existing legacy Intention DAG nodes should be migrated first?
+      status: open
+    confidence: 0.9
+    acceptance_criteria:
+    - id: INTENT-IR-AC1
+      statement: Intent nodes preserve source provenance, assumptions, ambiguities,
+        bounded confidence, evidence requirements, revision history, ownership, and
+        approval state in a versioned schema.
+      required_evidence:
+      - test:intent-ir-schema-validation
+      - adr:0002-intent-ir-v1
+    - id: INTENT-IR-AC2
+      statement: Agents can create, revise, validate, and review Intent IR through
+        protected framework operations without editing raw YAML.
+      required_evidence:
+      - test:intent-ir-protected-mutation
+      - cli:dag-tool-intent
+      - mcp:create-set-validate-review-intent
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:00:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the recovery roadmap's Intent IR milestone into canonical
+        intent.
+    responsible_agent: sdlc_cartographer
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
+- id: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  type: component
+  name: Explicit Evidence Model
+  domain: verification
+  description: Evidence levels and references that justify or limit completion claims.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:project-review:recommendations
+      statement: Separate structural presence from actual requirement satisfaction
+        and explain every completion claim.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#2-add-an-explicit-evidence-model
+      statement: Represent declared, mapped, structurally present, tested, behaviorally
+        verified, and approved as distinct evidence levels.
+    assumptions:
+    - Evidence references can initially be durable strings before typed evidence adapters
+      are added.
+    ambiguities:
+    - question: Which evidence types require cryptographic hashes versus stable repository
+        references?
+      status: open
+    confidence: 0.88
+    acceptance_criteria:
+    - id: EVIDENCE-AC1
+      statement: Completion distinguishes declared, mapped, structural, tested, behaviorally
+        verified, and approved evidence levels.
+      required_evidence:
+      - test:evidence-level-state-machine
+      - schema:evidence-v1
+    - id: EVIDENCE-AC2
+      statement: Reconciliation reports cite supporting evidence and list acceptance
+        criteria that remain unverified.
+      required_evidence:
+      - test:reconciliation-evidence-report
+      - demo:traceability-report
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:01:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the explicit evidence model milestone.
+    responsible_agent: sdlc_architect
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
+- id: d64fbc3a-bdde-5672-8645-4aaa75464e46
+  type: component
+  name: Intent Translation Benchmark
+  domain: quality
+  description: Golden cases and measurable thresholds for human-intent translation.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:project-review:recommendations
+      statement: Measure the quality of translating human requests into canonical
+        intent.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#3-benchmark-intent-translation
+      statement: Create golden requests and measure omissions, inventions, dependency
+        errors, unjustified completion, stability, and correction after feedback.
+    assumptions:
+    - Golden cases can be reviewed and versioned without embedding model-specific
+      outputs as requirements.
+    ambiguities:
+    - question: What initial failure thresholds are strict enough to be meaningful
+        without blocking all iteration?
+      status: open
+    confidence: 0.84
+    acceptance_criteria:
+    - id: BENCHMARK-AC1
+      statement: A versioned golden corpus covers requirements, constraints, dependencies,
+        ambiguities, evidence, and correction after feedback.
+      required_evidence:
+      - fixture:intent-translation-golden-corpus
+      - review:golden-case-approval
+    - id: BENCHMARK-AC2
+      statement: CI reports omissions, inventions, incorrect dependencies, unjustified
+        completion claims, repeated-run stability, and correction quality against
+        explicit thresholds.
+      required_evidence:
+      - test:intent-translation-benchmark
+      - ci:intent-quality-thresholds
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:02:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the intent-translation benchmark milestone.
+    responsible_agent: sdlc_qa
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
+- id: cb02a996-6d3f-5610-9043-b1e768587d84
+  type: component
+  name: Closed-loop Reference Demo
+  domain: product-validation
+  description: Reproducible requirement-to-implementation-to-evidence demonstration.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:project-review:recommendations
+      statement: Prove one complete requirement-to-implementation-to-tests-to-traceability
+        workflow.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#4-prove-one-closed-loop
+      statement: Publish one reproducible closed-loop demo with an understandable
+        traceability report and human approval gate.
+    assumptions:
+    - A narrow security or reliability requirement is a representative first demonstration.
+    ambiguities:
+    - question: Which external repository or isolated fixture should host the first
+        public demonstration?
+      status: open
+    confidence: 0.82
+    acceptance_criteria:
+    - id: DEMO-AC1
+      statement: A fresh checkout reproduces one requirement through intent, implementation,
+        tests, evidence, and approval.
+      required_evidence:
+      - demo:closed-loop-reproduction-script
+      - test:closed-loop-integration
+    - id: DEMO-AC2
+      statement: The resulting traceability report is understandable without knowledge
+        of framework internals.
+      required_evidence:
+      - artifact:human-readable-traceability-report
+      - review:external-reader-usability
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:03:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the reproducible closed-loop demonstration milestone.
+    responsible_agent: sdlc_orchestrator
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
+- id: 4f6cdecf-639d-50e5-bc6d-ad71c1750000
+  type: component
+  name: Agent Runtime Portability
+  domain: orchestration
+  description: Runtime adapter boundary with validated Codex-native orchestration.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:antigravity-to-codex-plugin
+      statement: Convert the Antigravity-oriented framework into a portable Codex
+        plugin and avoid dependence on one agent runtime.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#5-make-agents-runtime-portable
+      statement: Introduce runtime adapters, fix orchestration contracts, and validate
+        Codex-native execution without changing canonical state.
+    assumptions:
+    - The deterministic kernel remains independent from any model provider or host-specific
+      agent API.
+    ambiguities:
+    - question: Which second runtime should serve as the portability reference after
+        Codex?
+      status: open
+    confidence: 0.9
+    acceptance_criteria:
+    - id: RUNTIME-AC1
+      statement: Runtime-specific agent invocation is isolated behind a stable adapter
+        contract.
+      required_evidence:
+      - test:runtime-adapter-contract
+      - architecture:runtime-boundary
+    - id: RUNTIME-AC2
+      statement: Codex-native orchestration advances one selected task through its
+        lifecycle without modifying canonical intent semantics.
+      required_evidence:
+      - test:codex-orchestration-lifecycle
+      - demo:two-runtime-state-compatibility
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:04:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the agent-runtime portability milestone.
+    responsible_agent: sdlc_architect
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
+- id: 15302505-8828-525a-bebb-f72621f467a1
+  type: component
+  name: Cross-language Ontology Portability
+  domain: reality-model
+  description: Shared Python and TypeScript observation ontology with GUID traceability.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:project-review:recommendations
+      statement: Support two materially different stacks to prove the ontology is
+        portable.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#6-prove-ontology-portability
+      statement: Add TypeScript and prove mixed Python/TypeScript observations map
+        into one stable core ontology.
+    assumptions:
+    - TypeScript provides a materially different but widely useful second parser target.
+    ambiguities:
+    - question: Should the first TypeScript adapter parse the compiler API directly
+        or use tree-sitter-typescript?
+      status: open
+    confidence: 0.86
+    acceptance_criteria:
+    - id: ONTOLOGY-AC1
+      statement: Python and TypeScript parsers emit the same stable core node and
+        edge ontology.
+      required_evidence:
+      - test:cross-language-ontology-contract
+      - fixture:mixed-python-typescript-project
+    - id: ONTOLOGY-AC2
+      statement: Language-specific concepts do not leak into the core schema and GUID
+        traceability remains valid across languages.
+      required_evidence:
+      - test:mixed-project-guid-traceability
+      - review:ontology-boundary
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:05:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the cross-language ontology portability milestone.
+    responsible_agent: sdlc_cartographer
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
+- id: 82579715-d088-51ac-999f-4a95235b561c
+  type: component
+  name: Product Hardening
+  domain: delivery
+  description: Stable installation, contracts, CI, licensing, recovery, and dogfooding
+    evidence.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: human_statement
+      reference: chat:project-review:recommendations
+      statement: Stabilize installation, contracts, CI, documentation, licensing,
+        and externally understandable proof before positioning this as an ecosystem.
+    - source_type: document
+      reference: .aio-sdlc-recovery-roadmap.md#7-product-hardening
+      statement: Make CI, CLI, MCP, plugin installation, release contracts, licensing,
+        dogfooding reports, and recovery procedures reproducible.
+    assumptions:
+    - Product hardening follows proof of the core intent and evidence loop rather
+      than preceding it.
+    ambiguities:
+    - question: Should the long-term distribution use an OSI-approved core, dual licensing,
+        or a source-available commercial model?
+      status: open
+    confidence: 0.9
+    acceptance_criteria:
+    - id: HARDENING-AC1
+      statement: A clean environment can install and validate the CLI, MCP server,
+        and Codex plugin through stable documented contracts.
+      required_evidence:
+      - ci:clean-install-matrix
+      - test:plugin-install-smoke
+      - artifact:release-contract-documentation
+    - id: HARDENING-AC2
+      statement: The repository contains a deliberate license, recovery procedures,
+        and evidence-backed dogfooding reports understandable to external adopters.
+      required_evidence:
+      - file:LICENSE
+      - doc:recovery-procedure
+      - report:dogfooding-evidence
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-07-23T16:06:00Z'
+      actor: sdlc_intake
+      generator_version: aio-agentic-sdlc/0.23.0-dev
+      summary: Compiled the product hardening milestone.
+    responsible_agent: sdlc_devops
+    generator_version: aio-agentic-sdlc/0.23.0-dev
+    approval:
+      state: review_required
 edges:
 - source: 4d76717e-55cd-4768-b05e-06a3cce1128b
   target: 54b91d55-08fe-48df-be35-445be7cd1e46
@@ -561,3 +895,35 @@ edges:
 - source: f1009cfe-9cde-4260-9235-72886d71fa94
   target: 1525a991-0ffa-4f82-b5a1-b23602346ca4
   type: contains
+- source: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  target: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  type: depends_on
+  description: Evidence claims require the Intent IR acceptance and provenance contract.
+- source: d64fbc3a-bdde-5672-8645-4aaa75464e46
+  target: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  type: depends_on
+  description: Translation benchmarks evaluate the canonical Intent IR contract.
+- source: cb02a996-6d3f-5610-9043-b1e768587d84
+  target: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  type: depends_on
+  description: The closed-loop demo requires explicit completion evidence.
+- source: cb02a996-6d3f-5610-9043-b1e768587d84
+  target: d64fbc3a-bdde-5672-8645-4aaa75464e46
+  type: depends_on
+  description: The demo should use measured intent translation behavior.
+- source: 4f6cdecf-639d-50e5-bc6d-ad71c1750000
+  target: cb02a996-6d3f-5610-9043-b1e768587d84
+  type: depends_on
+  description: Runtime portability is evaluated against the proven closed loop.
+- source: 15302505-8828-525a-bebb-f72621f467a1
+  target: 4f6cdecf-639d-50e5-bc6d-ad71c1750000
+  type: depends_on
+  description: Ontology portability follows a stable runtime-independent kernel.
+- source: 82579715-d088-51ac-999f-4a95235b561c
+  target: 4f6cdecf-639d-50e5-bc6d-ad71c1750000
+  type: depends_on
+  description: Product hardening requires stable runtime contracts.
+- source: 82579715-d088-51ac-999f-4a95235b561c
+  target: 15302505-8828-525a-bebb-f72621f467a1
+  type: depends_on
+  description: Product hardening follows proof of ontology portability.

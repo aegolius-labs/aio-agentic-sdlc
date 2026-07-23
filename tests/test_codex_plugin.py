@@ -68,6 +68,32 @@ def test_codex_skill_has_valid_metadata_and_role_references() -> None:
     } == required_roles
 
 
+def test_codex_skill_routes_intent_ir_through_protected_tools() -> None:
+    skill_root = PLUGIN_ROOT / "skills" / "manage-sdlc"
+    tools = (skill_root / "references" / "tools.md").read_text(encoding="utf-8")
+    intake = (skill_root / "references" / "roles" / "intake.md").read_text(
+        encoding="utf-8"
+    )
+    cartographer = (
+        skill_root / "references" / "roles" / "cartographer.md"
+    ).read_text(encoding="utf-8")
+
+    assert all(
+        operation in tools
+        for operation in (
+            "create_intent_node",
+            "set_intent",
+            "validate_intent",
+            "review_intent",
+        )
+    )
+    assert "Intent IR v1" in intake
+    assert "does not write" in intake.lower()
+    assert "canonical DAG state" in intake
+    assert "set_intent" in cartographer
+    assert "do not patch DAG files" in cartographer
+
+
 def test_project_scoped_codex_agents_map_every_sdlc_role() -> None:
     agent_dir = ROOT / ".codex" / "agents"
     configs = {

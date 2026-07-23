@@ -3,6 +3,8 @@ import json
 import sys
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Node, Edge, NodeType, EdgeType
+from aio_agentic_sdlc.intent_ir import IntentIR
+from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
 from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 
@@ -52,6 +54,79 @@ def intent_summary(file, node_id):
         click.echo(manager.render_intent_summary(node_id=node_id))
     except Exception as e:
         click.secho(f"Error rendering Intent IR: {str(e)}", err=True, fg='red')
+        sys.exit(1)
+
+
+@cli.group("intent")
+def intent():
+    """Create or revise protected Intent IR payloads."""
+    pass
+
+
+@intent.command("create-node")
+@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
+@click.option('--node-id', required=True, help='Canonical node GUID.')
+@click.option('--type', 'node_type', required=True, type=click.Choice([t.value for t in NodeType]))
+@click.option('--name', required=True, help='Node name.')
+@click.option('--domain', help='Node domain.')
+@click.option('--description', help='Node description.')
+@click.option(
+    '--payload-file',
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help='JSON file containing the initial Intent IR v1 payload.',
+)
+def intent_create_node(file, node_id, node_type, name, domain, description, payload_file):
+    """Atomically create one canonical node with its initial Intent IR."""
+    try:
+        with open(payload_file, "r", encoding="utf-8") as payload:
+            intent_ir = IntentIR.model_validate(json.load(payload))
+        node = Node(
+            id=node_id,
+            type=NodeType(node_type),
+            name=name,
+            domain=domain,
+            description=description,
+            intent=intent_ir,
+        )
+        revision = create_intent_node_file(file, node)
+        click.echo(
+            f"Node '{node_id}' created with Intent IR revision {revision}."
+        )
+    except Exception as e:
+        click.secho(f"Error creating intent node: {str(e)}", err=True, fg='red')
+        sys.exit(1)
+
+
+@intent.command("set")
+@click.option('--file', required=True, type=click.Path(exists=True), help='Path to the Intention DAG yaml file.')
+@click.option('--node-id', required=True, help='Node ID receiving the Intent IR payload.')
+@click.option(
+    '--payload-file',
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help='JSON file containing one complete Intent IR payload.',
+)
+@click.option(
+    '--expected-revision',
+    required=True,
+    type=click.IntRange(min=0),
+    help='Current revision, or zero when creating the first Intent IR payload.',
+)
+def intent_set(file, node_id, payload_file, expected_revision):
+    """Create or revise Intent IR using optimistic revision protection."""
+    try:
+        with open(payload_file, "r", encoding="utf-8") as payload:
+            intent_ir = IntentIR.model_validate(json.load(payload))
+        revision = update_intent_file(
+            file,
+            node_id,
+            intent_ir,
+            expected_revision=expected_revision,
+        )
+        click.echo(f"Intent IR for node '{node_id}' saved at revision {revision}.")
+    except Exception as e:
+        click.secho(f"Error setting Intent IR: {str(e)}", err=True, fg='red')
         sys.exit(1)
 
 @cli.command()

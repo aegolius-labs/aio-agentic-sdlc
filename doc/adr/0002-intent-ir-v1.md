@@ -31,14 +31,18 @@ and fails when any node is missing the payload.
 or edit raw graph YAML. State mutation remains the responsibility of framework tools; these review
 and validation commands do not mutate the DAG.
 
+`set_intent` and `dag-tool intent set` are the only supported Intent IR mutation surfaces. They
+serialize writes with a local lock, require the caller's expected revision, preserve existing
+history, append exactly one revision, and atomically replace the DAG file.
+
 ## Consequences
 
 - Human statements and imported sources remain traceable through subsequent agent transformations.
 - Acceptance criteria state their required evidence before implementation is judged complete.
 - Low-confidence interpretations and open ambiguities are visible before downstream execution.
 - Legacy DAGs can migrate incrementally, but they do not pass strict Intent IR validation.
-- Intake and Cartographer still need deterministic creation and revision tools before the framework
-  can fully dogfood its roadmap.
+- Structural node creation and a benchmarked Intake-to-Intent translation loop remain necessary
+  before the framework can fully dogfood its roadmap.
 
 ## Alternatives Considered
 

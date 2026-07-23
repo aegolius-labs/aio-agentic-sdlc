@@ -9,6 +9,10 @@ from .core import (
     prioritize_items, get_next_item, load_backlog, VALID_STATUSES
 )
 from .templating_engine import generate_document as generate_document_from_template
+from .dag_manager import DAGManager
+from .dag_models import Node, NodeType
+from .intent_ir import IntentIR
+from .intent_store import create_intent_node_file, update_intent_file
 
 
 # Create the MCP server instance
@@ -233,6 +237,83 @@ def validate_traceability(project_path: str = Field(".", description="Absolute p
         return "Traceability Drift Detected:\n" + "\n".join(errors)
     except Exception as e:
         return f"Error validating traceability: {str(e)}"
+
+
+@mcp.tool()
+def set_intent(
+    node_id: str = Field(..., description="Canonical Intention DAG node GUID"),
+    payload_json: str = Field(..., description="Complete JSON-encoded Intent IR v1 payload"),
+    expected_revision: int = Field(..., ge=0, description="Current revision, or zero for creation"),
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+) -> str:
+    """Create or revise one Intent IR payload with optimistic revision protection."""
+    try:
+        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        intent = IntentIR.model_validate(json.loads(payload_json))
+        revision = update_intent_file(
+            intention_path,
+            node_id,
+            intent,
+            expected_revision=expected_revision,
+        )
+        return f"Intent IR for node '{node_id}' saved at revision {revision}."
+    except Exception as e:
+        return f"Error setting Intent IR: {str(e)}"
+
+
+@mcp.tool()
+def create_intent_node(
+    node_id: str = Field(..., description="Canonical Intention DAG node GUID"),
+    node_type: str = Field(..., description="Canonical DAG node type"),
+    name: str = Field(..., description="Human-readable node name"),
+    payload_json: str = Field(..., description="Initial JSON-encoded Intent IR v1 payload"),
+    domain: str = Field(None, description="Optional architectural domain"),
+    description: str = Field(None, description="Optional node description"),
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+) -> str:
+    """Atomically create a canonical node with its initial Intent IR payload."""
+    try:
+        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        node = Node(
+            id=node_id,
+            type=NodeType(node_type),
+            name=name,
+            domain=domain,
+            description=description,
+            intent=IntentIR.model_validate(json.loads(payload_json)),
+        )
+        revision = create_intent_node_file(intention_path, node)
+        return f"Node '{node_id}' created with Intent IR revision {revision}."
+    except Exception as e:
+        return f"Error creating intent node: {str(e)}"
+
+
+@mcp.tool()
+def validate_intent(
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+    require_all: bool = Field(True, description="Require Intent IR on every node"),
+) -> str:
+    """Validate Intent IR payloads and coverage in the canonical Intention DAG."""
+    try:
+        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        manager = DAGManager.load(intention_path)
+        manager.validate_intent_ir(require_all=require_all)
+        return "Intent IR validation passed."
+    except Exception as e:
+        return f"Error validating Intent IR: {str(e)}"
+
+
+@mcp.tool()
+def review_intent(
+    project_path: str = Field(".", description="Absolute path to the project directory"),
+    node_id: str = Field(None, description="Optional node GUID to review"),
+) -> str:
+    """Render a human-readable review of canonical Intent IR payloads."""
+    try:
+        intention_path = os.path.join(os.path.abspath(project_path), "intention-dag.yaml")
+        return DAGManager.load(intention_path).render_intent_summary(node_id=node_id)
+    except Exception as e:
+        return f"Error reviewing Intent IR: {str(e)}"
 
 @mcp.tool()
 def promote_spec(

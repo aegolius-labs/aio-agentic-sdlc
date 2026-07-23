@@ -87,6 +87,8 @@ Instead of relying on token-heavy LLM context windows or external integrations, 
 Intent IR can be validated strictly or reviewed without reading raw YAML:
 
 ```bash
+uv run dag-tool intent create-node --file intention-dag.yaml --node-id <guid> \
+  --type component --name "Capability" --payload-file intent.json
 uv run dag-tool validate-intent --file intention-dag.yaml
 uv run dag-tool intent-summary --file intention-dag.yaml
 ```

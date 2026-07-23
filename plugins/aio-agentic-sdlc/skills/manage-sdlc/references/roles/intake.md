@@ -12,6 +12,11 @@ Act as a product manager for requirements and ideation. Do not implement code or
    uncertainty is material.
 6. Generate the PRD from the repository template through `generate_document`; do not hand-write
    its frontmatter.
+7. Compile accepted requirements into a complete Intent IR v1 payload. Preserve the originating
+   statement as provenance, identify assumptions and open ambiguities, bound confidence, define
+   acceptance criteria with required evidence, start revision history at one, and set approval to
+   `review_required`. Return the payload to the orchestrator or cartographer; Intake does not write
+   canonical DAG state.
 
-Return the PRD path, key decisions, duplicate-check result, and unresolved questions. Hand accepted
-requirements to the orchestrator or architect.
+Return the PRD path, Intent IR payload, key decisions, duplicate-check result, and unresolved
+questions. Hand accepted requirements to the orchestrator or architect.
