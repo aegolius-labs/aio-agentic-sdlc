@@ -17,6 +17,10 @@ _project_locks_guard = threading.Lock()
 _project_locks: dict[str, threading.RLock] = {}
 
 
+class SemanticCacheError(RuntimeError):
+    """A bounded, actionable semantic-search prerequisite failure."""
+
+
 def _canonical_cache_identity(project_path: str) -> str:
     return os.path.normcase(os.path.realpath(os.path.abspath(project_path)))
 
@@ -69,25 +73,42 @@ def _get_db_unlocked(project_path: str) -> sqlite3.Connection:
         f"{WORKSPACE_DIR}/semantic-cache.db",
     )
     db = sqlite3.connect(db_path)
-    db.enable_load_extension(True)
-    sqlite_vec.load(db)
-    db.enable_load_extension(False)
+    try:
+        if not callable(getattr(db, "enable_load_extension", None)):
+            raise SemanticCacheError(
+                "Semantic search requires Python with SQLite extension loading. "
+                "Use a UV-managed Python interpreter; see the installation guide."
+            )
+        try:
+            db.enable_load_extension(True)
+            try:
+                sqlite_vec.load(db)
+            finally:
+                db.enable_load_extension(False)
+        except (sqlite3.Error, OSError) as error:
+            raise SemanticCacheError(
+                "Semantic search could not load sqlite-vec. Use a Python interpreter "
+                "with SQLite extension loading and synchronize the locked dependencies."
+            ) from error
 
-    # Initialize schema
-    db.execute("""
+        # Initialize schema
+        db.execute("""
         CREATE VIRTUAL TABLE IF NOT EXISTS prd_embeddings USING vec0(
             embedding float[384]
         )
     """)
-    db.execute("""
+        db.execute("""
         CREATE TABLE IF NOT EXISTS prd_metadata (
             rowid INTEGER PRIMARY KEY,
             filepath TEXT UNIQUE,
             last_modified REAL
         )
     """)
-    db.commit()
-    return db
+        db.commit()
+        return db
+    except BaseException:
+        db.close()
+        raise
 
 
 def get_db(project_path: str) -> sqlite3.Connection:

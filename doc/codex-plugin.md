@@ -57,6 +57,13 @@ uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc aio-agentic-sdl
 The first start downloads the Python dependency set and can take longer than subsequent starts.
 The plugin grants a 120-second MCP startup window for this reason.
 
+Semantic PRD search also requires SQLite extension loading. If the selected Python omits it
+(as some macOS builds do), the tool reports a bounded prerequisite error rather than a successful
+"no duplicates" result. Install a UV-managed interpreter with `uv python install 3.12` and set
+`UV_MANAGED_PYTHON=true` in the MCP launch environment to prevent fallback to system Python.
+The default plugin command does not force a particular Python build; CI explicitly uses managed
+Python and tests actual SQLite vector queries. See the [installation prerequisites](../README.md#installation--configuration).
+
 ## MCP SDK v2 runtime contract
 
 The server uses the official Python SDK v2 `MCPServer` API. The package requirement is

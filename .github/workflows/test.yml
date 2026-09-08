@@ -18,6 +18,9 @@ jobs:
     name: Python 3.12 (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    env:
+      # System macOS Python may omit the SQLite extension API required by sqlite-vec.
+      UV_MANAGED_PYTHON: 'true'
     strategy:
       fail-fast: false
       matrix:

@@ -30,6 +30,16 @@ The package supports `mcp>=2.0.0,<3`; the reviewed development lock resolves MCP
 launcher remains stdio-based, so existing host configuration does not need a transport change for
 the SDK v2 migration.
 
+Semantic PRD search requires Python's SQLite extension-loading support for `sqlite-vec`.
+Some macOS Python builds omit it; installing the Python package alone does not add that support.
+Use a UV-managed interpreter (`uvx --managed-python --python 3.12 --from
+git+https://github.com/aegolius-labs/aio-agentic-sdlc aio-agentic-sdlc-mcp`) or another
+extension-capable Python build. For development, select it with
+`uv sync --managed-python --python 3.12 --frozen --group dev`. CI uses this managed runtime on
+all three platforms and exercises real SQLite vector queries; it does not skip semantic search.
+See the [SQLite requirement](https://alexgarcia.xyz/sqlite-vec/python.html#macos-blocks-sqlite-extensions-by-default)
+and [UV interpreter selection](https://docs.astral.sh/uv/concepts/python-versions/#requiring-or-disabling-managed-python-versions).
+
 ### Codex plugin
 
 Codex users can install the repository-scoped plugin from `.agents/plugins/marketplace.json`. It

@@ -39,6 +39,23 @@ def _promotion_recovery_bytes(project: Path) -> list[bytes]:
     return [path.read_bytes() for path in recovery.iterdir()]
 
 
+def _pin_initial_destination_descriptor(monkeypatch, destination, backing):
+    """Model POSIX's pinned read handle on Windows without faking later reads."""
+    original_open = mcp_server_module._open_verified_regular_leaf
+    pinned = False
+
+    def open_verified(path):
+        nonlocal pinned
+        if Path(path) != destination or pinned:
+            return original_open(path)
+        pinned = True
+        observed = os.stat(path, follow_symlinks=False)
+        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        return descriptor, observed
+
+    monkeypatch.setattr(mcp_server_module, "_open_verified_regular_leaf", open_verified)
+
+
 def _prd_data(label: str) -> dict[str, str]:
     return {
         key: label
@@ -648,11 +665,6 @@ async def test_v2_spec_promotion_detects_swap_after_first_destination_postcheck(
     original_guard = mcp_server_module.guarded_file_path
     swapped = False
 
-    def posix_like_open_verified(path):
-        observed = os.stat(path, follow_symlinks=False)
-        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
-        return descriptor, observed
-
     def swapping_guard(path, *args, **kwargs):
         nonlocal swapped
         guarded = original_guard(path, *args, **kwargs)
@@ -662,11 +674,7 @@ async def test_v2_spec_promotion_detects_swap_after_first_destination_postcheck(
             swapped = True
         return guarded
 
-    monkeypatch.setattr(
-        mcp_server_module,
-        "_open_verified_regular_leaf",
-        posix_like_open_verified,
-    )
+    _pin_initial_destination_descriptor(monkeypatch, destination, backing)
     monkeypatch.setattr(mcp_server_module, "guarded_file_path", swapping_guard)
     async with Client(mcp) as client:
         result = await client.call_tool(
@@ -703,11 +711,6 @@ async def test_v2_spec_promotion_preserves_foreign_regular_destination_on_rollba
     original_guard = mcp_server_module.guarded_file_path
     swapped = False
 
-    def posix_like_open_verified(path):
-        observed = os.stat(path, follow_symlinks=False)
-        descriptor = os.open(source, os.O_RDONLY | getattr(os, "O_BINARY", 0))
-        return descriptor, observed
-
     def swapping_guard(path, *args, **kwargs):
         nonlocal swapped
         guarded = original_guard(path, *args, **kwargs)
@@ -717,11 +720,7 @@ async def test_v2_spec_promotion_preserves_foreign_regular_destination_on_rollba
             attacker.rename(destination)
         return guarded
 
-    monkeypatch.setattr(
-        mcp_server_module,
-        "_open_verified_regular_leaf",
-        posix_like_open_verified,
-    )
+    _pin_initial_destination_descriptor(monkeypatch, destination, source)
     monkeypatch.setattr(mcp_server_module, "guarded_file_path", swapping_guard)
     async with Client(mcp) as client:
         result = await client.call_tool(
@@ -875,15 +874,7 @@ async def test_v2_spec_promotion_restores_read_only_source_after_late_failure(
     external.write_text("external-unchanged\n", encoding="utf-8")
     backing = tmp_path / "accepted-read-only-backing.md"
     backing.write_text("# Accepted read-only\n", encoding="utf-8")
-    original_open_verified = mcp_server_module._open_verified_regular_leaf
     original_move = mcp_server_module._move_source_to_promotion_backup
-
-    def posix_like_open_verified(path):
-        if Path(path) != destination:
-            return original_open_verified(path)
-        observed = os.stat(path, follow_symlinks=False)
-        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
-        return descriptor, observed
 
     def fail_after_source_removal(path, backup):
         result = original_move(path, backup)
@@ -892,11 +883,7 @@ async def test_v2_spec_promotion_restores_read_only_source_after_late_failure(
         os.symlink(external, destination)
         return result
 
-    monkeypatch.setattr(
-        mcp_server_module,
-        "_open_verified_regular_leaf",
-        posix_like_open_verified,
-    )
+    _pin_initial_destination_descriptor(monkeypatch, destination, backing)
     monkeypatch.setattr(
         mcp_server_module,
         "_move_source_to_promotion_backup",
@@ -946,18 +933,10 @@ async def test_v2_spec_promotion_never_unlinks_a_foreign_destination_on_rollback
     attacker.write_bytes(attacker_content)
     backing = tmp_path / "accepted-backing.md"
     backing.write_bytes(original)
-    original_open_verified = mcp_server_module._open_verified_regular_leaf
     original_move = mcp_server_module._move_source_to_promotion_backup
     original_unlink = os.unlink
     destination_unlink_attempted = False
     swapped = False
-
-    def posix_like_open_verified(path):
-        if Path(path) != destination:
-            return original_open_verified(path)
-        observed = os.stat(path, follow_symlinks=False)
-        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
-        return descriptor, observed
 
     def swap_destination_after_source_move(path, backup):
         nonlocal swapped
@@ -978,11 +957,7 @@ async def test_v2_spec_promotion_never_unlinks_a_foreign_destination_on_rollback
         "_move_source_to_promotion_backup",
         swap_destination_after_source_move,
     )
-    monkeypatch.setattr(
-        mcp_server_module,
-        "_open_verified_regular_leaf",
-        posix_like_open_verified,
-    )
+    _pin_initial_destination_descriptor(monkeypatch, destination, backing)
     monkeypatch.setattr(mcp_server_module.os, "unlink", track_product_unlink)
 
     async with Client(mcp) as client:
@@ -1059,19 +1034,11 @@ async def test_v2_spec_promotion_combined_contention_preserves_every_byte_set(
     foreign_destination = b"FOREIGN-DESTINATION\n"
     backing = tmp_path / "accepted-backing.md"
     backing.write_bytes(original)
-    original_open_verified = mcp_server_module._open_verified_regular_leaf
     original_move = mcp_server_module._move_source_to_promotion_backup
     original_restore = mcp_server_module._restore_source_no_replace
     original_unlink = os.unlink
     destination_swapped = False
     source_occupied_at_restore = False
-
-    def posix_like_open_verified(path):
-        if Path(path) != destination:
-            return original_open_verified(path)
-        observed = os.stat(path, follow_symlinks=False)
-        descriptor = os.open(backing, os.O_RDONLY | getattr(os, "O_BINARY", 0))
-        return descriptor, observed
 
     def contest_every_public_path(path, backup):
         nonlocal destination_swapped
@@ -1097,11 +1064,7 @@ async def test_v2_spec_promotion_combined_contention_preserves_every_byte_set(
         "_restore_source_no_replace",
         occupy_source_at_restore,
     )
-    monkeypatch.setattr(
-        mcp_server_module,
-        "_open_verified_regular_leaf",
-        posix_like_open_verified,
-    )
+    _pin_initial_destination_descriptor(monkeypatch, destination, backing)
 
     async with Client(mcp) as client:
         result = await client.call_tool(

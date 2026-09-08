@@ -720,11 +720,14 @@ def check_duplicate_prd(
 ) -> str:
     """Check if a proposed PRD is similar to canonical project specs."""
     try:
-        from .semantic_dedup import find_duplicate_prds
+        from .semantic_dedup import SemanticCacheError, find_duplicate_prds
 
-        results = find_duplicate_prds(
-            proposed_content, project_path, similarity_threshold
-        )
+        try:
+            results = find_duplicate_prds(
+                proposed_content, project_path, similarity_threshold
+            )
+        except SemanticCacheError as error:
+            return _expected_error(f"Error checking for duplicates: {error}")
         if not results:
             return "No duplicates found."
 
