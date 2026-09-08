@@ -2,16 +2,16 @@
   "schema_version": 1,
   "summary": {
     "intention_nodes": 61,
-    "reality_nodes": 742,
+    "reality_nodes": 756,
     "confirmed": 10,
     "candidate": 0,
     "ambiguous": 0,
     "unmapped": 51,
-    "unclassified_reality": 732
+    "unclassified_reality": 746
   },
   "limit": {
     "max_items": 200,
-    "total_items": 793,
+    "total_items": 807,
     "returned_items": 200,
     "truncated": true
   },
@@ -1278,6 +1278,17 @@
       "subject_kind": "reality",
       "classification": "unclassified_reality",
       "reality": {
+        "id": "04ae6738-da87-5f84-a418-044232458d64",
+        "type": "component",
+        "name": "test_mcp_reports_sqlite_prerequisite_without_internal_details"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
         "id": "0562a648-29c2-578c-bd36-90bc2e3ea221",
         "type": "component",
         "name": "test_mcp_reconcile_dags_returns_the_same_evidence_report"
@@ -1586,17 +1597,6 @@
       "subject_kind": "reality",
       "classification": "unclassified_reality",
       "reality": {
-        "id": "1201b0bb-2ca1-53b7-8cfc-8e3c9a293b85",
-        "type": "component",
-        "name": "test_mapping_final_source_swap_after_backup_delete_restores_snapshot"
-      },
-      "evidence": [],
-      "requires_approval": true
-    },
-    {
-      "subject_kind": "reality",
-      "classification": "unclassified_reality",
-      "reality": {
         "id": "1238936c-83b3-543c-a460-05c30b8447ba",
         "type": "component",
         "name": "test_normal_state_operations_wait_for_the_workspace_migration_lock"
@@ -1644,6 +1644,17 @@
         "id": "1439a387-5fac-5026-8cb9-d879e62efccb",
         "type": "component",
         "name": "detect_frameworks"
+      },
+      "evidence": [],
+      "requires_approval": true
+    },
+    {
+      "subject_kind": "reality",
+      "classification": "unclassified_reality",
+      "reality": {
+        "id": "14583604-2d30-5705-9790-c4bd8b5d4292",
+        "type": "component",
+        "name": "test_direct_concurrent_semantic_cache_calls_surface_backend_failures"
       },
       "evidence": [],
       "requires_approval": true
@@ -2678,17 +2689,6 @@
         "id": "33f020f8-b8d9-58b1-8a7b-cb27e47e1643",
         "type": "component",
         "name": "test_status_cmd_missing_item"
-      },
-      "evidence": [],
-      "requires_approval": true
-    },
-    {
-      "subject_kind": "reality",
-      "classification": "unclassified_reality",
-      "reality": {
-        "id": "346fe91e-beb6-5a33-bbda-8e52e4213394",
-        "type": "component",
-        "name": "test_main_loop_malformed_task"
       },
       "evidence": [],
       "requires_approval": true

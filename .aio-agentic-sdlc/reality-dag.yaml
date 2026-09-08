@@ -915,7 +915,7 @@ nodes:
 - id: 47a75c78-9576-5a40-bf45-eb1af4114e09
   type: component
   name: generate_reality
-  description: Scan the codebase and update the Reality DAG via dag-tool.
+  description: Scan the codebase and update the Reality DAG in-process.
 - id: f5e29b19-f15e-58aa-9438-30e772912751
   type: component
   name: main
@@ -1007,6 +1007,10 @@ nodes:
   type: module
   name: semantic_dedup.py
   description: Module src.aio_agentic_sdlc.semantic_dedup
+- id: ea1ff61c-0999-51f6-af8e-75f94afe76dc
+  type: component
+  name: SemanticCacheError
+  description: A bounded, actionable semantic-search prerequisite failure.
 - id: 27d4b108-db4e-5e0b-8ab3-20ce969a9e9b
   type: component
   name: get_model
@@ -1125,6 +1129,10 @@ nodes:
   type: component
   name: TemplateNotFoundError
   description: Raised when a requested framework template is unavailable.
+- id: a80a8bff-7632-577c-bb8e-17fe73cf579e
+  type: component
+  name: _OutputSnapshot
+  description: Class _OutputSnapshot
 - id: d76c9ca8-4548-5c54-95cc-86bb437c3acb
   type: component
   name: get_package_templates_dir
@@ -1138,8 +1146,9 @@ nodes:
     \ the template.\n        output_path: The path where the generated document will\
     \ be saved.\n        templates_dir: Optional explicit template directory. When\
     \ omitted, use the templates\n            bundled with the installed framework\
-    \ package.\n\n    Returns:\n        The content of the generated document.\n \
-    \   "
+    \ package.\n        project_path: Optional project root for private recovery artifacts.\
+    \ When omitted, the\n            output directory is treated as the project root.\n\
+    \n    Returns:\n        The content of the generated document.\n    "
 - id: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   type: module
   name: workspace.py
@@ -2248,6 +2257,10 @@ nodes:
   type: component
   name: test_concurrent_v2_semantic_cache_calls_are_serialized
   description: Function test_concurrent_v2_semantic_cache_calls_are_serialized
+- id: 14583604-2d30-5705-9790-c4bd8b5d4292
+  type: component
+  name: test_direct_concurrent_semantic_cache_calls_surface_backend_failures
+  description: Function test_direct_concurrent_semantic_cache_calls_surface_backend_failures
 - id: 97d17f57-e007-56bb-b28b-662070c4ef28
   type: component
   name: test_concurrent_v2_mapping_approvals_commit_one_exact_receipt
@@ -2272,6 +2285,14 @@ nodes:
   type: component
   name: test_v2_spec_promotion_preserves_a_foreign_destination_leaf
   description: Function test_v2_spec_promotion_preserves_a_foreign_destination_leaf
+- id: efd0065e-1a34-5cc9-9b8f-ee51392c6fb7
+  type: component
+  name: test_v2_spec_promotion_rejects_in_place_destination_edit
+  description: Function test_v2_spec_promotion_rejects_in_place_destination_edit
+- id: a43ded06-8924-5871-8c1f-9884616c127a
+  type: component
+  name: test_v2_spec_promotion_rejects_hardlinked_source_before_install
+  description: Function test_v2_spec_promotion_rejects_hardlinked_source_before_install
 - id: 81ae4f6f-586d-5464-860d-738281776201
   type: component
   name: test_v2_spec_promotion_detects_swap_after_first_destination_postcheck
@@ -2344,14 +2365,14 @@ nodes:
   type: component
   name: test_v2_generate_document_rejects_protected_state_aliases_without_mutation
   description: Function test_v2_generate_document_rejects_protected_state_aliases_without_mutation
-- id: d2bd0160-5cc2-51e6-8647-7e1e830745e4
+- id: addf8907-7763-5268-be9d-0758f7a16d07
   type: component
-  name: test_v2_generate_reality_rejects_protected_aliases_before_subprocess
-  description: Function test_v2_generate_reality_rejects_protected_aliases_before_subprocess
-- id: 3f89f37c-f49c-5b81-bc4d-9c6476f8bf21
+  name: test_v2_generate_reality_rejects_protected_aliases_before_generation
+  description: Function test_v2_generate_reality_rejects_protected_aliases_before_generation
+- id: 58e5f77e-fc72-538f-886b-8f62a2b01dff
   type: component
-  name: test_v2_generate_reality_suppresses_untrusted_subprocess_stderr
-  description: Function test_v2_generate_reality_suppresses_untrusted_subprocess_stderr
+  name: test_v2_generate_reality_suppresses_untrusted_generation_failure
+  description: Function test_v2_generate_reality_suppresses_untrusted_generation_failure
 - id: 6e458548-5c96-5b9f-801f-0fe345ae58af
   type: component
   name: test_v2_artifact_handlers_reject_hardlinked_protected_state_aliases
@@ -2368,6 +2389,14 @@ nodes:
   type: component
   name: test_real_stdio_entrypoint_serves_the_preserved_surface
   description: Function test_real_stdio_entrypoint_serves_the_preserved_surface
+- id: 55001591-1c13-51b4-928f-fc03a5cff233
+  type: component
+  name: test_v2_generate_reality_rechecks_parent_after_scan
+  description: Function test_v2_generate_reality_rechecks_parent_after_scan
+- id: af594586-8347-51c3-8739-20c77e4a5512
+  type: component
+  name: test_v2_generate_reality_runs_in_process_for_bare_external_repo
+  description: Function test_v2_generate_reality_runs_in_process_for_bare_external_repo
 - id: 6f4307bf-f492-573d-8f0a-bd2555ad85ef
   type: component
   name: test_v2_client_exercises_every_published_tool
@@ -2686,6 +2715,22 @@ nodes:
   type: component
   name: test_grep_search_in_tools
   description: Function test_grep_search_in_tools
+- id: 52c25707-23b9-5dd6-9847-5d1eab1c3cf5
+  type: module
+  name: test_semantic_dedup.py
+  description: Module tests.test_semantic_dedup
+- id: 739d65bf-6fe3-5460-8454-b6c55f542cc9
+  type: component
+  name: test_missing_extension_support_closes_connection
+  description: Function test_missing_extension_support_closes_connection
+- id: e4d75e37-33c8-52a1-9645-1f6aa63d181e
+  type: component
+  name: test_failed_initialization_closes_connection
+  description: Function test_failed_initialization_closes_connection
+- id: 04ae6738-da87-5f84-a418-044232458d64
+  type: component
+  name: test_mcp_reports_sqlite_prerequisite_without_internal_details
+  description: Function test_mcp_reports_sqlite_prerequisite_without_internal_details
 - id: a096a058-2b83-52b2-b44c-e37e3402be15
   type: module
   name: test_source_identity_maintenance.py
@@ -2794,10 +2839,10 @@ nodes:
   type: component
   name: test_mapping_postverify_backup_swap_rolls_back_without_partial_commit
   description: Function test_mapping_postverify_backup_swap_rolls_back_without_partial_commit
-- id: 1201b0bb-2ca1-53b7-8cfc-8e3c9a293b85
+- id: 4a75bb7d-319b-5db4-9546-6c6fe8bd9666
   type: component
-  name: test_mapping_final_source_swap_after_backup_delete_restores_snapshot
-  description: Function test_mapping_final_source_swap_after_backup_delete_restores_snapshot
+  name: test_successful_mapping_retains_verified_original_in_private_recovery
+  description: Function test_successful_mapping_retains_verified_original_in_private_recovery
 - id: 60a90b7e-86c2-5d8d-8661-4df66804674f
   type: component
   name: test_concurrent_receipt_refresh_has_one_winner_and_no_corruption
@@ -2954,6 +2999,18 @@ nodes:
   type: component
   name: test_generate_document_preserves_template_trailing_newline
   description: Function test_generate_document_preserves_template_trailing_newline
+- id: 8e9574cc-8ce0-506b-9868-17cf85348e05
+  type: component
+  name: test_generate_document_overwrite_retains_old_content_in_private_recovery
+  description: Function test_generate_document_overwrite_retains_old_content_in_private_recovery
+- id: e19c2a1b-4e83-536f-95ba-d85d065a17e6
+  type: component
+  name: test_generate_document_preserves_swap_at_output_retire_boundary
+  description: Function test_generate_document_preserves_swap_at_output_retire_boundary
+- id: 754d20ae-b2e2-5fb4-991a-7621f3de207f
+  type: component
+  name: test_generate_document_never_overwrites_new_install_occupant
+  description: Function test_generate_document_never_overwrites_new_install_occupant
 - id: 9b0ba045-e83f-5fa1-a334-29a111e27656
   type: component
   name: test_generate_document_rejects_symlinked_output_without_external_write
@@ -3751,6 +3808,9 @@ edges:
   target: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
   type: contains
 - source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
+  target: ea1ff61c-0999-51f6-af8e-75f94afe76dc
+  type: contains
+- source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
   target: 27d4b108-db4e-5e0b-8ab3-20ce969a9e9b
   type: contains
 - source: 5e164b78-a596-57a3-8ce3-c1cdd590ec67
@@ -3833,6 +3893,9 @@ edges:
   type: contains
 - source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
   target: e1924d8d-198d-5ab0-b661-f438481e6531
+  type: contains
+- source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
+  target: a80a8bff-7632-577c-bb8e-17fe73cf579e
   type: contains
 - source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
   target: d76c9ca8-4548-5c54-95cc-86bb437c3acb
@@ -4678,6 +4741,9 @@ edges:
   target: ebeff56a-fe5c-5a7e-88e3-11c1e4b1de4f
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: 14583604-2d30-5705-9790-c4bd8b5d4292
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
   target: 97d17f57-e007-56bb-b28b-662070c4ef28
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
@@ -4694,6 +4760,12 @@ edges:
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
   target: 5eae9a96-bb03-5512-a1ef-e8dddd5b77f2
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: efd0065e-1a34-5cc9-9b8f-ee51392c6fb7
+  type: contains
+- source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
+  target: a43ded06-8924-5871-8c1f-9884616c127a
   type: contains
 - source: 64c1118e-cbb4-5513-b6d5-89cf6eb6350c
   target: 81ae4f6f-586d-5464-860d-738281776201
@@ -4750,10 +4822,10 @@ edges:
   target: a0a0baef-9138-5a01-a4fa-74dcfcae966b
   type: contains
 - source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
-  target: d2bd0160-5cc2-51e6-8647-7e1e830745e4
+  target: addf8907-7763-5268-be9d-0758f7a16d07
   type: contains
 - source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
-  target: 3f89f37c-f49c-5b81-bc4d-9c6476f8bf21
+  target: 58e5f77e-fc72-538f-886b-8f62a2b01dff
   type: contains
 - source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
   target: 6e458548-5c96-5b9f-801f-0fe345ae58af
@@ -4766,6 +4838,12 @@ edges:
   type: contains
 - source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
   target: 65669676-3bef-547a-ad09-4ffbd971fdb7
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: 55001591-1c13-51b4-928f-fc03a5cff233
+  type: contains
+- source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
+  target: af594586-8347-51c3-8739-20c77e4a5512
   type: contains
 - source: 28443018-ea61-5b3b-abd1-e6a33736a4bb
   target: 6f4307bf-f492-573d-8f0a-bd2555ad85ef
@@ -5005,6 +5083,18 @@ edges:
   target: 809432e9-aaba-5b9d-a1ed-d537129f6259
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 52c25707-23b9-5dd6-9847-5d1eab1c3cf5
+  type: contains
+- source: 52c25707-23b9-5dd6-9847-5d1eab1c3cf5
+  target: 739d65bf-6fe3-5460-8454-b6c55f542cc9
+  type: contains
+- source: 52c25707-23b9-5dd6-9847-5d1eab1c3cf5
+  target: e4d75e37-33c8-52a1-9645-1f6aa63d181e
+  type: contains
+- source: 52c25707-23b9-5dd6-9847-5d1eab1c3cf5
+  target: 04ae6738-da87-5f84-a418-044232458d64
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: a096a058-2b83-52b2-b44c-e37e3402be15
   type: contains
 - source: a096a058-2b83-52b2-b44c-e37e3402be15
@@ -5086,7 +5176,7 @@ edges:
   target: 963314c9-31db-59a3-a950-7963f436267a
   type: contains
 - source: a096a058-2b83-52b2-b44c-e37e3402be15
-  target: 1201b0bb-2ca1-53b7-8cfc-8e3c9a293b85
+  target: 4a75bb7d-319b-5db4-9546-6c6fe8bd9666
   type: contains
 - source: a096a058-2b83-52b2-b44c-e37e3402be15
   target: 60a90b7e-86c2-5d8d-8661-4df66804674f
@@ -5204,6 +5294,15 @@ edges:
   type: contains
 - source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
   target: 8c4b52d8-0b20-52d0-a25b-d187fca9f9b2
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: 8e9574cc-8ce0-506b-9868-17cf85348e05
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: e19c2a1b-4e83-536f-95ba-d85d065a17e6
+  type: contains
+- source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
+  target: 754d20ae-b2e2-5fb4-991a-7621f3de207f
   type: contains
 - source: 0a163bed-7cab-5793-9dd8-c412fcfd6f39
   target: 9b0ba045-e83f-5fa1-a334-29a111e27656
