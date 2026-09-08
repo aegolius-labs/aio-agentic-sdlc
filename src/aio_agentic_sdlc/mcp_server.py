@@ -3,7 +3,6 @@ import json
 import os
 import secrets
 import stat
-import tempfile
 from contextvars import ContextVar
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,7 +28,12 @@ from .core import (
 )
 from .dag_manager import DAGManager, DAGNotFoundError, DAGValidationError
 from .dag_models import Node, NodeType
-from .dag_store import GuardedPathError, guarded_directory_path, guarded_file_path
+from .dag_store import (
+    GuardedPathError,
+    dag_file_lock,
+    guarded_directory_path,
+    guarded_file_path,
+)
 from .dag_visualization import (
     DAGVisualizationEngine,
     DAGVisualizationError,
@@ -43,6 +47,7 @@ from .intent_store import (
     update_intent_file,
 )
 from .mapping import MappingApproval, MappingEngine, MappingError
+from .reality_dag_generator import RealityDAGGenerator
 from .reconciliation import ReconciliationEngine, ReconciliationError
 from .state import BacklogStateError
 from .templating_engine import (
@@ -265,6 +270,26 @@ def _regular_leaf_matches_snapshot(
         os.close(descriptor)
 
 
+def _regular_leaf_matches_content(
+    path: Path,
+    *,
+    mode: int,
+    sha256: str,
+) -> bool:
+    try:
+        descriptor, opened = _open_verified_regular_leaf(path)
+    except (OSError, PromotionError):
+        return False
+    try:
+        return (
+            opened.st_nlink == 1
+            and stat.S_IMODE(opened.st_mode) == mode
+            and _descriptor_sha256(descriptor) == sha256
+        )
+    finally:
+        os.close(descriptor)
+
+
 def _promotion_recovery_directory(project_root: Path) -> Path:
     recovery_leaf = guarded_file_path(
         project_root / WORKSPACE_DIR / "backups" / "spec-promotions" / ".reservation",
@@ -290,19 +315,19 @@ def _reserve_promotion_recovery_leaf(
     raise PromotionError("could not allocate a private spec recovery path")
 
 
-def _restore_regular_file_from_fd(
+def _copy_regular_file_from_fd_to_recovery(
     descriptor: int,
     destination: Path,
     mode: int,
     recovery_directory: Path,
-) -> None:
-    temporary_descriptor, temporary_name = tempfile.mkstemp(
-        dir=recovery_directory,
-        prefix=f".{destination.name}.",
+) -> Path:
+    temporary = _reserve_promotion_recovery_leaf(
+        recovery_directory,
+        destination.name,
         suffix=".rollback",
     )
-    temporary = Path(temporary_name)
-    recovery_copy_retained = False
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
+    temporary_descriptor = os.open(temporary, flags, mode)
     try:
         os.lseek(descriptor, 0, os.SEEK_SET)
         with os.fdopen(temporary_descriptor, "wb") as handle:
@@ -310,18 +335,18 @@ def _restore_regular_file_from_fd(
                 handle.write(chunk)
             handle.flush()
             os.fsync(handle.fileno())
-        os.chmod(temporary, mode)
+            if hasattr(os, "fchmod"):
+                os.fchmod(handle.fileno(), mode)
+        return temporary
+    except Exception:
         try:
-            _restore_source_no_replace(temporary, destination)
-        except PromotionError:
-            recovery_copy_retained = True
-            raise
-    finally:
-        if not recovery_copy_retained:
-            temporary.unlink(missing_ok=True)
+            os.close(temporary_descriptor)
+        except OSError:
+            pass
+        raise
 
 
-def _copy_regular_file_to_atomic_temp(source: Path, destination_dir: Path) -> Path:
+def _copy_regular_file_to_atomic_temp(source: Path, recovery_dir: Path) -> Path:
     """Copy one verified source handle without following a swapped leaf."""
 
     flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
@@ -330,17 +355,23 @@ def _copy_regular_file_to_atomic_temp(source: Path, destination_dir: Path) -> Pa
     try:
         opened = os.fstat(source_fd)
         leaf = os.stat(source, follow_symlinks=False)
-        if not stat.S_ISREG(opened.st_mode) or _stat_identity(opened) != _stat_identity(
-            leaf
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or _is_link_like_stat(opened)
+            or _is_link_like_stat(leaf)
+            or opened.st_nlink != 1
+            or leaf.st_nlink != 1
+            or _stat_identity(opened) != _stat_identity(leaf)
         ):
             raise PromotionError("spec source changed during promotion")
 
-        temp_fd, temp_name = tempfile.mkstemp(
-            dir=destination_dir,
-            prefix=f".{source.name}.",
+        temp_path = _reserve_promotion_recovery_leaf(
+            recovery_dir,
+            source.name,
             suffix=".tmp",
         )
-        temp_path = Path(temp_name)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
+        temp_fd = os.open(temp_path, flags, stat.S_IMODE(opened.st_mode))
         with (
             os.fdopen(source_fd, "rb", closefd=False) as source_file,
             os.fdopen(temp_fd, "wb") as destination_file,
@@ -349,14 +380,34 @@ def _copy_regular_file_to_atomic_temp(source: Path, destination_dir: Path) -> Pa
                 destination_file.write(chunk)
             destination_file.flush()
             os.fsync(destination_file.fileno())
-        os.chmod(temp_path, stat.S_IMODE(opened.st_mode))
+            if hasattr(os, "fchmod"):
+                os.fchmod(destination_file.fileno(), stat.S_IMODE(opened.st_mode))
         return temp_path
-    except Exception:
-        if temp_path is not None:
-            temp_path.unlink(missing_ok=True)
-        raise
     finally:
         os.close(source_fd)
+
+
+def _move_spec_leaf_to_recovery(
+    path: Path,
+    recovery_directory: Path,
+    source_name: str,
+    *,
+    suffix: str,
+) -> Path | None:
+    """Atomically preserve the current leaf without deleting any replacement."""
+
+    recovery = _reserve_promotion_recovery_leaf(
+        recovery_directory,
+        source_name,
+        suffix=suffix,
+    )
+    try:
+        MappingEngine._move_no_replace(path, recovery)
+    except MappingError as error:
+        if not os.path.lexists(path):
+            return None
+        raise PromotionError("spec path changed during rollback") from error
+    return recovery
 
 
 # aio-sdlc-mapping-approval: {"candidate_reality_id":"55bef33d-15b7-588b-8712-a2ed3502be62","identity_approval":{"approved_at":"2026-08-21T23:03:05.512658-04:00","approved_by":"Felix","candidate_reality_id":"55bef33d-15b7-588b-8712-a2ed3502be62","evidence_digest":"e8f0cc340f146fc08809192ed143f0c36b0dc10c345ef05a382e5382ce295094","intent_id":"86367041-79ce-5415-b107-ef60cf721bf3","rationale":"Felix approved _SanitizingMCPServer as the source identity anchor for MCP SDK v2 Integration because it is the instantiated MCPServer subclass owning the public server adapter and sanitized protocol error boundary; behavioral acceptance remains governed separately by QA evidence.","schema_version":1,"source_path":"src/aio_agentic_sdlc/mcp_server.py","source_sha256":"992b2d5362ecf7d2b1f6a8b49eed1b08c1b2b1d1b0e560c4d3bd5bf690e53021","symbol_kind":"class","symbol_name":"_SanitizingMCPServer"},"intent_id":"86367041-79ce-5415-b107-ef60cf721bf3","maintenance_approval":{"approved_at":"2026-09-03T10:41:11.415414-04:00","approved_by":"Felix","evidence_digest":"e728917ff80530a4f0ddfdc288fa51232b2346367460ce656ddad868202a39de","rationale":"Felix confirmed that _SanitizingMCPServer is the sole production MCPServer instance and remains the source identity anchor for the MCP SDK v2 integration; all 23 tools, two resources, and one prompt are registered on that instance, while behavioral acceptance remains governed separately by QA evidence.","supersedes_receipt_sha256":"605c9ebbfdb5f34f4fcd5bdf9e26871ddcc6a63d93eba81c452184a34958c431"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/mcp_server.py","source_sha256":"ea924f8335f78cea30956c5fb13c472e0016dc839a6a518148a6c642897ee64d","symbol_kind":"class","symbol_name":"_SanitizingMCPServer"}
@@ -641,6 +692,7 @@ def generate_document(
             template_name,
             data,
             output_path,
+            project_path=str(project_root),
         )
         return f"Document successfully generated at {output_path}."
     except (
@@ -1192,7 +1244,10 @@ def promote_spec(
             source_identity = _stat_identity(source_stat)
             source_mode = stat.S_IMODE(source_stat.st_mode)
             recovery_directory = _promotion_recovery_directory(project_root)
-            temp_path = _copy_regular_file_to_atomic_temp(src_path, specs_dir)
+            temp_path = _copy_regular_file_to_atomic_temp(
+                src_path,
+                recovery_directory,
+            )
             destination_fd: int | None = None
             destination_identity: tuple[int, int] | None = None
             source_digest: str | None = None
@@ -1255,9 +1310,40 @@ def promote_spec(
                     raise PromotionError(
                         "spec source recovery identity changed during promotion"
                     )
+                if not _regular_leaf_matches_snapshot(
+                    dst_path,
+                    identity=destination_identity,
+                    mode=source_mode,
+                    sha256=source_digest,
+                ):
+                    raise PromotionError("spec destination changed during promotion")
             except Exception as transition_error:
-                temp_path.unlink(missing_ok=True)
                 rollback_error: Exception | None = None
+                source_recovery_copy: Path | None = None
+                if destination_fd is not None:
+                    try:
+                        source_recovery_copy = _copy_regular_file_from_fd_to_recovery(
+                            destination_fd,
+                            src_path,
+                            source_mode,
+                            recovery_directory,
+                        )
+                    except Exception as error:
+                        rollback_error = error
+                    os.close(destination_fd)
+                    destination_fd = None
+                if source_digest is not None and rollback_error is None:
+                    try:
+                        _move_spec_leaf_to_recovery(
+                            dst_path,
+                            recovery_directory,
+                            feature_name,
+                            suffix=".destination-rollback",
+                        )
+                        # Retain the retired leaf whether it is ours or a concurrent
+                        # replacement. Source recovery uses the independent backup.
+                    except Exception as error:
+                        rollback_error = error
                 source_is_expected = (
                     source_digest is not None
                     and _regular_leaf_matches_snapshot(
@@ -1277,20 +1363,32 @@ def promote_spec(
                         sha256=source_digest,
                     )
                 )
-                if not source_is_expected and destination_fd is not None:
-                    if backup_is_expected and os.path.lexists(src_path):
-                        rollback_error = PromotionError(
-                            "spec source path changed during rollback; "
-                            "recovery copy retained"
-                        )
-                    else:
+                if not source_is_expected and rollback_error is None:
+                    if backup_is_expected:
                         try:
-                            _restore_regular_file_from_fd(
-                                destination_fd,
+                            _restore_source_no_replace(source_backup, src_path)
+                            if not _regular_leaf_matches_snapshot(
                                 src_path,
-                                source_mode,
-                                recovery_directory,
-                            )
+                                identity=source_identity,
+                                mode=source_mode,
+                                sha256=source_digest,
+                            ):
+                                raise PromotionError(
+                                    "spec source changed during rollback"
+                                )
+                        except Exception as error:
+                            rollback_error = error
+                    elif source_recovery_copy is not None:
+                        try:
+                            _restore_source_no_replace(source_recovery_copy, src_path)
+                            if not _regular_leaf_matches_content(
+                                src_path,
+                                mode=source_mode,
+                                sha256=source_digest,
+                            ):
+                                raise PromotionError(
+                                    "spec source changed during rollback"
+                                )
                         except Exception as error:
                             rollback_error = error
 
@@ -1337,9 +1435,7 @@ def generate_reality(
         "system_root", description="System root context for DAG generation"
     ),
 ) -> str:
-    """Scan the codebase and update the Reality DAG via dag-tool."""
-    import subprocess
-
+    """Scan the codebase and update the Reality DAG in-process."""
     try:
         project_root = guarded_directory_path(project_path)
         requested_output = Path(output)
@@ -1362,40 +1458,21 @@ def generate_reality(
             return _expected_error(f"Error generating Reality DAG: {protected_reason}.")
         output_path = guarded_file_path(output_path, create_parent=True)
 
-        result = subprocess.run(
-            [
-                "uv",
-                "run",
-                "dag-tool",
-                "generate-reality",
-                "--dir",
-                project_path,
-                "--output",
-                str(output_path),
-                "--system",
+        with dag_file_lock(output_path) as locked_output:
+            reality = RealityDAGGenerator(
+                str(project_root),
                 system,
-            ],
-            cwd=project_root,
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode == 0:
-            return f"Reality DAG successfully generated at {output}.\n{result.stdout}"
-        else:
-            return _expected_error(
-                f"Error generating Reality DAG (Exit Code {result.returncode}): "
-                "diagnostic output was suppressed."
-            )
-    except (GuardedPathError, WorkspaceMigrationError) as e:
-        return _expected_error(f"Error executing dag-tool: {str(e)}")
-    except FileNotFoundError:
-        return _expected_error(
-            "Error executing dag-tool: executable or project artifact was not found."
-        )
-    except OSError:
-        return _expected_error(
-            "Error executing dag-tool: process or filesystem operation failed."
-        )
+            ).generate()
+            reality.save(str(guarded_file_path(locked_output)))
+        return f"Reality DAG successfully generated at {output}."
+    except (
+        DAGValidationError,
+        GuardedPathError,
+        WorkspaceMigrationError,
+    ) as e:
+        return _expected_error(f"Error generating Reality DAG: {str(e)}")
+    except (OSError, ValueError):
+        return _expected_error("Error generating Reality DAG: generation failed.")
 
 
 def main():

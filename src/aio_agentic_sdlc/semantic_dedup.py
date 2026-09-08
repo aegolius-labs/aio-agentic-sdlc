@@ -2,6 +2,7 @@ import glob
 import os
 import sqlite3
 import threading
+from contextlib import contextmanager
 from typing import Any, Dict, List
 
 import sqlite_vec
@@ -12,6 +13,18 @@ from .workspace import SPECS_DIR, WORKSPACE_DIR, workspace_file_path
 # Lazy load sentence_transformers to speed up CLI for other commands
 _model = None
 _model_lock = threading.RLock()
+_project_locks_guard = threading.Lock()
+_project_locks: dict[str, threading.RLock] = {}
+
+
+def _canonical_cache_identity(project_path: str) -> str:
+    return os.path.normcase(os.path.realpath(os.path.abspath(project_path)))
+
+
+def _project_lock(project_path: str) -> threading.RLock:
+    identity = _canonical_cache_identity(project_path)
+    with _project_locks_guard:
+        return _project_locks.setdefault(identity, threading.RLock())
 
 
 def _cache_lock(project_path: str) -> FileLock:
@@ -23,6 +36,15 @@ def _cache_lock(project_path: str) -> FileLock:
         timeout=30,
         preserve_lock_file=True,
     )
+
+
+@contextmanager
+def _cache_guard(project_path: str):
+    """Serialize one cache in-process and across independent processes."""
+
+    with _project_lock(project_path):
+        with _cache_lock(project_path):
+            yield
 
 
 def get_model():
@@ -69,7 +91,7 @@ def _get_db_unlocked(project_path: str) -> sqlite3.Connection:
 
 
 def get_db(project_path: str) -> sqlite3.Connection:
-    with _cache_lock(project_path):
+    with _cache_guard(project_path):
         return _get_db_unlocked(project_path)
 
 
@@ -167,7 +189,7 @@ def _sync_documents_unlocked(project_path: str, db: sqlite3.Connection, *, model
 def sync_documents(project_path: str, db: sqlite3.Connection, *, model=None):
     """Serialize cache reconciliation for callers that manage the connection."""
 
-    with _cache_lock(project_path):
+    with _cache_guard(project_path):
         return _sync_documents_unlocked(project_path, db, model=model)
 
 
@@ -184,7 +206,7 @@ def find_duplicate_prds(
     Note: threshold is cosine distance (0 to 2). Smaller is more similar.
     Distance of 0.2 means 0.8 cosine similarity.
     """
-    with _cache_lock(project_path):
+    with _cache_guard(project_path):
         db = _get_db_unlocked(project_path)
         try:
             model = model or get_model()

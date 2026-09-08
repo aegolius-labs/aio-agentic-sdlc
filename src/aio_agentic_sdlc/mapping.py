@@ -8,9 +8,9 @@ import errno
 import hashlib
 import json
 import os
+import secrets
 import stat
 import sys
-import tempfile
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -43,6 +43,7 @@ from aio_agentic_sdlc.source_markers import (
 )
 from aio_agentic_sdlc.workspace import (
     MAPPING_LOCK_FILE,
+    WORKSPACE_DIR,
     require_current_workspace,
     workspace_file_path,
     workspace_migration_lock,
@@ -1417,23 +1418,34 @@ class MappingEngine:
                     f"canonical Intent GUID already appears in source: {relative}"
                 )
 
-    @staticmethod
-    def _write_source_temp(target: Path, content: bytes, *, mode: int) -> Path:
-        descriptor, temporary_name = tempfile.mkstemp(
-            dir=target.parent,
-            prefix=f".{target.name}.",
+    def _mapping_recovery_directory(self) -> Path:
+        recovery_leaf = workspace_file_path(
+            self.project_root,
+            f"{WORKSPACE_DIR}/backups/mapping-transitions/.reservation",
+        )
+        return guarded_directory_path(recovery_leaf.parent)
+
+    def _write_source_temp(self, target: Path, content: bytes, *, mode: int) -> Path:
+        recovery_directory = self._mapping_recovery_directory()
+        temporary = self._unique_reserved_leaf(
+            recovery_directory / target.name,
             suffix=".tmp",
         )
-        temporary = Path(temporary_name)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
+        descriptor = os.open(temporary, flags, mode)
         try:
             with os.fdopen(descriptor, "wb") as handle:
                 handle.write(content)
                 handle.flush()
                 os.fsync(handle.fileno())
-            os.chmod(temporary, mode)
+                if hasattr(os, "fchmod"):
+                    os.fchmod(handle.fileno(), mode)
             return temporary
         except Exception:
-            temporary.unlink(missing_ok=True)
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
             raise
 
     def _open_bound_temporary(
@@ -1496,15 +1508,13 @@ class MappingEngine:
 
     @staticmethod
     def _unique_reserved_leaf(target: Path, *, suffix: str) -> Path:
-        descriptor, name = tempfile.mkstemp(
-            dir=target.parent,
-            prefix=f".{target.name}.",
-            suffix=suffix,
-        )
-        os.close(descriptor)
-        reserved = Path(name)
-        reserved.unlink()
-        return reserved
+        for _ in range(32):
+            reserved = target.parent / (
+                f".{target.name}.{secrets.token_hex(16)}{suffix}"
+            )
+            if not os.path.lexists(reserved):
+                return guarded_file_path(reserved)
+        raise MappingError("could not allocate a private mapping recovery path")
 
     @staticmethod
     def _move_no_replace(source: Path, destination: Path) -> None:
@@ -1587,8 +1597,9 @@ class MappingEngine:
             raise MappingError("mapping private move failed") from error
 
     def _quarantine_leaf(self, leaf: Path, target: Path) -> Path:
+        recovery_directory = self._mapping_recovery_directory()
         quarantine = self._unique_reserved_leaf(
-            target,
+            recovery_directory / target.name,
             suffix=".source-conflict",
         )
         self._move_no_replace(leaf, quarantine)
@@ -1598,23 +1609,17 @@ class MappingEngine:
         self,
         snapshot: _SourceSnapshot,
     ) -> bool:
-        if os.path.lexists(snapshot.path):
-            return False
         temporary = self._write_source_temp(
             snapshot.path,
             snapshot.content,
             mode=snapshot.mode,
         )
         try:
-            try:
-                os.link(temporary, snapshot.path, follow_symlinks=False)
-            except (FileExistsError, OSError):
-                return False
-            temporary.unlink()
+            self._move_no_replace(temporary, snapshot.path)
             restored = self._source_snapshot(snapshot.path)
             return restored.sha256 == snapshot.sha256 and restored.mode == snapshot.mode
-        finally:
-            temporary.unlink(missing_ok=True)
+        except (MappingError, OSError):
+            return False
 
     def _restore_backup_no_overwrite(
         self,
@@ -1622,38 +1627,22 @@ class MappingEngine:
         backup: Path,
     ) -> bool:
         try:
-            backup_snapshot = self._source_snapshot(backup)
+            self._move_no_replace(backup, snapshot.path)
         except MappingError:
             return False
-        if (
-            backup_snapshot.identity != snapshot.identity
-            or backup_snapshot.sha256 != snapshot.sha256
-            or os.path.lexists(snapshot.path)
-        ):
-            return False
         try:
-            os.link(backup, snapshot.path, follow_symlinks=False)
-        except (FileExistsError, OSError):
-            return False
-        try:
-            if backup_snapshot.mode & stat.S_IWUSR == 0:
-                os.chmod(backup, backup_snapshot.mode | stat.S_IWUSR)
-            os.unlink(backup)
-            os.chmod(snapshot.path, snapshot.mode)
             restored = self._source_snapshot(snapshot.path)
-            return (
+            if (
                 restored.identity == snapshot.identity
                 and restored.sha256 == snapshot.sha256
                 and restored.mode == snapshot.mode
-            )
-        except Exception:
-            try:
-                current = os.stat(snapshot.path, follow_symlinks=False)
-                if self._stat_identity(current) == snapshot.identity:
-                    os.unlink(snapshot.path)
-            except OSError:
-                pass
+            ):
+                return True
+        except MappingError:
+            pass
+        if not self._quarantine_unowned_source(snapshot.path):
             return False
+        return self._restore_snapshot_content_no_overwrite(snapshot)
 
     @staticmethod
     def _is_link_like_leaf(path: Path) -> bool:
@@ -1671,26 +1660,20 @@ class MappingEngine:
         path: Path,
         identity: tuple[int, int],
     ) -> bool:
-        if not os.path.lexists(path):
-            return True
-        if self._is_link_like_leaf(path):
-            return False
+        recovery_directory = self._mapping_recovery_directory()
+        retired = self._unique_reserved_leaf(
+            recovery_directory / path.name,
+            suffix=".source-retired",
+        )
         try:
-            current = os.stat(path, follow_symlinks=False)
-        except OSError:
-            return False
-        if (
-            not stat.S_ISREG(current.st_mode)
-            or self._stat_identity(current) != identity
-        ):
-            return False
+            self._move_no_replace(path, retired)
+        except MappingError:
+            return not os.path.lexists(path)
         try:
-            if stat.S_IMODE(current.st_mode) & stat.S_IWUSR == 0:
-                os.chmod(path, stat.S_IMODE(current.st_mode) | stat.S_IWUSR)
-            os.unlink(path)
-        except OSError:
+            retired_snapshot = self._source_snapshot(retired)
+        except MappingError:
             return False
-        return True
+        return retired_snapshot.identity == identity
 
     def _quarantine_unowned_source(self, source_path: Path) -> bool:
         """Preserve a swapped source leaf without following or overwriting it."""
@@ -1711,23 +1694,21 @@ class MappingEngine:
     ):
         """Install one prepared leaf without overwriting an unverified source path."""
 
-        # Keep the private staging leaf writable until its extra link is removed.
-        # Windows refuses to unlink a read-only leaf even when the installed source
-        # is a second hard link to the same inode. The public source mode is restored
-        # immediately after installation and before any semantic verification.
-        requested_temporary_mode = snapshot.mode | stat.S_IWUSR
+        # Set final permissions while creating the staging file. Atomic moves
+        # preserve them without chmod or unlink operations on public pathnames.
+        requested_temporary_mode = snapshot.mode
         temporary = self._write_source_temp(
             snapshot.path,
             updated,
             mode=requested_temporary_mode,
         )
-        # chmod on Windows exposes only the read-only attribute and normalizes a
+        # File creation on Windows exposes only the read-only attribute and normalizes a
         # requested 0644 mode to 0666. Bind the actual staged mode rather than a
         # POSIX-only prediction; descriptor/leaf identity and content are still
         # checked together by ``_open_bound_temporary``.
         temporary_mode = stat.S_IMODE(os.stat(temporary, follow_symlinks=False).st_mode)
         backup = self._unique_reserved_leaf(
-            snapshot.path,
+            self._mapping_recovery_directory() / snapshot.path.name,
             suffix=".source-backup",
         )
         temporary_descriptor: int | None = None
@@ -1767,35 +1748,20 @@ class MappingEngine:
                     "mapping source identity changed; swapped leaf was quarantined"
                 )
             backup_holds_expected = True
+            self._require_temporary_identity(temporary, temporary_identity)
+            os.close(temporary_descriptor)
+            temporary_descriptor = None
             try:
-                self._require_temporary_identity(temporary, temporary_identity)
-            except OSError as error:
-                raise MappingError("mapping temporary identity changed") from error
-            try:
-                os.link(temporary, snapshot.path, follow_symlinks=False)
-            except (FileExistsError, OSError) as error:
-                self._quarantine_leaf(backup, snapshot.path)
-                backup_holds_expected = False
-                raise MappingError(
-                    "mapping source path became occupied; original was quarantined"
-                ) from error
+                self._move_no_replace(temporary, snapshot.path)
+            except MappingError as error:
+                raise MappingError("mapping source path became occupied") from error
 
             try:
-                installed_leaf = os.stat(snapshot.path, follow_symlinks=False)
-                if (
-                    not stat.S_ISREG(installed_leaf.st_mode)
-                    or self._stat_identity(installed_leaf) != temporary_identity
-                ):
-                    raise MappingError("post-write source identity changed")
-                os.close(temporary_descriptor)
-                temporary_descriptor = None
-                if not self._remove_owned_install(temporary, temporary_identity):
-                    raise MappingError("mapping temporary identity changed")
-                os.chmod(snapshot.path, snapshot.mode)
                 written = self._source_snapshot(snapshot.path)
                 if (
                     written.identity != temporary_identity
                     or written.sha256 != hashlib.sha256(updated).hexdigest()
+                    or written.mode != snapshot.mode
                 ):
                     raise MappingError("post-write source identity changed")
                 postcondition = verify()
@@ -1809,9 +1775,9 @@ class MappingEngine:
                     or final_backup.sha256 != snapshot.sha256
                 ):
                     raise MappingError("mapping source backup identity changed")
-                if final_backup.mode & stat.S_IWUSR == 0:
-                    os.chmod(backup, final_backup.mode | stat.S_IWUSR)
-                os.unlink(backup)
+                # The verified original remains in the private recovery directory.
+                # Cleanup is deliberately separate from the mapping transaction so
+                # no check-then-unlink window can delete a concurrent replacement.
                 backup_holds_expected = False
                 final = self._source_snapshot(snapshot.path)
                 if final.identity != temporary_identity:

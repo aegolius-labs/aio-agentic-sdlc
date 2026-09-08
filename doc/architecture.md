@@ -234,6 +234,21 @@ transitions. Handlers resolve explicit project paths without changing the proces
 directory. The two fixed resources are the exception to explicit project addressing: they retain
 their public cwd-based meaning and read state relative to the MCP server's launch directory.
 
+Source mapping, spec promotion, and document output use atomic no-overwrite moves for installation
+and recovery. Mapping originals and conflicting leaves are retained under
+`.aio-agentic-sdlc/backups/mapping-transitions/`; spec recovery uses `backups/spec-promotions/`,
+and document recovery uses `backups/document-transitions/`. These ignored directories may contain
+previous versions, incomplete staging files, or concurrent edits. They are recovery material, not
+canonical specs or evidence. Successful replacements also retain their previous version. There is
+no automatic retention cleanup yet: inspect and explicitly remove obsolete recovery material only
+after verifying the canonical output and confirming no transaction is running. Unsupported atomic
+move operations, including cross-filesystem moves, fail without overwriting another leaf.
+
+Semantic-cache operations hold a process-local lock for the canonical project path and a file lock
+for other processes. Reality generation runs in the server's installed Python environment and
+revalidates its guarded output path after scanning. It never discovers a `dag-tool` executable from
+the target project's environment.
+
 ### 5. Prioritization Engine (`_compute_sorted_items`)
 
 When prioritizing or retrieving the next task, the system performs:

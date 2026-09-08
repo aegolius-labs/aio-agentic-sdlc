@@ -1,6 +1,5 @@
 import json
 import os
-import subprocess
 import sys
 from hashlib import sha256
 from pathlib import Path
@@ -73,7 +72,7 @@ EXPECTED_TOOL_DESCRIPTIONS = {
     "check_duplicate_prd": "Check if a proposed PRD is similar to canonical project specs.",
     "create_intent_node": "Atomically create a canonical node with its initial Intent IR payload.",
     "generate_document": "Generate a document from a template using the provided data.",
-    "generate_reality": "Scan the codebase and update the Reality DAG via dag-tool.",
+    "generate_reality": "Scan the codebase and update the Reality DAG in-process.",
     "get_next_task": "Find and return the highest-priority workable task from the backlog.",
     "prioritize_backlog": "Force an immediate topological sort and priority re-calculation of the backlog.",
     "promote_spec": "Move a validated micro-spec from changes to canonical specs.",
@@ -522,18 +521,18 @@ async def test_v2_generate_document_rejects_protected_state_aliases_without_muta
         "src/reality-dag.yaml",
     ],
 )
-async def test_v2_generate_reality_rejects_protected_aliases_before_subprocess(
+async def test_v2_generate_reality_rejects_protected_aliases_before_generation(
     tmp_path, monkeypatch, output
 ):
     before = _seed_protected_state(tmp_path)
-    subprocess_called = False
+    generator_called = False
 
-    def unexpected_subprocess(*_args, **_kwargs):
-        nonlocal subprocess_called
-        subprocess_called = True
-        raise AssertionError("protected Reality output reached subprocess")
+    def unexpected_generation(*_args, **_kwargs):
+        nonlocal generator_called
+        generator_called = True
+        raise AssertionError("protected Reality output reached generation")
 
-    monkeypatch.setattr("subprocess.run", unexpected_subprocess)
+    monkeypatch.setattr(RealityDAGGenerator, "generate", unexpected_generation)
     async with Client(mcp) as client:
         result = await client.call_tool(
             "generate_reality",
@@ -542,26 +541,21 @@ async def test_v2_generate_reality_rejects_protected_aliases_before_subprocess(
 
     assert result.is_error is True
     assert "protected" in _tool_text(result)
-    assert subprocess_called is False
+    assert generator_called is False
     assert _protected_state_hashes(tmp_path) == before
 
 
 @pytest.mark.asyncio
-async def test_v2_generate_reality_suppresses_untrusted_subprocess_stderr(
+async def test_v2_generate_reality_suppresses_untrusted_generation_failure(
     tmp_path, monkeypatch
 ):
     before = _seed_protected_state(tmp_path)
     output = ".aio-agentic-sdlc/rejected-reality.yaml"
 
-    def failed_subprocess(*args, **_kwargs):
-        return subprocess.CompletedProcess(
-            args=args,
-            returncode=73,
-            stdout="",
-            stderr="PRIVATE-REALITY-SECRET-" * 10_000,
-        )
+    def failed_generation(*_args, **_kwargs):
+        raise RuntimeError("PRIVATE-REALITY-SECRET-" * 10_000)
 
-    monkeypatch.setattr("subprocess.run", failed_subprocess)
+    monkeypatch.setattr(RealityDAGGenerator, "generate", failed_generation)
     async with Client(mcp) as client:
         result = await client.call_tool(
             "generate_reality",
@@ -570,9 +564,7 @@ async def test_v2_generate_reality_suppresses_untrusted_subprocess_stderr(
 
     text = _tool_text(result)
     assert result.is_error is True
-    assert text == (
-        "Error generating Reality DAG (Exit Code 73): diagnostic output was suppressed."
-    )
+    assert text == "Tool 'generate_reality' failed."
     assert "PRIVATE-REALITY-SECRET" not in text
     assert len(text) < 160
     assert not (tmp_path / output).exists()
@@ -589,20 +581,20 @@ async def test_v2_artifact_handlers_reject_hardlinked_protected_state_aliases(
     reality_alias = tmp_path / "reality-alias.yaml"
     os.link(tmp_path / REALITY_DAG_FILE, reality_alias)
     document_called = False
-    subprocess_called = False
+    generator_called = False
 
     def unexpected_document(*_args, **_kwargs):
         nonlocal document_called
         document_called = True
 
-    def unexpected_subprocess(*_args, **_kwargs):
-        nonlocal subprocess_called
-        subprocess_called = True
+    def unexpected_generation(*_args, **_kwargs):
+        nonlocal generator_called
+        generator_called = True
 
     monkeypatch.setattr(
         mcp_server_module, "generate_document_from_template", unexpected_document
     )
-    monkeypatch.setattr("subprocess.run", unexpected_subprocess)
+    monkeypatch.setattr(RealityDAGGenerator, "generate", unexpected_generation)
     async with Client(mcp) as client:
         document = await client.call_tool(
             "generate_document",
@@ -622,7 +614,7 @@ async def test_v2_artifact_handlers_reject_hardlinked_protected_state_aliases(
     assert document.is_error is True
     assert reality.is_error is True
     assert document_called is False
-    assert subprocess_called is False
+    assert generator_called is False
     assert _protected_state_hashes(tmp_path) == before
 
 
@@ -643,14 +635,14 @@ async def test_v2_artifact_handlers_reject_unsafe_paths_before_execution(
     ensure_workspace(tmp_path)
     outside = tmp_path.parent / f"{tmp_path.name}-outside.yaml"
     outside.write_text("preserve", encoding="utf-8")
-    subprocess_called = False
+    generator_called = False
 
-    def unexpected_subprocess(*_args, **_kwargs):
-        nonlocal subprocess_called
-        subprocess_called = True
-        raise AssertionError("unsafe Reality output reached the subprocess")
+    def unexpected_generation(*_args, **_kwargs):
+        nonlocal generator_called
+        generator_called = True
+        raise AssertionError("unsafe Reality output reached generation")
 
-    monkeypatch.setattr("subprocess.run", unexpected_subprocess)
+    monkeypatch.setattr(RealityDAGGenerator, "generate", unexpected_generation)
     async with Client(mcp, raise_exceptions=True) as client:
         reality = await client.call_tool(
             "generate_reality",
@@ -663,7 +655,7 @@ async def test_v2_artifact_handlers_reject_unsafe_paths_before_execution(
 
     assert "outside of the project root" in _tool_text(reality)
     assert "without traversal" in _tool_text(promotion)
-    assert subprocess_called is False
+    assert generator_called is False
     assert outside.read_text(encoding="utf-8") == "preserve"
 
 
@@ -683,6 +675,64 @@ async def test_real_stdio_entrypoint_serves_the_preserved_surface(tmp_path):
 
     assert {tool.name for tool in tools.tools} == EXPECTED_TOOLS
     assert json.loads(current.contents[0].text)["nodes"] == {}
+
+
+@pytest.mark.asyncio
+async def test_v2_generate_reality_rechecks_parent_after_scan(tmp_path, monkeypatch):
+    ensure_workspace(tmp_path)
+    output_dir = tmp_path / "reports"
+    output_dir.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    real_generate = RealityDAGGenerator.generate
+    swap_blocked = False
+
+    def swap_parent_after_scan(generator):
+        nonlocal swap_blocked
+        reality = real_generate(generator)
+        try:
+            output_dir.rename(tmp_path / "old-reports")
+            os.symlink(outside, output_dir, target_is_directory=True)
+        except OSError:
+            swap_blocked = True
+            raise
+        return reality
+
+    monkeypatch.setattr(RealityDAGGenerator, "generate", swap_parent_after_scan)
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "generate_reality",
+            {"project_path": str(tmp_path), "output": "reports/reality.yaml"},
+        )
+
+    assert result.is_error is True
+    assert not (outside / "reality.yaml").exists()
+    if not swap_blocked:
+        assert "real directory" in _tool_text(result)
+
+
+@pytest.mark.asyncio
+async def test_v2_generate_reality_runs_in_process_for_bare_external_repo(tmp_path):
+    project = tmp_path / "external-repo"
+    project.mkdir()
+    ensure_workspace(project)
+    implementation = project / "src" / "external_component.py"
+    implementation.parent.mkdir()
+    implementation.write_text("class ExternalComponent:\n    pass\n", encoding="utf-8")
+    unrelated_command = project / "dag-tool"
+    unrelated_command.write_text("MUST NOT EXECUTE\n", encoding="utf-8")
+
+    async with Client(mcp, raise_exceptions=True) as client:
+        result = await client.call_tool(
+            "generate_reality",
+            {"project_path": str(project)},
+        )
+
+    assert result.is_error is not True
+    reality = DAGManager.load(str(project / REALITY_DAG_FILE))
+    assert any(node.name == "ExternalComponent" for node in reality.nodes.values())
+    assert unrelated_command.read_text(encoding="utf-8") == "MUST NOT EXECUTE\n"
+    assert not (project / "pyproject.toml").exists()
 
 
 def _intent_payload(*, revision: int) -> dict:
@@ -762,17 +812,6 @@ async def test_v2_client_exercises_every_published_tool(mode, tmp_path, monkeypa
         lambda: DeterministicModel(),
     )
 
-    def generate_valid_reality(arguments, **_kwargs):
-        output = Path(arguments[arguments.index("--output") + 1])
-        RealityDAGGenerator(str(tmp_path), "MCP v2").generate().save(str(output))
-        return subprocess.CompletedProcess(
-            args=arguments,
-            returncode=0,
-            stdout="generated",
-            stderr="",
-        )
-
-    monkeypatch.setattr("subprocess.run", generate_valid_reality)
     project_path = str(tmp_path)
     node_id = "00000000-0000-0000-0000-0000000000a2"
     prd_data = {

@@ -12,7 +12,6 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from aio_agentic_sdlc import mapping as mapping_module
 from aio_agentic_sdlc import mcp_server as mcp_server_module
 from aio_agentic_sdlc.dag_cli import cli
 from aio_agentic_sdlc.dag_manager import DAGManager
@@ -26,10 +25,15 @@ from aio_agentic_sdlc.mapping import (
     render_receipt_refresh_review,
 )
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
-from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
+from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, WORKSPACE_DIR
 
 INTENT_ID = "15019926-c6be-5c98-b558-954c7657e5c6"
 ORIGINAL_REALITY_ID = "12345678-1234-5678-9234-567812345678"
+
+
+def _mapping_recovery_files(project: Path) -> list[Path]:
+    recovery = project / WORKSPACE_DIR / "backups" / "mapping-transitions"
+    return list(recovery.iterdir()) if recovery.exists() else []
 
 
 def _approval(rationale: str = "Reviewed exact source identity evidence."):
@@ -630,11 +634,8 @@ def test_mapping_transition_quarantines_leaf_swapped_after_identity_check(
 
     assert swapped is True
     assert source_path.read_bytes() == original
-    quarantines = list(
-        source_path.parent.glob(f".{source_path.name}.*.source-conflict")
-    )
-    assert len(quarantines) == 1
-    assert quarantines[0].read_bytes() == attacker
+    recovery_bytes = [path.read_bytes() for path in _mapping_recovery_files(tmp_path)]
+    assert attacker in recovery_bytes
 
 
 @pytest.mark.parametrize("operation", ["candidate", "receipt"])
@@ -705,25 +706,24 @@ def test_mapping_final_temporary_check_swap_cannot_partially_commit(
     observed_id = _reality_id(tmp_path, "RuntimeBoundary")
     review = engine.review(INTENT_ID, candidate_reality_id=observed_id)
     attacker = b"ATTACKER-TEMPORARY-DATA\n"
-    real_require = engine._require_temporary_identity
-    checks = 0
     swapped = False
+    staged_by_attacker = tmp_path / "attacker-retained-staging.py"
+    real_move = engine._move_no_replace
 
-    def swap_after_final_check(temporary, identity):
-        nonlocal checks, swapped
-        real_require(temporary, identity)
-        checks += 1
-        if checks == 2:
-            temporary.unlink()
-            temporary.write_bytes(attacker)
+    def swap_after_descriptor_close(temporary, destination):
+        nonlocal swapped
+        if Path(destination) == source_path and str(temporary).endswith(".tmp"):
+            real_move(temporary, staged_by_attacker)
+            Path(temporary).write_bytes(attacker)
             swapped = True
+        return real_move(temporary, destination)
 
     monkeypatch.setattr(
         engine,
-        "_require_temporary_identity",
-        swap_after_final_check,
+        "_move_no_replace",
+        swap_after_descriptor_close,
     )
-    with pytest.raises(MappingError, match="temporary identity changed"):
+    with pytest.raises(MappingError, match="post-write source identity changed"):
         engine.approve(
             INTENT_ID,
             observed_id,
@@ -732,13 +732,12 @@ def test_mapping_final_temporary_check_swap_cannot_partially_commit(
             selection_mode="explicit_observed_guid",
         )
 
-    assert checks == 2
+    assert swapped is True
     assert source_path.read_bytes() == original
-    if swapped:
-        assert any(
-            path.is_file() and path.read_bytes() == attacker
-            for path in source_path.parent.iterdir()
-        )
+    assert staged_by_attacker.is_file()
+    assert b"aio-sdlc-node:" in staged_by_attacker.read_bytes()
+    recovery_bytes = [path.read_bytes() for path in _mapping_recovery_files(tmp_path)]
+    assert attacker in recovery_bytes
 
 
 def test_mapping_ignores_mixed_case_runtime_cache_and_marker_string_literals(
@@ -809,27 +808,28 @@ def test_mapping_no_overwrite_install_preserves_newly_occupied_source_and_origin
         )
 
     attacker = b"NEWLY-OCCUPIED-SOURCE\n"
-    real_link = mapping_module.os.link
+    real_move = engine._move_no_replace
     occupied = False
 
-    def occupy_before_install(source, destination, **kwargs):
+    def occupy_before_install(source, destination):
         nonlocal occupied
-        if Path(destination) == source_path and not occupied:
+        if (
+            Path(destination) == source_path
+            and str(source).endswith(".tmp")
+            and not occupied
+        ):
             occupied = True
             source_path.write_bytes(attacker)
-        return real_link(source, destination, **kwargs)
+        return real_move(source, destination)
 
-    monkeypatch.setattr(mapping_module.os, "link", occupy_before_install)
+    monkeypatch.setattr(engine, "_move_no_replace", occupy_before_install)
     with pytest.raises(MappingError, match="occupied"):
         invoke()
 
     assert occupied is True
     assert source_path.read_bytes() == attacker
-    quarantines = list(
-        source_path.parent.glob(f".{source_path.name}.*.source-conflict")
-    )
-    assert len(quarantines) == 1
-    assert quarantines[0].read_bytes() == original
+    recovery_bytes = [path.read_bytes() for path in _mapping_recovery_files(tmp_path)]
+    assert original in recovery_bytes
 
 
 @pytest.mark.parametrize("operation", ["candidate", "receipt"])
@@ -920,9 +920,7 @@ def test_mapping_quarantine_destination_race_preserves_every_leaf(
         )
 
     assert source_path.read_bytes() == original
-    surviving = [
-        path.read_bytes() for path in source_path.parent.iterdir() if path.is_file()
-    ]
+    surviving = [path.read_bytes() for path in _mapping_recovery_files(tmp_path)]
     assert swapped_source in surviving
     assert occupied_quarantine in surviving
 
@@ -967,7 +965,11 @@ def test_mapping_postverify_backup_swap_rolls_back_without_partial_commit(
 
     def verify_then_swap(*args, **kwargs):
         result = real_verify(*args, **kwargs)
-        backups = list(source_path.parent.glob(f".{source_path.name}.*.source-backup"))
+        backups = [
+            path
+            for path in _mapping_recovery_files(tmp_path)
+            if path.name.endswith(".source-backup")
+        ]
         assert len(backups) == 1
         backups[0].write_bytes(attacker)
         return result
@@ -977,14 +979,11 @@ def test_mapping_postverify_backup_swap_rolls_back_without_partial_commit(
         invoke()
 
     assert source_path.read_bytes() == original
-    assert any(
-        path.is_file() and path.read_bytes() == attacker
-        for path in source_path.parent.iterdir()
-    )
+    assert attacker in [path.read_bytes() for path in _mapping_recovery_files(tmp_path)]
 
 
 @pytest.mark.parametrize("operation", ["candidate", "receipt"])
-def test_mapping_final_source_swap_after_backup_delete_restores_snapshot(
+def test_successful_mapping_retains_verified_original_in_private_recovery(
     tmp_path,
     monkeypatch,
     operation,
@@ -1012,30 +1011,17 @@ def test_mapping_final_source_swap_after_backup_delete_restores_snapshot(
             review["evidence_digest"],
             _approval(),
         )
-    attacker = b"ATTACKER-FINAL-SOURCE\n"
-    real_unlink = mapping_module.os.unlink
-    backup_unlinks = 0
+    result = invoke()
 
-    def swap_after_backup_delete(path, *args, **kwargs):
-        nonlocal backup_unlinks
-        result = real_unlink(path, *args, **kwargs)
-        if str(path).endswith(".source-backup"):
-            backup_unlinks += 1
-            if backup_unlinks == 2:
-                source_path.unlink()
-                source_path.write_bytes(attacker)
-        return result
-
-    monkeypatch.setattr(mapping_module.os, "unlink", swap_after_backup_delete)
-    with pytest.raises(MappingError, match="post-write source identity changed"):
-        invoke()
-
-    assert backup_unlinks == 2
-    assert source_path.read_bytes() == original
-    assert any(
-        path.is_file() and path.read_bytes() == attacker
-        for path in source_path.parent.iterdir()
-    )
+    assert result["postcondition"]["classification"] == "confirmed"
+    assert source_path.read_bytes() != original
+    backups = [
+        path
+        for path in _mapping_recovery_files(tmp_path)
+        if path.name.endswith(".source-backup")
+    ]
+    assert len(backups) == 1
+    assert backups[0].read_bytes() == original
 
 
 def test_concurrent_receipt_refresh_has_one_winner_and_no_corruption(tmp_path):

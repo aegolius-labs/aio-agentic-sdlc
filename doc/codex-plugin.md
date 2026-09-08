@@ -83,6 +83,13 @@ their local locks, stale-write checks, guarded paths, and atomic replacements fo
 operation. Concurrent acceptance tests also verify that handlers do not change the process working
 directory.
 
+`generate_reality` uses the installed server's generator in-process, so the target repository does
+not need a UV project or an installed `dag-tool` command. Spec promotion and mapping retain original
+and conflicting file versions under the ignored `.aio-agentic-sdlc/backups/` recovery directories.
+Document generation uses the same project recovery parent. These files can accumulate; review them
+before any explicit cleanup, with no active writers. Failed promotions can move a conflicting
+destination into recovery rather than leave an unaccepted file among canonical specs.
+
 Expected domain, validation, and guarded-path failures are returned as bounded MCP error results.
 Unexpected handler failures are sanitized by the server rather than exposing internal exception
 details. Schema validation, unsafe paths, unknown resource URIs, protected-state aliases, and failed

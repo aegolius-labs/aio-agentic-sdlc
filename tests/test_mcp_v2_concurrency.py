@@ -4,6 +4,7 @@ import json
 import os
 import stat
 import threading
+import time
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +32,11 @@ from aio_agentic_sdlc.workspace import (
 
 def _tool_text(result) -> str:
     return "".join(block.text for block in result.content if hasattr(block, "text"))
+
+
+def _promotion_recovery_bytes(project: Path) -> list[bytes]:
+    recovery = project / WORKSPACE_DIR / "backups" / "spec-promotions"
+    return [path.read_bytes() for path in recovery.iterdir()]
 
 
 def _prd_data(label: str) -> dict[str, str]:
@@ -186,6 +192,29 @@ async def test_concurrent_v2_semantic_cache_calls_are_serialized(tmp_path, monke
         "aio_agentic_sdlc.semantic_dedup.get_model",
         lambda: DeterministicModel(),
     )
+    from aio_agentic_sdlc import semantic_dedup
+
+    original_get_db = semantic_dedup._get_db_unlocked
+    activity_lock = threading.Lock()
+    active_transactions = 0
+    maximum_active_transactions = 0
+
+    def observed_get_db(project_path):
+        nonlocal active_transactions, maximum_active_transactions
+        with activity_lock:
+            active_transactions += 1
+            maximum_active_transactions = max(
+                maximum_active_transactions,
+                active_transactions,
+            )
+        try:
+            time.sleep(0.025)
+            return original_get_db(project_path)
+        finally:
+            with activity_lock:
+                active_transactions -= 1
+
+    monkeypatch.setattr(semantic_dedup, "_get_db_unlocked", observed_get_db)
     starting_cwd = os.getcwd()
     arguments = {
         "proposed_content": "A deterministic accepted product requirement.",
@@ -198,8 +227,39 @@ async def test_concurrent_v2_semantic_cache_calls_are_serialized(tmp_path, monke
         )
 
     assert all("existing.md" in _tool_text(result) for result in results)
+    assert maximum_active_transactions == 1
     assert os.getcwd() == starting_cwd
     assert (tmp_path / ".aio-agentic-sdlc" / "semantic-cache.db").is_file()
+
+
+@pytest.mark.asyncio
+async def test_direct_concurrent_semantic_cache_calls_surface_backend_failures(
+    tmp_path,
+    monkeypatch,
+):
+    ensure_workspace(tmp_path)
+    spec = tmp_path / SPECS_DIR / "existing.md"
+    spec.write_text("A deterministic accepted product requirement.", encoding="utf-8")
+
+    class DeterministicModel:
+        def encode(self, texts):
+            return np.ones((len(texts), 384), dtype=np.float32)
+
+    from aio_agentic_sdlc import semantic_dedup
+
+    monkeypatch.setattr(semantic_dedup, "get_model", lambda: DeterministicModel())
+    results = await asyncio.gather(
+        *(
+            asyncio.to_thread(
+                semantic_dedup.find_duplicate_prds,
+                "A deterministic accepted product requirement.",
+                str(tmp_path),
+            )
+            for _ in range(4)
+        )
+    )
+
+    assert all(result[0]["filepath"].endswith("existing.md") for result in results)
 
 
 @pytest.mark.asyncio
@@ -459,8 +519,8 @@ async def test_v2_spec_promotion_rejects_source_leaf_swap_without_external_read(
 
     assert result.is_error is True
     assert _tool_text(result).startswith("Error promoting spec:")
-    assert destination.is_symlink() is False
-    assert destination.read_bytes() == original
+    assert not os.path.lexists(destination)
+    assert original in _promotion_recovery_bytes(project)
     assert external_read is False
     assert external.read_text(encoding="utf-8") == "external-secret\n"
 
@@ -510,6 +570,68 @@ async def test_v2_spec_promotion_preserves_a_foreign_destination_leaf(
 
 
 @pytest.mark.asyncio
+async def test_v2_spec_promotion_rejects_in_place_destination_edit(
+    tmp_path, monkeypatch
+):
+    ensure_workspace(tmp_path)
+    source = tmp_path / CHANGES_DIR / "accepted.md"
+    destination = tmp_path / SPECS_DIR / "accepted.md"
+    original = b"# Accepted\n"
+    concurrent = b"CONCURRENT EDIT\n"
+    source.write_bytes(original)
+    real_move = mcp_server_module._move_source_to_promotion_backup
+
+    def edit_after_source_move(path, backup):
+        real_move(path, backup)
+        destination.write_bytes(concurrent)
+
+    monkeypatch.setattr(
+        mcp_server_module, "_move_source_to_promotion_backup", edit_after_source_move
+    )
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(tmp_path)},
+        )
+
+    assert result.is_error is True
+    assert source.read_bytes() == original
+    assert not os.path.lexists(destination)
+    assert concurrent in _promotion_recovery_bytes(tmp_path)
+
+
+@pytest.mark.asyncio
+async def test_v2_spec_promotion_rejects_hardlinked_source_before_install(tmp_path):
+    project = tmp_path / "project"
+    project.mkdir()
+    ensure_workspace(project)
+    source = project / CHANGES_DIR / "accepted.md"
+    original = b"# Accepted hardlink\n"
+    source.write_bytes(original)
+    alias = tmp_path / "accepted-alias.md"
+    try:
+        os.link(source, alias)
+    except OSError as error:
+        pytest.skip(f"hardlinks unavailable: {error}")
+    destination = project / SPECS_DIR / "accepted.md"
+
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "promote_spec",
+            {"feature_name": "accepted.md", "project_path": str(project)},
+        )
+
+    assert result.is_error is True
+    assert _tool_text(result) == (
+        "Error promoting spec: spec source changed during promotion"
+    )
+    assert not os.path.lexists(destination)
+    assert source.read_bytes() == original
+    assert alias.read_bytes() == original
+    assert os.path.samefile(source, alias)
+
+
+@pytest.mark.asyncio
 async def test_v2_spec_promotion_detects_swap_after_first_destination_postcheck(
     tmp_path, monkeypatch
 ):
@@ -554,8 +676,11 @@ async def test_v2_spec_promotion_detects_swap_after_first_destination_postcheck(
 
     assert swapped is True
     assert result.is_error is True
-    assert destination.is_symlink() is True
-    assert destination.resolve() == external.resolve()
+    assert not os.path.lexists(destination)
+    assert any(
+        path.is_symlink() and path.resolve() == external.resolve()
+        for path in (project / WORKSPACE_DIR / "backups" / "spec-promotions").iterdir()
+    )
     assert source.read_text(encoding="utf-8") == "# Accepted\n"
     assert external.read_text(encoding="utf-8") == "external-secret\n"
 
@@ -607,7 +732,8 @@ async def test_v2_spec_promotion_preserves_foreign_regular_destination_on_rollba
     assert swapped is True
     assert result.is_error is True
     assert source.read_bytes() == original
-    assert destination.read_bytes() == attacker_content
+    assert not os.path.lexists(destination)
+    assert attacker_content in _promotion_recovery_bytes(project)
     assert attacker.exists() is False
 
 
@@ -672,13 +798,15 @@ async def test_v2_spec_promotion_preserves_occupied_private_recovery_leaf(
 
     def occupy_reserved_leaf(recovery_directory, source_name, *, suffix):
         nonlocal occupied_leaf
-        occupied_leaf = original_reserve(
+        candidate = original_reserve(
             recovery_directory,
             source_name,
             suffix=suffix,
         )
-        occupied_leaf.write_bytes(foreign_recovery)
-        return occupied_leaf
+        if suffix == ".source-backup":
+            candidate.write_bytes(foreign_recovery)
+            occupied_leaf = candidate
+        return candidate
 
     monkeypatch.setattr(
         mcp_server_module,
@@ -696,7 +824,7 @@ async def test_v2_spec_promotion_preserves_occupied_private_recovery_leaf(
         "Error promoting spec: spec source changed during promotion"
     )
     assert source.read_bytes() == original
-    assert destination.read_bytes() == original
+    assert not os.path.lexists(destination)
     assert occupied_leaf is not None
     assert occupied_leaf.read_bytes() == foreign_recovery
 
@@ -784,8 +912,13 @@ async def test_v2_spec_promotion_restores_read_only_source_after_late_failure(
         assert result.is_error is True
         assert source.read_text(encoding="utf-8") == "# Accepted read-only\n"
         assert stat.S_IMODE(source.stat().st_mode) & stat.S_IWRITE == 0
-        assert destination.is_symlink() is True
-        assert destination.resolve() == external.resolve()
+        assert not os.path.lexists(destination)
+        assert any(
+            path.is_symlink() and path.resolve() == external.resolve()
+            for path in (
+                project / WORKSPACE_DIR / "backups" / "spec-promotions"
+            ).iterdir()
+        )
         assert external.read_text(encoding="utf-8") == "external-unchanged\n"
     finally:
         if destination.is_symlink():
@@ -862,7 +995,8 @@ async def test_v2_spec_promotion_never_unlinks_a_foreign_destination_on_rollback
     assert result.is_error is True
     assert destination_unlink_attempted is False
     assert source.read_bytes() == original
-    assert destination.read_bytes() == attacker_content
+    assert not os.path.lexists(destination)
+    assert attacker_content in _promotion_recovery_bytes(project)
 
 
 @pytest.mark.asyncio
@@ -901,12 +1035,11 @@ async def test_v2_spec_promotion_preserves_source_swapped_at_final_move_boundary
             {"feature_name": "accepted.md", "project_path": str(project)},
         )
 
-    recovery_dir = project / WORKSPACE_DIR / "backups" / "spec-promotions"
-    recovery_bytes = [path.read_bytes() for path in recovery_dir.iterdir()]
+    recovery_bytes = _promotion_recovery_bytes(project)
     assert injected is True
     assert result.is_error is True
     assert source.read_bytes() == original
-    assert destination.read_bytes() == original
+    assert not os.path.lexists(destination)
     assert attacker_content in recovery_bytes
 
 
@@ -976,8 +1109,7 @@ async def test_v2_spec_promotion_combined_contention_preserves_every_byte_set(
             {"feature_name": "accepted.md", "project_path": str(project)},
         )
 
-    recovery_dir = project / WORKSPACE_DIR / "backups" / "spec-promotions"
-    recovery_bytes = [path.read_bytes() for path in recovery_dir.iterdir()]
+    recovery_bytes = _promotion_recovery_bytes(project)
     assert destination_swapped is True
     assert source_occupied_at_restore is True
     assert result.is_error is True
@@ -986,5 +1118,6 @@ async def test_v2_spec_promotion_combined_contention_preserves_every_byte_set(
         "recovery copy retained"
     )
     assert source.read_bytes() == foreign_source
-    assert destination.read_bytes() == foreign_destination
+    assert not os.path.lexists(destination)
+    assert foreign_destination in recovery_bytes
     assert original in recovery_bytes
