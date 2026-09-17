@@ -18,9 +18,13 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 - **Approval-Aware Drift Triage**: Safe-plan work is withheld from implementation until accepted intent, Reality observability, and digest-bound classification evidence agree.
 - **SDLC Scribe Agent**: An automated Scribe agent executes before the DevOps agent steps to ensure user-facing documentation (like this README) stays perfectly aligned with the codebase's true reality.
 
-## Licensing Note
+## Licensing
 
-This project is intended for **Personal / Non-Commercial Use Only**. When you publish this to GitHub, it is highly recommended to select a license like the **PolyForm Noncommercial License 1.0.0** or **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** from the GitHub license templates.
+This project is source-available, not open source. Noncommercial use is granted under the
+**PolyForm Noncommercial License 1.0.0**; see [LICENSE.md](LICENSE.md).
+
+Any use in or for a for-profit operation requires a separate paid commercial license from
+Aegolius Labs. See [COMMERCIAL.md](COMMERCIAL.md).
 
 ## Installation & Configuration
 
