@@ -6,7 +6,7 @@ Required Notice: Copyright 2026 Aegolius Labs. AIO Agentic SDLC is licensed unde
 
 The authoritative license terms are the **PolyForm Noncommercial License 1.0.0**, available at:
 
-https://polyformproject.org/licenses/noncommercial/1.0.0
+<https://polyformproject.org/licenses/noncommercial/1.0.0>
 
 You may use, modify, and distribute this software for purposes permitted by those terms. Personal projects, study, research, experimentation, and open-source projects are permitted when the use is noncommercial and without an anticipated commercial application. An individual publishing a public open-source project still needs a commercial license if this project is used in or for a for-profit operation.
 

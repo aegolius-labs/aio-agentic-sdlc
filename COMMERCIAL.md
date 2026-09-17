@@ -11,6 +11,6 @@ Making a repository public or releasing a project under an open-source license d
 
 Commercial terms, pricing, support, warranties, and deployment rights are established in a separate written agreement. No commercial rights are granted until that agreement is executed.
 
-To request commercial terms, open a licensing inquiry through the Aegolius Labs GitHub organization at https://github.com/aegolius-labs. Do not include confidential information in a public issue.
+To request commercial terms, open a licensing inquiry through the Aegolius Labs GitHub organization at <https://github.com/aegolius-labs>. Do not include confidential information in a public issue.
 
 This document is an overview and does not replace either the PolyForm Noncommercial License or a signed commercial agreement.
