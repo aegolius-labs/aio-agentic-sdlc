@@ -6,6 +6,18 @@
 - Create the development environment with `uv sync --frozen --group dev`.
 - Run tests with `uv run --no-sync pytest` after the environment is synchronized.
 
+## Organization authority model
+
+- `doc/authority-model.md` is the normative statement of which Aegolius Labs
+  repository owns which kind of truth. Read it before changing anything that
+  touches the backlog projection or QA handoff boundary.
+- This repository owns intent, reality, and the derived work diff.
+  `agentic-backlog-kit` owns the GitHub projection of that work;
+  `agentic-qa-kit` owns QA evidence.
+- Downstream state flows back as evidence, never as intent. An external tracker
+  or QA result may inform the Reality DAG or the derived backlog; it may never
+  edit the Intention DAG outside an approval-gated Intent IR transition.
+
 ## State integrity
 
 - Never edit `.aio-agentic-sdlc/intention-dag.yaml`,
