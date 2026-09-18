@@ -103,22 +103,20 @@ def _write_output_staging(
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
     descriptor = os.open(temporary, flags, 0o600)
     try:
-        with os.fdopen(descriptor, "wb") as handle:
-            handle.write(payload)
-            handle.flush()
-            os.fsync(handle.fileno())
-            opened = os.fstat(handle.fileno())
-            staged = _OutputSnapshot(
-                identity=(opened.st_dev, opened.st_ino),
-                mode=stat.S_IMODE(opened.st_mode),
-                sha256=hashlib.sha256(payload).hexdigest(),
-            )
+        handle = os.fdopen(descriptor, "wb")
     except Exception:
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
+        os.close(descriptor)
         raise
+    with handle:
+        handle.write(payload)
+        handle.flush()
+        os.fsync(handle.fileno())
+        opened = os.fstat(handle.fileno())
+        staged = _OutputSnapshot(
+            identity=(opened.st_dev, opened.st_ino),
+            mode=stat.S_IMODE(opened.st_mode),
+            sha256=hashlib.sha256(payload).hexdigest(),
+        )
     if not _output_matches(temporary, staged):
         raise TemplateValidationError("document staging changed during write")
     return temporary, staged

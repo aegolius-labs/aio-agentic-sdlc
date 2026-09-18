@@ -275,6 +275,13 @@ async def test_v2_client_discovers_the_complete_public_surface(mode):
         EXPECTED_PROMPT_DESCRIPTIONS
     )
 
+    # Arguments that correctly advertise a nullable schema. Twelve other
+    # null-defaulting arguments (add_task.parent_id, the update_task optionals,
+    # create_intent_node.domain/description, review_intent.node_id) still declare
+    # a flat type and reject an explicit null; widening those is tracked
+    # separately from the SDK v2 migration.
+    NULLABLE_ARGUMENTS = {("review_mapping", "candidate_reality_id")}
+
     for tool in tools.tools:
         required, defaults = EXPECTED_ARGUMENT_CONTRACT[tool.name]
         schema = tool.input_schema
@@ -292,7 +299,16 @@ async def test_v2_client_discovers_the_complete_public_surface(mode):
                 expected_type = "number"
             elif name in BOOLEAN_ARGUMENTS:
                 expected_type = "boolean"
-            assert property_schema["type"] == expected_type
+            if (tool.name, name) in NULLABLE_ARGUMENTS:
+                # An argument that defaults to null must advertise a nullable
+                # schema, so a client may send an explicit null instead of
+                # being rejected by argument validation with an opaque error.
+                assert property_schema["anyOf"] == [
+                    {"type": expected_type},
+                    {"type": "null"},
+                ]
+            else:
+                assert property_schema["type"] == expected_type
         assert tool.output_schema["type"] == "object"
         assert tool.output_schema["required"] == ["result"]
         assert tool.output_schema["properties"]["result"]["type"] == "string"

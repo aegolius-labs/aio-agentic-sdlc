@@ -330,20 +330,18 @@ def _copy_regular_file_from_fd_to_recovery(
     temporary_descriptor = os.open(temporary, flags, mode)
     try:
         os.lseek(descriptor, 0, os.SEEK_SET)
-        with os.fdopen(temporary_descriptor, "wb") as handle:
-            while chunk := os.read(descriptor, 1024 * 1024):
-                handle.write(chunk)
-            handle.flush()
-            os.fsync(handle.fileno())
-            if hasattr(os, "fchmod"):
-                os.fchmod(handle.fileno(), mode)
-        return temporary
+        handle = os.fdopen(temporary_descriptor, "wb")
     except Exception:
-        try:
-            os.close(temporary_descriptor)
-        except OSError:
-            pass
+        os.close(temporary_descriptor)
         raise
+    with handle:
+        while chunk := os.read(descriptor, 1024 * 1024):
+            handle.write(chunk)
+        handle.flush()
+        os.fsync(handle.fileno())
+        if hasattr(os, "fchmod"):
+            os.fchmod(handle.fileno(), mode)
+    return temporary
 
 
 def _copy_regular_file_to_atomic_temp(source: Path, recovery_dir: Path) -> Path:
@@ -372,9 +370,14 @@ def _copy_regular_file_to_atomic_temp(source: Path, recovery_dir: Path) -> Path:
         )
         flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
         temp_fd = os.open(temp_path, flags, stat.S_IMODE(opened.st_mode))
+        try:
+            destination_handle = os.fdopen(temp_fd, "wb")
+        except Exception:
+            os.close(temp_fd)
+            raise
         with (
             os.fdopen(source_fd, "rb", closefd=False) as source_file,
-            os.fdopen(temp_fd, "wb") as destination_file,
+            destination_handle as destination_file,
         ):
             while chunk := source_file.read(1024 * 1024):
                 destination_file.write(chunk)
@@ -929,7 +932,7 @@ def triage_reconciliation_drift(
 def review_mapping(
     intent_id: Annotated[str, Field(description="Canonical Intention node GUID")],
     candidate_reality_id: Annotated[
-        str,
+        str | None,
         Field(
             description=(
                 "Optional explicit current observed Reality GUID; omit for automatic "
@@ -1409,7 +1412,8 @@ def promote_spec(
 
         if not dst_path.exists():
             return _expected_error(
-                f"Error: Spec '{feature_name}' not found in {CHANGES_DIR}/."
+                f"Error promoting spec: '{feature_name}' did not remain in "
+                f"{SPECS_DIR}/ after promotion; check the promotion recovery directory."
             )
         return f"Successfully promoted spec '{feature_name}' to {SPECS_DIR}/."
     except (
