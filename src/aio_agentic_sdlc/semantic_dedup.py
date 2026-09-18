@@ -1,53 +1,122 @@
 import glob
 import os
 import sqlite3
+import threading
+from contextlib import contextmanager
 from typing import Any, Dict, List
 
 import sqlite_vec
+from filelock import FileLock
 
-from .workspace import SPECS_DIR, WORKSPACE_DIR
+from .workspace import SPECS_DIR, WORKSPACE_DIR, workspace_file_path
 
 # Lazy load sentence_transformers to speed up CLI for other commands
 _model = None
+_model_lock = threading.RLock()
+_project_locks_guard = threading.Lock()
+_project_locks: dict[str, threading.RLock] = {}
+
+
+class SemanticCacheError(RuntimeError):
+    """A bounded, actionable semantic-search prerequisite failure."""
+
+
+def _canonical_cache_identity(project_path: str) -> str:
+    return os.path.normcase(os.path.realpath(os.path.abspath(project_path)))
+
+
+def _project_lock(project_path: str) -> threading.RLock:
+    identity = _canonical_cache_identity(project_path)
+    with _project_locks_guard:
+        return _project_locks.setdefault(identity, threading.RLock())
+
+
+def _cache_lock(project_path: str) -> FileLock:
+    return FileLock(
+        workspace_file_path(
+            project_path,
+            f"{WORKSPACE_DIR}/semantic-cache.lock",
+        ),
+        timeout=30,
+        preserve_lock_file=True,
+    )
+
+
+@contextmanager
+def _cache_guard(project_path: str):
+    """Serialize one cache in-process and across independent processes."""
+
+    with _project_lock(project_path):
+        with _cache_lock(project_path):
+            yield
 
 
 def get_model():
     global _model
-    if _model is None:
-        from sentence_transformers import SentenceTransformer
+    with _model_lock:
+        if _model is None:
+            from sentence_transformers import SentenceTransformer
 
-        # all-MiniLM-L6-v2 is small and fast, output dim = 384
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _model
+            # all-MiniLM-L6-v2 is small and fast, output dim = 384
+            _model = SentenceTransformer("all-MiniLM-L6-v2")
+        return _model
 
 
-def get_db(project_path: str) -> sqlite3.Connection:
-    db_path = os.path.join(project_path, WORKSPACE_DIR, "semantic-cache.db")
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+def _encode(model, texts):
+    with _model_lock:
+        return model.encode(texts)
 
+
+def _get_db_unlocked(project_path: str) -> sqlite3.Connection:
+    db_path = workspace_file_path(
+        project_path,
+        f"{WORKSPACE_DIR}/semantic-cache.db",
+    )
     db = sqlite3.connect(db_path)
-    db.enable_load_extension(True)
-    sqlite_vec.load(db)
-    db.enable_load_extension(False)
+    try:
+        if not callable(getattr(db, "enable_load_extension", None)):
+            raise SemanticCacheError(
+                "Semantic search requires Python with SQLite extension loading. "
+                "Use a UV-managed Python interpreter; see the installation guide."
+            )
+        try:
+            db.enable_load_extension(True)
+            try:
+                sqlite_vec.load(db)
+            finally:
+                db.enable_load_extension(False)
+        except (sqlite3.Error, OSError) as error:
+            raise SemanticCacheError(
+                "Semantic search could not load sqlite-vec. Use a Python interpreter "
+                "with SQLite extension loading and synchronize the locked dependencies."
+            ) from error
 
-    # Initialize schema
-    db.execute("""
+        # Initialize schema
+        db.execute("""
         CREATE VIRTUAL TABLE IF NOT EXISTS prd_embeddings USING vec0(
             embedding float[384]
         )
     """)
-    db.execute("""
+        db.execute("""
         CREATE TABLE IF NOT EXISTS prd_metadata (
             rowid INTEGER PRIMARY KEY,
             filepath TEXT UNIQUE,
             last_modified REAL
         )
     """)
-    db.commit()
-    return db
+        db.commit()
+        return db
+    except BaseException:
+        db.close()
+        raise
 
 
-def sync_documents(project_path: str, db: sqlite3.Connection):
+def get_db(project_path: str) -> sqlite3.Connection:
+    with _cache_guard(project_path):
+        return _get_db_unlocked(project_path)
+
+
+def _sync_documents_unlocked(project_path: str, db: sqlite3.Connection, *, model=None):
     """Scan canonical specs and update embeddings for changed Markdown files."""
     specs_path = os.path.join(project_path, SPECS_DIR, "**", "*.md")
 
@@ -86,7 +155,7 @@ def sync_documents(project_path: str, db: sqlite3.Connection):
     if not to_insert and not to_update and not to_delete:
         return
 
-    model = get_model()
+    model = model or get_model()
 
     # Process deletions
     for rowid in to_delete:
@@ -101,7 +170,7 @@ def sync_documents(project_path: str, db: sqlite3.Connection):
         except UnicodeDecodeError:
             continue
 
-        embedding = model.encode([content])[0]
+        embedding = _encode(model, [content])[0]
 
         # Insert metadata to get rowid
         cursor.execute(
@@ -123,7 +192,7 @@ def sync_documents(project_path: str, db: sqlite3.Connection):
         except UnicodeDecodeError:
             continue
 
-        embedding = model.encode([content])[0]
+        embedding = _encode(model, [content])[0]
 
         cursor.execute(
             "UPDATE prd_metadata SET last_modified = ? WHERE rowid = ?", (mtime, rowid)
@@ -138,8 +207,19 @@ def sync_documents(project_path: str, db: sqlite3.Connection):
     db.commit()
 
 
+def sync_documents(project_path: str, db: sqlite3.Connection, *, model=None):
+    """Serialize cache reconciliation for callers that manage the connection."""
+
+    with _cache_guard(project_path):
+        return _sync_documents_unlocked(project_path, db, model=model)
+
+
 def find_duplicate_prds(
-    proposed_text: str, project_path: str = ".", threshold: float = 0.2
+    proposed_text: str,
+    project_path: str = ".",
+    threshold: float = 0.2,
+    *,
+    model=None,
 ) -> List[Dict[str, Any]]:
     """
     Search for similar PRDs.
@@ -147,37 +227,36 @@ def find_duplicate_prds(
     Note: threshold is cosine distance (0 to 2). Smaller is more similar.
     Distance of 0.2 means 0.8 cosine similarity.
     """
-    db = get_db(project_path)
-    sync_documents(project_path, db)
+    with _cache_guard(project_path):
+        db = _get_db_unlocked(project_path)
+        try:
+            model = model or get_model()
+            _sync_documents_unlocked(project_path, db, model=model)
+            query_embedding = _encode(model, [proposed_text])[0]
 
-    model = get_model()
-    query_embedding = model.encode([proposed_text])[0]
-
-    cursor = db.cursor()
-
-    # Query sqlite-vec
-    cursor.execute(
-        """
-        SELECT m.filepath, e.distance
-        FROM prd_embeddings e
-        JOIN prd_metadata m ON m.rowid = e.rowid
-        WHERE e.embedding MATCH ? AND k = 3
-        ORDER BY e.distance ASC
-    """,
-        (query_embedding.tobytes(),),
-    )
-
-    results = []
-    for row in cursor.fetchall():
-        filepath, distance = row
-        if distance <= threshold:
-            results.append(
-                {
-                    "filepath": filepath,
-                    "distance": distance,
-                    "similarity_score": 1.0 - distance,
-                }
+            cursor = db.cursor()
+            cursor.execute(
+                """
+                SELECT m.filepath, e.distance
+                FROM prd_embeddings e
+                JOIN prd_metadata m ON m.rowid = e.rowid
+                WHERE e.embedding MATCH ? AND k = 3
+                ORDER BY e.distance ASC
+            """,
+                (query_embedding.tobytes(),),
             )
 
-    db.close()
-    return results
+            results = []
+            for row in cursor.fetchall():
+                filepath, distance = row
+                if distance <= threshold:
+                    results.append(
+                        {
+                            "filepath": filepath,
+                            "distance": distance,
+                            "similarity_score": 1.0 - distance,
+                        }
+                    )
+            return results
+        finally:
+            db.close()

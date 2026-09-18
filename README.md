@@ -10,7 +10,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 
 - **Canonical GUID Traceability**: Node IDs map natively and consistently across your PRDs, codebase comments, and DAG structures.
 - **QA Sandbox Isolation**: QA agents operate strictly within robust `.qa-sandbox/<session-id>/` environments to ensure they cannot leak or destructively modify core source files.
-- **MCP Server Integration**: Downstream subagents securely interact with the system via integrated MCP servers, most notably the Agentic Backlog server.
+- **MCP Server Integration**: The official Python MCP SDK v2 `MCPServer` exposes the Agentic Backlog server over stdio with 23 tools, two resources, and one prompt; the two additive tools maintain source-identity receipts.
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
 - **Evidence-Gated Reconciliation**: GUID matches are confirmed deterministically, structural matches remain review candidates, and unmatched Reality observations never become deletion work by default.
@@ -29,6 +29,20 @@ Aegolius Labs. See [COMMERCIAL.md](COMMERCIAL.md).
 ## Installation & Configuration
 
 Because `aio-agentic-sdlc` is an agentic-first toolkit, the easiest way to install and integrate the MCP Server into your IDE (VS Code, Cursor, Windsurf, Claude Desktop) is by using `uvx` to fetch the server directly from GitHub. This requires **zero local installation**.
+
+The package supports `mcp>=2.0.0,<3`; the reviewed development lock resolves MCP 2.0.0. The
+launcher remains stdio-based, so existing host configuration does not need a transport change for
+the SDK v2 migration.
+
+Semantic PRD search requires Python's SQLite extension-loading support for `sqlite-vec`.
+Some macOS Python builds omit it; installing the Python package alone does not add that support.
+Use a UV-managed interpreter (`uvx --managed-python --python 3.12 --from
+git+https://github.com/aegolius-labs/aio-agentic-sdlc aio-agentic-sdlc-mcp`) or another
+extension-capable Python build. For development, select it with
+`uv sync --managed-python --python 3.12 --frozen --group dev`. CI uses this managed runtime on
+all three platforms and exercises real SQLite vector queries; it does not skip semantic search.
+See the [SQLite requirement](https://alexgarcia.xyz/sqlite-vec/python.html#macos-blocks-sqlite-extensions-by-default)
+and [UV interpreter selection](https://docs.astral.sh/uv/concepts/python-versions/#requiring-or-disabling-managed-python-versions).
 
 ### Codex plugin
 
@@ -51,6 +65,12 @@ Add the following to your IDE's `mcp.json` or equivalent configuration file:
   }
 }
 ```
+
+The two fixed resources, `backlog://current` and `backlog://hierarchy-rules`, read the repository
+that was the MCP server's working directory when it started. Tools that accept `project_path`
+should receive an absolute repository path and are the safer choice when one server may address a
+different checkout. See the [Codex plugin guide](doc/codex-plugin.md#mcp-sdk-v2-runtime-contract)
+for the verified protocol contract and validation commands.
 
 ### Global Installation (Optional)
 
@@ -203,7 +223,8 @@ The default human view presents names and reasons first and leaves GUIDs and has
 audit section. Use `--format json` for automation, `--decisions <file>` for explicit classifications,
 and `--output <file>` for an atomically written derived report.
 
-Promote one unique Python class or function candidate only through an explicit two-step decision:
+Map one unique Python class or function only through a fresh review followed by a separate human
+approval. Automatic name matching remains the default:
 
 ```bash
 uv run dag-tool mapping review --project-path /absolute/project --intent-id <guid>
@@ -212,7 +233,31 @@ uv run dag-tool mapping review --project-path /absolute/project --intent-id <gui
 uv run dag-tool mapping approve --project-path /absolute/project --intent-id <guid> \
   --candidate-reality-id <reviewed-guid> --evidence-digest <reviewed-digest> \
   --approved-by <identity> --approved-at <timezone-aware-iso8601> \
-  --rationale "Why this exact source symbol implements the intent"
+  --rationale "Why this exact source symbol is the intended identity boundary"
+```
+
+When the intended responsibility and implementation symbol have different names, nominate an
+exact GUID from the current Reality observations during review and replay that selection mode only
+after a human approves the resulting digest:
+
+```bash
+uv run dag-tool mapping review --project-path /absolute/project --intent-id <guid> \
+  --candidate-reality-id <observed-reality-guid>
+uv run dag-tool mapping approve --project-path /absolute/project --intent-id <guid> \
+  --candidate-reality-id <reviewed-guid> --evidence-digest <reviewed-digest> \
+  --selection-mode explicit_observed_guid \
+  --approved-by <identity> --approved-at <timezone-aware-iso8601> \
+  --rationale "Why this exact source symbol is the intended identity boundary"
+```
+
+Review and refresh a stale receipt for an already confirmed marker as another two-step decision:
+
+```bash
+uv run dag-tool mapping receipt review --project-path /absolute/project --intent-id <guid>
+uv run dag-tool mapping receipt refresh --project-path /absolute/project --intent-id <guid> \
+  --evidence-digest <reviewed-digest> \
+  --approved-by <identity> --approved-at <timezone-aware-iso8601> \
+  --rationale "Why the refreshed whole-file evidence preserves this source identity"
 ```
 
 Review regenerates Reality in memory and defaults to a human decision brief. The brief puts the
@@ -223,3 +268,10 @@ The machine report and its digest bind the reviewed intent semantics and the exa
 without changing canonical state. Approval repeats that review under a dedicated lock, rejects
 stale or ambiguous evidence, atomically inserts the canonical marker and audit receipt, and rolls
 back unless a fresh scan confirms the intended GUID at the same symbol.
+
+Explicit candidate review and receipt review are read-only. Each exact digest requires its own
+human approval; approval of one candidate or receipt never authorizes another. Receipt refresh
+preserves the canonical marker and replaces only its adjacent receipt. Evidence currently hashes
+the whole annotation-neutral file, so even an unrelated edit in that file intentionally makes the
+receipt stale. Only observed Python classes and functions are supported. Use these tools or their
+Python API equivalents—never insert, replace, or repair mapping markers and receipts manually.
