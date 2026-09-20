@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "aio-agentic-sdlc",
+  "displayName": "AIO Agentic SDLC",
+  "version": "0.32.0",
+  "description": "Run a traceable, dual-DAG software delivery workflow with the AIO Agentic SDLC MCP tools",
+  "author": {
+    "name": "Aegolius Labs",
+    "url": "https://github.com/aegolius-labs"
+  },
+  "homepage": "https://github.com/aegolius-labs/aio-agentic-sdlc",
+  "repository": "https://github.com/aegolius-labs/aio-agentic-sdlc",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": [
+    "agentic-sdlc",
+    "backlog",
+    "dual-dag",
+    "mcp",
+    "spec-driven-development"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

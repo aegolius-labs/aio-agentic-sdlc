@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "aegolius-labs-sdlc",
+  "description": "Aegolius Labs dual-DAG agentic SDLC framework for Claude Code",
+  "owner": {
+    "name": "Aegolius Labs",
+    "url": "https://github.com/aegolius-labs"
+  },
+  "plugins": [
+    {
+      "name": "aio-agentic-sdlc",
+      "displayName": "AIO Agentic SDLC",
+      "version": "0.32.0",
+      "description": "Run a traceable, dual-DAG software delivery workflow with the AIO Agentic SDLC MCP tools",
+      "author": {
+        "name": "Aegolius Labs",
+        "url": "https://github.com/aegolius-labs"
+      },
+      "category": "productivity",
+      "keywords": [
+        "agentic-sdlc",
+        "backlog",
+        "dual-dag",
+        "mcp",
+        "spec-driven-development"
+      ],
+      "source": "./plugins/aio-agentic-sdlc",
+      "homepage": "https://github.com/aegolius-labs/aio-agentic-sdlc"
+    }
+  ]
+}
