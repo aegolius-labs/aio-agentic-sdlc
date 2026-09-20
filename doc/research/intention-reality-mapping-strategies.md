@@ -12,7 +12,7 @@ itself is the wrong target.
 
 Reconciliation of this repository against its own source:
 
-```
+```text
 intention_nodes: 61      confirmed: 10
 reality_nodes: 756       candidate: 0
                          unmapped: 51
