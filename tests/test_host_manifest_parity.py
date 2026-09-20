@@ -88,6 +88,23 @@ class TestMarketplaceEntries(unittest.TestCase):
         entry = _load(CLAUDE_MARKETPLACE)["plugins"][0]
         self.assertEqual(entry["version"], _load(CLAUDE_PLUGIN)["version"])
 
+    def test_both_host_manifests_declare_the_same_version(self):
+        """Hosts ship one artifact, so they must not advertise different versions.
+
+        The Codex manifest sat at 0.21.0 through twelve minor releases because
+        nothing checked it, so installers were shown a version that was not the
+        one they got.
+        """
+
+        claude = _load(CLAUDE_PLUGIN)["version"]
+        codex = _load(CODEX_PLUGIN)["version"]
+        self.assertEqual(
+            claude.split("+", 1)[0],
+            codex.split("+", 1)[0],
+            "host manifests advertise different versions; "
+            "update both when the package version changes",
+        )
+
 
 class TestSharedSkillIsHostNeutral(unittest.TestCase):
     def test_no_host_specific_language_in_the_shared_skill(self):
