@@ -4,8 +4,8 @@ import os
 import secrets
 import stat
 from contextvars import ContextVar
-from importlib import metadata
 from dataclasses import dataclass
+from importlib import metadata
 from pathlib import Path
 from typing import Annotated
 

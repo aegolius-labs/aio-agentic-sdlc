@@ -49,7 +49,9 @@ class TestHostManifestParity(unittest.TestCase):
             )
 
     def test_keywords_agree(self):
-        self.assertEqual(sorted(self.claude["keywords"]), sorted(self.codex["keywords"]))
+        self.assertEqual(
+            sorted(self.claude["keywords"]), sorted(self.codex["keywords"])
+        )
 
     def test_both_point_at_the_same_shared_skill_directory(self):
         self.assertEqual(self.claude["skills"], self.codex["skills"])
