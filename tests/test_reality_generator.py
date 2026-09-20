@@ -397,3 +397,107 @@ metadata:
         assert expected_uuid in node_ids
         assert node_ids[expected_uuid].type == NodeType.AGENT
         assert node_ids[expected_uuid].name == "ArchitectAgent"
+
+
+def _generate(tmpdir: str):
+    return RealityDAGGenerator(tmpdir, "TestSystem").generate()
+
+
+def test_mock_patch_decorator_is_not_an_endpoint():
+    """unittest.mock's @patch shares a name with the HTTP verb but not the meaning."""
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        Path(tmpdir, "service.py").write_text(
+            "from unittest.mock import patch\n"
+            "\n"
+            '@patch("service.collaborator")\n'
+            "def run_workflow(mock_collaborator):\n"
+            '    """Run the workflow."""\n'
+            "    return True\n",
+            encoding="utf-8",
+        )
+        manager = _generate(tmpdir)
+        run = next(n for n in manager.nodes.values() if n.name == "run_workflow")
+        assert run.type == NodeType.COMPONENT
+
+
+def test_attribute_qualified_http_decorator_is_still_an_endpoint():
+    """The attribute form does route a request and must keep classifying."""
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        Path(tmpdir, "api.py").write_text(
+            '@app.patch("/items/{item_id}")\n'
+            "def update_item(item_id):\n"
+            '    """Update one item."""\n'
+            "    return item_id\n"
+            "\n"
+            '@router.get("/items")\n'
+            "def list_items():\n"
+            '    """List items."""\n'
+            "    return []\n",
+            encoding="utf-8",
+        )
+        manager = _generate(tmpdir)
+        by_name = {n.name: n for n in manager.nodes.values()}
+        assert by_name["update_item"].type == NodeType.ENDPOINT
+        assert by_name["list_items"].type == NodeType.ENDPOINT
+
+
+def test_bare_route_decorator_is_still_an_endpoint():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        Path(tmpdir, "legacy.py").write_text(
+            '@route("/ping")\n'
+            "def ping():\n"
+            '    """Ping."""\n'
+            '    return "pong"\n',
+            encoding="utf-8",
+        )
+        manager = _generate(tmpdir)
+        assert (
+            next(n for n in manager.nodes.values() if n.name == "ping").type
+            == NodeType.ENDPOINT
+        )
+
+
+def test_test_directories_are_excluded_from_reality():
+    """Tests are evidence about the system, not the system itself."""
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        Path(tmpdir, "src").mkdir()
+        Path(tmpdir, "src", "engine.py").write_text(
+            "class Engine:\n" '    """The engine."""\n' "    pass\n",
+            encoding="utf-8",
+        )
+        Path(tmpdir, "tests").mkdir()
+        Path(tmpdir, "tests", "test_engine.py").write_text(
+            "def test_engine_starts():\n" "    assert True\n",
+            encoding="utf-8",
+        )
+        manager = _generate(tmpdir)
+        names = {n.name for n in manager.nodes.values()}
+        assert "Engine" in names
+        assert "test_engine_starts" not in names
+        assert not any(n.name == "test_engine.py" for n in manager.nodes.values())
+
+
+def test_test_files_outside_a_test_directory_are_excluded():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        Path(tmpdir, "widget.py").write_text(
+            "class Widget:\n" '    """A widget."""\n' "    pass\n",
+            encoding="utf-8",
+        )
+        Path(tmpdir, "test_widget.py").write_text(
+            "def test_widget_exists():\n    assert True\n", encoding="utf-8"
+        )
+        Path(tmpdir, "widget_test.py").write_text(
+            "def test_widget_again():\n    assert True\n", encoding="utf-8"
+        )
+        Path(tmpdir, "conftest.py").write_text(
+            "def pytest_configure():\n    pass\n", encoding="utf-8"
+        )
+        manager = _generate(tmpdir)
+        names = {n.name for n in manager.nodes.values()}
+        assert "Widget" in names
+        assert "test_widget_exists" not in names
+        assert "test_widget_again" not in names
+        assert "pytest_configure" not in names
