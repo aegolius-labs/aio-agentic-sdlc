@@ -27,6 +27,12 @@ IGNORED_DIRECTORIES = {
 }
 
 
+TEST_DIRECTORIES = {"test", "tests"}
+
+TEST_FILENAME_PREFIXES = ("test_", "conftest")
+TEST_FILENAME_SUFFIXES = ("_test.py",)
+
+
 def is_ignored_directory(directory: str) -> bool:
     """Return whether one directory name is outside deterministic Reality evidence."""
 
@@ -35,6 +41,21 @@ def is_ignored_directory(directory: str) -> bool:
 
 
 _is_ignored_directory = is_ignored_directory
+
+
+def is_test_directory(directory: str) -> bool:
+    """Return whether one directory name holds tests rather than the system itself."""
+
+    return directory.casefold() in TEST_DIRECTORIES
+
+
+def is_test_file(filename: str) -> bool:
+    """Return whether one file name holds tests rather than the system itself."""
+
+    normalized = filename.casefold()
+    return normalized.startswith(TEST_FILENAME_PREFIXES) or normalized.endswith(
+        TEST_FILENAME_SUFFIXES
+    )
 
 
 # aio-sdlc-mapping-approval: {"candidate_reality_id":"5f9d3dc7-cd7e-5402-86cd-356a4b6846fb","identity_approval":{"approved_at":"2026-08-13T19:29:14.286017-04:00","approved_by":"Felix","candidate_reality_id":"5f9d3dc7-cd7e-5402-86cd-356a4b6846fb","evidence_digest":"506a82e619bca8370b7af081f885edaa08bea033761e11a5b30924066e73b9f5","intent_id":"0fea8fea-9a23-404b-a16b-a9c9c3990e1b","rationale":"Approved the RealityDAGGenerator source identity; responsibility and public API match the reviewed Intention node.","schema_version":1,"source_path":"src/aio_agentic_sdlc/reality_dag_generator.py","source_sha256":"c688f5fe800d8178dae6bb861f71b8ac59e6015165e346bdecb647966371e242","symbol_kind":"class","symbol_name":"RealityDAGGenerator"},"intent_id":"0fea8fea-9a23-404b-a16b-a9c9c3990e1b","maintenance_approval":{"approved_at":"2026-08-21T23:03:05.512658-04:00","approved_by":"Felix","evidence_digest":"87063b8be5fd321aa8661dcffedbcdab8cc6ee06400a7a21cf769101d87961b3","rationale":"Felix approved refreshing the existing RealityDAGGenerator mapping receipt to bind current source after validated Reality ignore-boundary changes; identity remains unchanged and behavior remains separately evidenced.","supersedes_receipt_sha256":"db9054efbca14f4938ab695d3035cde3886bd24a637aa1c1a87f8fc37b4930c6"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/reality_dag_generator.py","source_sha256":"9ed6dbbdcb45f593132102e887e897038c553d325b12cfa98cc9215f2c6de0ec","symbol_kind":"class","symbol_name":"RealityDAGGenerator"}
@@ -156,11 +177,19 @@ class RealityDAGGenerator:
 
     def generate(self) -> DAGManager:
         for root, dirs, files in os.walk(self.root_dir):
+            # Tests are evidence *about* the system, not the system itself, so
+            # they belong to the QA evidence layer rather than to Reality. See
+            # doc/authority-model.md.
             dirs[:] = sorted(
-                directory for directory in dirs if not is_ignored_directory(directory)
+                directory
+                for directory in dirs
+                if not is_ignored_directory(directory)
+                and not is_test_directory(directory)
             )
 
             for file in sorted(files):
+                if is_test_file(file):
+                    continue
                 _, ext = os.path.splitext(file)
                 parser = self.parser_factory.get_parser(ext)
                 if parser:

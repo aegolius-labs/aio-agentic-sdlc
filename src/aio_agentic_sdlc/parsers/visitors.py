@@ -6,6 +6,12 @@ from aio_agentic_sdlc.dag_models import EdgeType, NodeType
 from aio_agentic_sdlc.source_locations import SourceLocation
 from aio_agentic_sdlc.source_markers import canonical_node_marker
 
+HTTP_METHOD_DECORATORS = {"get", "post", "put", "delete", "patch"}
+"""HTTP verbs that only route a request in the attribute form, such as ``@app.get``."""
+
+UNQUALIFIED_ROUTE_DECORATORS = {"route", "endpoint"}
+"""Route decorators unambiguous enough to classify in the bare form."""
+
 STRUCTURAL_CONTAINER_TYPES = {
     "module",
     "block",
@@ -154,26 +160,37 @@ class TreeSitterVisitor:
         self.scope_stack.pop()
         self.current_scope = self.scope_stack[-1]
 
-    def _extract_decorator_names(self, decorators: List[Node]) -> List[str]:
-        names = []
+    def _extract_decorator_refs(self, decorators: List[Node]) -> List[tuple[bool, str]]:
+        """Return each decorator as ``(is_attribute_qualified, final_name)``.
+
+        The qualifier carries the meaning: ``@app.patch("/x")`` routes an HTTP
+        request while ``@patch("target")`` from ``unittest.mock`` replaces an
+        object. Both reduce to the name ``patch``, so the bare form must stay
+        distinguishable from the attribute form.
+        """
+
+        refs: List[tuple[bool, str]] = []
         for dec in decorators:
             for child in dec.children:
                 if child.type == "identifier":
-                    names.append(child.text.decode("utf8"))
+                    refs.append((False, child.text.decode("utf8")))
                 elif child.type == "attribute":
                     attr_name = child.child_by_field_name("attribute")
                     if attr_name:
-                        names.append(attr_name.text.decode("utf8"))
+                        refs.append((True, attr_name.text.decode("utf8")))
                 elif child.type == "call":
                     func = child.child_by_field_name("function")
                     if func:
                         if func.type == "identifier":
-                            names.append(func.text.decode("utf8"))
+                            refs.append((False, func.text.decode("utf8")))
                         elif func.type == "attribute":
                             attr_name = func.child_by_field_name("attribute")
                             if attr_name:
-                                names.append(attr_name.text.decode("utf8"))
-        return names
+                                refs.append((True, attr_name.text.decode("utf8")))
+        return refs
+
+    def _extract_decorator_names(self, decorators: List[Node]) -> List[str]:
+        return [name for _, name in self._extract_decorator_refs(decorators)]
 
     def visit_function_definition(self, node: Node, decorators: List[Node]):
         name_node = node.child_by_field_name("name")
@@ -188,9 +205,14 @@ class TreeSitterVisitor:
         func_id = marker or f"{self.current_scope}.{name}"
 
         is_endpoint = False
-        dec_names = self._extract_decorator_names(decorators)
-        for d in dec_names:
-            if d in ["get", "post", "put", "delete", "patch", "route", "endpoint"]:
+        for qualified, decorator in self._extract_decorator_refs(decorators):
+            if decorator in UNQUALIFIED_ROUTE_DECORATORS:
+                is_endpoint = True
+            elif qualified and decorator in HTTP_METHOD_DECORATORS:
+                # Only the attribute form routes a request. A bare call such as
+                # unittest.mock's @patch("target") shares the name but not the
+                # meaning, and previously classified every mock-decorated test
+                # function as an endpoint.
                 is_endpoint = True
 
         node_type = NodeType.ENDPOINT if is_endpoint else NodeType.COMPONENT
