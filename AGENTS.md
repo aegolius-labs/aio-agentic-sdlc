@@ -35,10 +35,15 @@
 - Do not push, open pull requests, or mutate external trackers unless the user authorizes it.
 - Lint changed Markdown with Markdownlint when it is available.
 
-## Codex plugin
+## Host plugins
 
-- The distributable Codex plugin lives under `plugins/aio-agentic-sdlc/`.
-- The repo-scoped marketplace is `.agents/plugins/marketplace.json`.
+- The distributable plugin lives under `plugins/aio-agentic-sdlc/` and serves both hosts
+  from one shared `skills/` body. Never fork skill content per host, and keep
+  host-specific wording in the manifests.
+- Codex: `.codex-plugin/plugin.json`, marketplace `.agents/plugins/marketplace.json`.
+- Claude Code: `.claude-plugin/plugin.json`, marketplace `.claude-plugin/marketplace.json`
+  at the repository root. See `doc/claude-code-plugin.md`.
+- `tests/test_host_manifest_parity.py` enforces that the two manifests agree.
 - Project-scoped named agents live under `.codex/agents/` and adapt the legacy Antigravity roles.
 - Validate plugin changes with the plugin and skill validators documented in
   `doc/codex-plugin.md`.

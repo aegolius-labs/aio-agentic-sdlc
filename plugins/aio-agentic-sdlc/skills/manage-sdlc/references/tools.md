@@ -1,6 +1,6 @@
 # Tool map
 
-Tool names may be namespaced by the Codex host. Match them by the operation names below.
+Tool names may be namespaced by the host. Match them by the operation names below.
 
 | Intent | MCP operation | UV CLI fallback |
 | --- | --- | --- |

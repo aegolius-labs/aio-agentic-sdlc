@@ -4,6 +4,7 @@ import os
 import secrets
 import stat
 from contextvars import ContextVar
+from importlib import metadata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated
@@ -439,7 +440,20 @@ class _SanitizingMCPServer(MCPServer):
 
 
 # Create the MCP server instance
-mcp = _SanitizingMCPServer("Agentic Backlog")
+def _server_version() -> str:
+    """Report the installed distribution version, or a marker when running from source."""
+
+    try:
+        return metadata.version("aio-agentic-sdlc")
+    except metadata.PackageNotFoundError:
+        return "0.0.0+unknown"
+
+
+mcp = _SanitizingMCPServer(
+    "aio-agentic-sdlc",
+    title="AIO Agentic SDLC",
+    version=_server_version(),
+)
 
 
 @mcp.resource("backlog://current")

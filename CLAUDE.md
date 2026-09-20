@@ -152,9 +152,18 @@ architectural components, Reality nodes are individual symbols.
   `sdlc_cartographer`, `sdlc_implementer`, `sdlc_qa`, `sdlc_researcher`,
   `sdlc_orchestrator`, `sdlc_devops`, `sdlc_scribe`, `sdlc_linter`.
 
-This repository is **Antigravity-native**, adapted for Codex under `.codex/` and
-`plugins/`. There is no Claude Code plugin yet. `AGENTS.md` must stay at the repository
-root — Codex's instruction discovery depends on that filename and location.
+Three hosts are supported from one shared skill body at
+`plugins/aio-agentic-sdlc/skills/`. Roles are Antigravity-native under `.agents/agents/`,
+adapted for Codex under `.codex/agents/`. Each host adds only a thin manifest:
+`.claude-plugin/` for Claude Code, `.codex-plugin/` for Codex, both inside
+`plugins/aio-agentic-sdlc/`, with a marketplace at the repository root for each.
+`tests/test_host_manifest_parity.py` fails if they drift or if host-specific wording
+leaks into the shared skill.
+
+Claude Code auto-discovers the root `.mcp.json`, so opening this repository registers the
+MCP surface with no install. See `doc/claude-code-plugin.md` for the plugin and for
+Claude Desktop. `AGENTS.md` must stay at the repository root — Codex's instruction
+discovery depends on that filename and location.
 
 ## State contract
 
