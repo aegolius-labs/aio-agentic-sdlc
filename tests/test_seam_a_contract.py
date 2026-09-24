@@ -68,4 +68,6 @@ def test_the_marker_carries_the_item_id_and_guid():
         "guid": fixture["guid"],
     }
     # Every released kit reads the id only up to the first separator.
-    assert fixture["marker"].split("id=", 1)[1].split(";", 1)[0] == fixture["item"]["id"]
+    assert (
+        fixture["marker"].split("id=", 1)[1].split(";", 1)[0] == fixture["item"]["id"]
+    )
