@@ -1,8 +1,9 @@
 import asyncio
 
-from google.antigravity import Agent, CapabilitiesConfig, LocalAgentConfig
+from google.antigravity import Agent
 
 from aio_agentic_sdlc import core
+from aio_agentic_sdlc.antigravity_compat import local_agent_config
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE
@@ -59,9 +60,8 @@ async def execute_task_with_agent(task):
     for the 'sdlc_orchestrator' role, applies CapabilitiesConfig, and streams
     the chat response for the task provided.
     """
-    config = LocalAgentConfig(
-        system_instructions="You are the sdlc_orchestrator. Please execute the following task.",
-        capabilities=CapabilitiesConfig(),
+    config = local_agent_config(
+        "You are the sdlc_orchestrator. Please execute the following task."
     )
 
     task_desc = (

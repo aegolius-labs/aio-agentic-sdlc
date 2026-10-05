@@ -17,4 +17,4 @@ def test_mcp_dependency_targets_the_reviewed_v2_api():
     mcp_packages = [
         package for package in locked["package"] if package["name"] == "mcp"
     ]
-    assert [package["version"] for package in mcp_packages] == ["2.0.0"]
+    assert [package["version"] for package in mcp_packages] == ["2.2.0"]

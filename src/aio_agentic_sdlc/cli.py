@@ -388,7 +388,9 @@ def next_cmd(args):
 async def _run_architect_subagent(inbox_files):
     import os
 
-    from google.antigravity import Agent, CapabilitiesConfig, LocalAgentConfig
+    from google.antigravity import Agent
+
+    from aio_agentic_sdlc.antigravity_compat import local_agent_config
 
     prompt_path = os.path.join(
         ".agents", "agents", "sdlc_architect", "system_prompt.md"
@@ -399,9 +401,7 @@ async def _run_architect_subagent(inbox_files):
     except FileNotFoundError:
         system_instructions = "You are the Technical Architect."
 
-    config = LocalAgentConfig(
-        system_instructions=system_instructions, capabilities=CapabilitiesConfig()
-    )
+    config = local_agent_config(system_instructions)
 
     files_str = ", ".join(inbox_files)
     prompt = (
