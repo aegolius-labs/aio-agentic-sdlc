@@ -519,7 +519,7 @@ def add_task(
     item_type: str = Field(
         "Task", description="Type of the item based on hierarchy rules"
     ),
-    parent_id: str = Field(None, description="Parent item ID if applicable"),
+    parent_id: str | None = Field(None, description="Parent item ID if applicable"),
 ) -> str:
     """Add a new task to the project backlog."""
     if status not in VALID_STATUSES:
@@ -549,21 +549,25 @@ def add_task(
 @mcp.tool()
 def update_task(
     name: str = Field(..., description="The name of the task to update"),
-    impact: int = Field(None, description="Impact score from 1-5"),
-    effort: int = Field(None, description="Effort score from 1-5 (1=Easy, 5=Hard)"),
-    category: str = Field(None, description="Category (e.g. Core, Feature, Bug)"),
-    description: str = Field(None, description="Detailed task description"),
-    requires: str = Field(
+    impact: int | None = Field(None, description="Impact score from 1-5"),
+    effort: int | None = Field(
+        None, description="Effort score from 1-5 (1=Easy, 5=Hard)"
+    ),
+    category: str | None = Field(
+        None, description="Category (e.g. Core, Feature, Bug)"
+    ),
+    description: str | None = Field(None, description="Detailed task description"),
+    requires: str | None = Field(
         None, description="Comma-separated list of required task names"
     ),
-    status: str = Field(None, description="Status"),
+    status: str | None = Field(None, description="Status"),
     project_path: str = Field(
         ".", description="Absolute path to the project directory"
     ),
-    item_type: str = Field(
+    item_type: str | None = Field(
         None, description="Type of the item based on hierarchy rules"
     ),
-    parent_id: str = Field(None, description="Parent item ID if applicable"),
+    parent_id: str | None = Field(None, description="Parent item ID if applicable"),
 ) -> str:
     """Update an existing task in the project backlog."""
     if status is not None and status not in VALID_STATUSES:
@@ -1162,8 +1166,8 @@ def create_intent_node(
     payload_json: str = Field(
         ..., description="Initial JSON-encoded Intent IR v1 payload"
     ),
-    domain: str = Field(None, description="Optional architectural domain"),
-    description: str = Field(None, description="Optional node description"),
+    domain: str | None = Field(None, description="Optional architectural domain"),
+    description: str | None = Field(None, description="Optional node description"),
     project_path: str = Field(
         ".", description="Absolute path to the project directory"
     ),
@@ -1213,7 +1217,7 @@ def review_intent(
     project_path: str = Field(
         ".", description="Absolute path to the project directory"
     ),
-    node_id: str = Field(None, description="Optional node GUID to review"),
+    node_id: str | None = Field(None, description="Optional node GUID to review"),
 ) -> str:
     """Render a human-readable review of canonical Intent IR payloads."""
     try:
