@@ -275,12 +275,22 @@ async def test_v2_client_discovers_the_complete_public_surface(mode):
         EXPECTED_PROMPT_DESCRIPTIONS
     )
 
-    # Arguments that correctly advertise a nullable schema. Twelve other
-    # null-defaulting arguments (add_task.parent_id, the update_task optionals,
-    # create_intent_node.domain/description, review_intent.node_id) still declare
-    # a flat type and reject an explicit null; widening those is tracked
-    # separately from the SDK v2 migration.
-    NULLABLE_ARGUMENTS = {("review_mapping", "candidate_reality_id")}
+    # Every argument that defaults to null must advertise a nullable schema.
+    NULLABLE_ARGUMENTS = {
+        ("review_mapping", "candidate_reality_id"),
+        ("add_task", "parent_id"),
+        ("update_task", "impact"),
+        ("update_task", "effort"),
+        ("update_task", "category"),
+        ("update_task", "description"),
+        ("update_task", "requires"),
+        ("update_task", "status"),
+        ("update_task", "item_type"),
+        ("update_task", "parent_id"),
+        ("create_intent_node", "domain"),
+        ("create_intent_node", "description"),
+        ("review_intent", "node_id"),
+    }
 
     for tool in tools.tools:
         required, defaults = EXPECTED_ARGUMENT_CONTRACT[tool.name]
@@ -348,6 +358,41 @@ async def test_v2_schema_errors_fail_closed_without_creating_state(tmp_path):
 
     assert result.is_error is True
     assert not (tmp_path / ".aio-agentic-sdlc" / "backlog.json").exists()
+
+
+@pytest.mark.asyncio
+async def test_v2_explicit_null_optional_arguments_are_accepted(tmp_path):
+    async with Client(mcp) as client:
+        added = await client.call_tool(
+            "add_task",
+            {
+                "name": "Nullable",
+                "impact": 3,
+                "effort": 2,
+                "category": "Platform",
+                "description": "Created with an explicit null parent.",
+                "project_path": str(tmp_path),
+                "parent_id": None,
+            },
+        )
+        updated = await client.call_tool(
+            "update_task",
+            {
+                "name": "Nullable",
+                "project_path": str(tmp_path),
+                "impact": None,
+                "effort": None,
+                "category": None,
+                "description": None,
+                "requires": None,
+                "status": None,
+                "item_type": None,
+                "parent_id": None,
+            },
+        )
+
+    assert added.is_error is False
+    assert updated.is_error is False
 
 
 @pytest.mark.asyncio
