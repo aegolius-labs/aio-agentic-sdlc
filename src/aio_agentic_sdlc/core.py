@@ -24,6 +24,14 @@ def _get_blockers(item):
     return item.get("blockers", [])
 
 
+def _resolve_blocked_status(item):
+    """Apply the one rule tying status to blockers: blocked iff blockers remain."""
+    if _get_blockers(item) and _get_status(item) != "Completed":
+        item["status"] = "Blocked"
+    elif _get_status(item) == "Blocked" and not _get_blockers(item):
+        item["status"] = "New"
+
+
 def validate_hierarchy(item_type, parent_id, data, project_path, *, config=None):
     if not item_type and not parent_id:
         return
@@ -248,10 +256,7 @@ def prioritize_items(project_path="."):
         data["nodes"] = new_nodes
 
         for item in new_nodes.values():
-            if _get_blockers(item) and _get_status(item) != "Completed":
-                item["status"] = "Blocked"
-            elif _get_status(item) == "Blocked" and not _get_blockers(item):
-                item["status"] = "New"
+            _resolve_blocked_status(item)
         return True, True
 
     return _mutate_backlog(
@@ -427,6 +432,11 @@ def set_status(name, new_status, project_path="."):
         if name not in data.get("nodes", {}):
             raise BacklogOperationError(f"Item '{name}' not found.")
         data["nodes"][name]["status"] = new_status
+        if new_status == "Completed":
+            for other_name, other in data["nodes"].items():
+                if other_name != name and name in _get_blockers(other):
+                    other["blockers"].remove(name)
+                    _resolve_blocked_status(other)
         return None, True
 
     return _mutate_backlog(
@@ -465,8 +475,7 @@ def remove_blocker(name, reason, project_path="."):
         if reason in blockers:
             blockers.remove(reason)
         item["blockers"] = blockers
-        if not blockers and _get_status(item) == "Blocked":
-            item["status"] = "New"
+        _resolve_blocked_status(item)
         return None, True
 
     return _mutate_backlog(

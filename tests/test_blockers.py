@@ -214,3 +214,64 @@ class TestUnblockCmd:
         _save({})
         with pytest.raises(SystemExit):
             unblock_cmd(argparse.Namespace(name="nope", reason="x"))
+
+
+# ── set_status cascade ───────────────────────────────────────────────────────
+
+
+class TestCompletionCascade:
+    def _complete(self, name):
+        from aio_agentic_sdlc.core import set_status
+
+        set_status(name, "Completed")
+
+    def test_completing_blocker_unblocks_single_dependent(self):
+        _save(
+            {
+                "api": _make_item(3, 3),
+                "ui": _make_item(3, 3, status="Blocked", blockers=["api"]),
+            }
+        )
+        self._complete("api")
+        items = _load()["items"]
+        assert items["api"]["status"] == "Completed"
+        assert items["ui"]["blockers"] == []
+        assert items["ui"]["status"] == "New"
+
+    def test_completing_blocker_unblocks_every_dependent(self):
+        _save(
+            {
+                "api": _make_item(3, 3),
+                "ui": _make_item(3, 3, status="Blocked", blockers=["api"]),
+                "cli": _make_item(3, 3, status="Blocked", blockers=["api"]),
+            }
+        )
+        self._complete("api")
+        items = _load()["items"]
+        assert items["ui"]["status"] == "New"
+        assert items["cli"]["status"] == "New"
+
+    def test_dependent_with_other_blockers_stays_blocked(self):
+        _save(
+            {
+                "api": _make_item(3, 3),
+                "ui": _make_item(
+                    3, 3, status="Blocked", blockers=["api", "design sign-off"]
+                ),
+            }
+        )
+        self._complete("api")
+        items = _load()["items"]
+        assert items["ui"]["blockers"] == ["design sign-off"]
+        assert items["ui"]["status"] == "Blocked"
+
+    def test_completing_item_that_blocks_nothing_changes_nothing_else(self):
+        _save(
+            {
+                "api": _make_item(3, 3),
+                "ui": _make_item(3, 3, status="Blocked", blockers=["vendor key"]),
+            }
+        )
+        before = _load()["items"]["ui"]
+        self._complete("api")
+        assert _load()["items"]["ui"] == before
