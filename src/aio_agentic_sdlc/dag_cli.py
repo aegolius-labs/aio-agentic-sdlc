@@ -30,6 +30,7 @@ from aio_agentic_sdlc.mapping import (
     render_mapping_review,
     render_receipt_refresh_review,
 )
+from aio_agentic_sdlc.observed_state import load_observed_state
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 from aio_agentic_sdlc.reconciliation import (
     ReconciliationEngine,
@@ -653,17 +654,29 @@ def diff(intention, reality, mode, max_tasks, max_candidates):
     help="Maximum candidate identities retained in each evidence record.",
 )
 @click.option(
+    "--observed-state",
+    type=click.Path(exists=True, dir_okay=False),
+    help=(
+        "agentic-backlog-kit `abk observe` output to attach as GitHub evidence. "
+        "Mapped by canonical GUID; never changes a classification or the "
+        "Intention DAG."
+    ),
+)
+@click.option(
     "--output",
     type=click.Path(dir_okay=False),
     help="Atomically write the JSON report instead of printing it.",
 )
-def reconcile(intention, reality, max_items, max_candidates, output):
+def reconcile(intention, reality, max_items, max_candidates, observed_state, output):
     """Render a bounded, read-only reconciliation evidence report."""
 
     try:
         intent_manager = DAGManager.load(intention)
         reality_manager = DAGManager.load(reality)
-        report = ReconciliationEngine(intent_manager, reality_manager).analyze(
+        observed = load_observed_state(observed_state) if observed_state else None
+        report = ReconciliationEngine(
+            intent_manager, reality_manager, observed_state=observed
+        ).analyze(
             max_items=max_items,
             max_candidates=max_candidates,
         )
@@ -671,7 +684,8 @@ def reconcile(intention, reality, max_items, max_candidates, output):
             write_reconciliation_report(
                 report,
                 output,
-                protected_paths=(intention, reality),
+                protected_paths=(intention, reality)
+                + ((observed_state,) if observed_state else ()),
             )
             click.echo(f"Reconciliation report saved to {output}.")
         else:

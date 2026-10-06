@@ -15,6 +15,7 @@ from uuid import UUID
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Node, NodeType
 from aio_agentic_sdlc.dag_store import guarded_file_path
+from aio_agentic_sdlc.observed_state import map_observed_state
 
 REPORT_SCHEMA_VERSION = 1
 DEFAULT_MAX_ITEMS = 100
@@ -121,9 +122,28 @@ def write_reconciliation_report(
 class ReconciliationEngine:
     """Classify deterministic identity evidence without mutating either DAG."""
 
-    def __init__(self, intention: DAGManager, reality: DAGManager):
+    def __init__(
+        self,
+        intention: DAGManager,
+        reality: DAGManager,
+        *,
+        observed_state: dict[str, Any] | None = None,
+    ):
+        """Optionally attach agentic-backlog-kit observed state as evidence.
+
+        Observations are mapped by canonical GUID and appended to the matching
+        intent record's evidence. They never change a classification or
+        whether approval is required: GitHub is a projection of the work, and
+        a closed issue is not proof that Reality satisfies Intention.
+        """
+
         self.intention = intention
         self.reality = reality
+        self.observed = (
+            map_observed_state(observed_state, intention)
+            if observed_state is not None
+            else None
+        )
 
     def _intent_record(
         self,
@@ -264,14 +284,18 @@ class ReconciliationEngine:
         *,
         max_candidates: int,
     ):
+        observations = self.observed["observations"] if self.observed else {}
         for node_id in sorted(self.intention.nodes):
-            yield self._intent_record(
+            record = self._intent_record(
                 self.intention.nodes[node_id],
                 context["confirmed_reality_by_canonical_id"],
                 context["candidate_index"],
                 context["candidate_claims"],
                 max_candidates,
             )
+            if node_id in observations:
+                record["evidence"].append(dict(observations[node_id]))
+            yield record
 
     def iter_intent_records(
         self,
@@ -359,7 +383,7 @@ class ReconciliationEngine:
         all_items = intent_records + reality_records
         total_items = len(self.intention.nodes) + unclassified_reality_count
 
-        return {
+        report = {
             "schema_version": REPORT_SCHEMA_VERSION,
             "summary": summary,
             "limit": {
@@ -370,3 +394,20 @@ class ReconciliationEngine:
             },
             "items": all_items,
         }
+        if self.observed is not None:
+            unmapped = self.observed["unmapped"]
+            report["observed_state"] = {
+                key: self.observed[key]
+                for key in (
+                    "authority",
+                    "contract",
+                    "contract_version",
+                    "observed_at",
+                    "digest",
+                    "target",
+                    "summary",
+                )
+            }
+            report["observed_state"]["unmapped"] = unmapped[:max_items]
+            report["observed_state"]["unmapped_truncated"] = len(unmapped) > max_items
+        return report
