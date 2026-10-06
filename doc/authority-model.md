@@ -102,6 +102,25 @@ Projection is **one-way**. ABK's existing additive, update-only apply semantics
 already satisfy this: it never deletes issues, removes relationships, archives
 Project items, or closes issues automatically.
 
+The return channel carries evidence only. `abk observe` emits a versioned
+`abk-observed-state` document recording, for each managed issue, its item ID,
+canonical GUID, open or closed state, and observed Project `Status` and
+`Sprint`. `dag-tool reconcile --observed-state <file>` reads it through
+`aio_agentic_sdlc.observed_state`:
+
+- The document must name `contract_version` 1 and match its own digest. An
+  unknown version is rejected. Additive fields keep the version; removals and
+  renames bump it.
+- Items map to Intention nodes by canonical GUID only. An item with no GUID, or
+  a GUID that names no Intention node, is reported as unmapped and is never
+  matched by item ID, title or issue number.
+- A mapped observation is appended to that node's reconciliation evidence as
+  `github_observation`. It never changes a classification or whether approval
+  is required, and it never edits the Intention DAG.
+
+`tests/fixtures/seam-a/observed-state.json` is byte-identical to the kit's copy
+and pins the contract on this side.
+
 ### Seam B: QA evidence (layer 5 to layers 2-4)
 
 An AQK finding has exactly two legitimate dispositions, and the composed system
