@@ -501,3 +501,33 @@ def test_test_files_outside_a_test_directory_are_excluded():
         assert "test_widget_exists" not in names
         assert "test_widget_again" not in names
         assert "pytest_configure" not in names
+
+
+def test_docstring_descriptions_do_not_depend_on_line_endings():
+    """A CRLF checkout must produce the same Reality as an LF checkout."""
+
+    source = (
+        "class Archiver:\n"
+        '    """\n'
+        "    Moves a file.\n"
+        "    Returns its path.\n"
+        '    """\n'
+        "\n"
+        "    def archive(self):\n"
+        '        """\n'
+        "        Archive one file.\n"
+        '        """\n'
+        "        return None\n"
+    )
+    descriptions = []
+    for newline in ("\n", "\r\n"):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            Path(tmpdir, "archiver.py").write_bytes(
+                source.replace("\n", newline).encode("utf-8")
+            )
+            manager = _generate(tmpdir)
+            descriptions.append({n.name: n.description for n in manager.nodes.values()})
+
+    lf, crlf = descriptions
+    assert crlf == lf
+    assert not any("\r" in description for description in crlf.values())

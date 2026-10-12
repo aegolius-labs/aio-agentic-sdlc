@@ -29,6 +29,13 @@ STRUCTURAL_CONTAINER_TYPES = {
 }
 
 
+def _docstring_text(string_node: Node) -> str:
+    # Normalize line endings so a CRLF checkout yields the same Reality as LF.
+    text = string_node.text.decode("utf8")
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    return text.strip("'\"")
+
+
 class TreeSitterVisitor:
     def __init__(
         self,
@@ -132,7 +139,7 @@ class TreeSitterVisitor:
             if first_stmt.type == "expression_statement":
                 first_expr = first_stmt.children[0]
                 if first_expr.type == "string":
-                    docstring = first_expr.text.decode("utf8").strip("'\"")
+                    docstring = _docstring_text(first_expr)
 
         self.generator._add_node(
             id=class_id,
@@ -224,7 +231,7 @@ class TreeSitterVisitor:
             if first_stmt.type == "expression_statement":
                 first_expr = first_stmt.children[0]
                 if first_expr.type == "string":
-                    docstring = first_expr.text.decode("utf8").strip("'\"")
+                    docstring = _docstring_text(first_expr)
 
         self.generator._add_node(
             id=func_id,
