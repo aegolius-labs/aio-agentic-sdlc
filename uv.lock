@@ -30,23 +30,31 @@ dependencies = [
     { name = "google-antigravity" },
     { name = "jinja2" },
     { name = "mcp" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pydantic" },
     { name = "pyyaml" },
-    { name = "sentence-transformers" },
     { name = "sqlite-vec" },
     { name = "tree-sitter" },
     { name = "tree-sitter-python" },
 ]
 
+[package.optional-dependencies]
+semantic = [
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "sentence-transformers" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "black" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "ruff" },
+    { name = "sentence-transformers" },
 ]
 
 [package.metadata]
@@ -56,21 +64,24 @@ requires-dist = [
     { name = "google-antigravity" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "mcp", specifier = ">=2.0.0,<3" },
-    { name = "numpy", specifier = ">=2.2.6" },
+    { name = "numpy", marker = "extra == 'semantic'", specifier = ">=2.2.6" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "pyyaml", specifier = ">=6.0.0" },
-    { name = "sentence-transformers", specifier = ">=5.7.0" },
+    { name = "sentence-transformers", marker = "extra == 'semantic'", specifier = ">=5.7.0" },
     { name = "sqlite-vec", specifier = ">=0.1.9" },
     { name = "tree-sitter", specifier = ">=0.25.2,<0.26" },
     { name = "tree-sitter-python", specifier = ">=0.25.0,<0.26" },
 ]
+provides-extras = ["semantic"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=25.9.0" },
+    { name = "numpy", specifier = ">=2.2.6" },
     { name = "pytest", specifier = ">=9.1.0" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "ruff", specifier = ">=0.14.0" },
+    { name = "sentence-transformers", specifier = ">=5.7.0" },
 ]
 
 [[package]]

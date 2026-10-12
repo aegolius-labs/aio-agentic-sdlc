@@ -760,8 +760,8 @@ def check_duplicate_prd(
         return output
     except ImportError:
         return _expected_error(
-            "Error: Semantic search dependencies not installed. Ensure "
-            "sentence-transformers and sqlite-vec are available."
+            "Error: Semantic search is an optional extra. Install "
+            "aio-agentic-sdlc[semantic] to enable duplicate PRD detection."
         )
     except WorkspaceMigrationError as e:
         return _expected_error(f"Error checking for duplicates: {str(e)}")

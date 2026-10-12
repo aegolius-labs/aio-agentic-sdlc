@@ -34,7 +34,12 @@ The package supports `mcp>=2.0.0,<3`; the reviewed development lock resolves MCP
 launcher remains stdio-based, so existing host configuration does not need a transport change for
 the SDK v2 migration.
 
-Semantic PRD search requires Python's SQLite extension-loading support for `sqlite-vec`.
+Semantic PRD search (`check_duplicate_prd`) is an optional extra because it pulls in
+`sentence-transformers` and torch, which would otherwise dominate every first start. Install it with
+`uvx --from "aio-agentic-sdlc[semantic] @ git+https://github.com/aegolius-labs/aio-agentic-sdlc" aio-agentic-sdlc-mcp`;
+without it, the other tools work and that one reports how to enable it.
+
+Semantic PRD search also requires Python's SQLite extension-loading support for `sqlite-vec`.
 Some macOS Python builds omit it; installing the Python package alone does not add that support.
 Use a UV-managed interpreter (`uvx --managed-python --python 3.12 --from
 git+https://github.com/aegolius-labs/aio-agentic-sdlc aio-agentic-sdlc-mcp`) or another
