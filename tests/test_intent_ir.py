@@ -241,3 +241,48 @@ def test_intent_cli_validates_and_summarizes(tmp_path):
     assert "Intent IR is valid" in validate_result.output
     assert summary_result.exit_code == 0
     assert "Rate limiter" in summary_result.output
+
+
+def _manager_with_intent(state: ApprovalState) -> DAGManager:
+    approval = (
+        Approval(
+            state=state,
+            approved_by="Felix",
+            approved_at=datetime(2026, 7, 24, tzinfo=timezone.utc),
+        )
+        if state == ApprovalState.APPROVED
+        else Approval(state=state)
+    )
+    intent = _intent_ir().model_copy(update={"approval": approval})
+    node = Node(id=NODE_ID, type=NodeType.COMPONENT, name="Limiter", intent=intent)
+    return DAGManager(Metadata(name="Test", version="1.0"), [node], [])
+
+
+def test_removing_a_node_with_approved_intent_is_refused():
+    manager = _manager_with_intent(ApprovalState.APPROVED)
+    with pytest.raises(ValueError, match="approved Intent IR"):
+        manager.remove_node(NODE_ID)
+    assert NODE_ID in manager.nodes
+
+
+@pytest.mark.parametrize(
+    "state", [ApprovalState.REVIEW_REQUIRED, ApprovalState.REJECTED]
+)
+def test_removing_a_node_without_approved_intent_still_works(state):
+    manager = _manager_with_intent(state)
+    manager.remove_node(NODE_ID)
+    assert NODE_ID not in manager.nodes
+
+
+def test_cli_node_remove_leaves_approved_intent_untouched(tmp_path):
+    path = tmp_path / "intention-dag.yaml"
+    _manager_with_intent(ApprovalState.APPROVED).save(str(path))
+    before = path.read_bytes()
+
+    result = CliRunner().invoke(
+        cli, ["node", "remove", "--file", str(path), "--id", NODE_ID]
+    )
+
+    assert result.exit_code == 1
+    assert "intent set" in result.output
+    assert path.read_bytes() == before

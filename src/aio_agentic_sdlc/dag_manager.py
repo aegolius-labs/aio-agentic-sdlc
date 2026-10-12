@@ -5,6 +5,7 @@ from typing import Dict, List
 import yaml
 
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node
+from aio_agentic_sdlc.intent_ir import ApprovalState
 
 
 class DAGValidationError(ValueError):
@@ -202,6 +203,15 @@ class DAGManager:
     def remove_node(self, node_id: str):
         if node_id not in self.nodes:
             raise DAGValidationError(f"Node {node_id} does not exist.")
+
+        # Approved intent only leaves layer 1 through the approval gate. A
+        # structural delete would discard the payload and its revision history.
+        intent = self.nodes[node_id].intent
+        if intent is not None and intent.approval.state == ApprovalState.APPROVED:
+            raise DAGValidationError(
+                f"Node {node_id} carries approved Intent IR. Move it to 'rejected' "
+                "with `dag-tool intent set` before removing it."
+            )
 
         del self.nodes[node_id]
 
