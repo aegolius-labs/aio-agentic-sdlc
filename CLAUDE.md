@@ -114,7 +114,7 @@ When a conclusion implies the framework's own design is wrong, check the ADRs an
 change records under `.aio-agentic-sdlc/changes/` before asserting it. The design is
 usually deliberate and documented.
 
-## Corpus state as of 2026-09-18
+## Corpus state as of 2026-10-12
 
 Stale quickly — re-measure rather than trusting these numbers.
 
@@ -122,15 +122,15 @@ Stale quickly — re-measure rather than trusting these numbers.
 | --- | --- |
 | Intention nodes | 61 (103 edges), all carrying Intent IR |
 | Approval states | 6 `approved`, 55 `review_required` |
-| Reality nodes | 756 |
+| Reality nodes | 320 (tests excluded since #102) |
 | Approved mapping receipts | 10 |
 | Completed dogfood cycles | 10, under `.aio-agentic-sdlc/changes/` |
 
 The practical bottleneck is **mapping coverage**, not intent quality. With 10 receipts
-against 756 Reality nodes, reconciliation cannot resolve most nodes in either direction —
+against 320 Reality nodes, reconciliation cannot resolve most nodes in either direction —
 it cannot confirm what is done, so it cannot isolate what is missing.
 
-A 1:12 Intention-to-Reality node ratio is expected, not a defect: Intention nodes are
+A roughly 1:5 Intention-to-Reality node ratio is expected, not a defect: Intention nodes are
 architectural components, Reality nodes are individual symbols.
 
 ## Surfaces
@@ -188,7 +188,9 @@ uv sync --frozen --group dev
 uv run --no-sync pytest -W error
 ```
 
-`uv` 0.12.16 is installed (winget `astral-sh.uv`). Expect **396 passed, 15 skipped**.
+`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **457 passed,
+2 skipped** (measured 2026-10-12). Windows counts differ because of the symlink tests
+below.
 
 Seven symlink and TOCTOU tests fail on the current Windows machine with
 `OSError: [WinError 1314] A required privilege is not held by the client` — it cannot
