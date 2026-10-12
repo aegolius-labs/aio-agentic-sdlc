@@ -147,7 +147,8 @@ architectural components, Reality nodes are individual symbols.
   `validate-intent`, `intent`, `intent-summary`, `mapping`, `node`, `edge`,
   `generate-reality`.
 - **`aio-sdlc` / `aio-agentic-sdlc` / `agb`** — backlog CLI: `init`, `add`, `update`,
-  `prioritize`, `next`, `status`, `block`, `unblock`, `export`, `migrate-state`.
+  `remove`, `prioritize`, `next`, `status`, `block`, `unblock`, `export`, `plan`, `apply`,
+  `migrate-state`, `migrate-ids`.
 - **Agent roles** under `.agents/agents/`: `sdlc_intake`, `sdlc_architect`,
   `sdlc_cartographer`, `sdlc_implementer`, `sdlc_qa`, `sdlc_researcher`,
   `sdlc_orchestrator`, `sdlc_devops`, `sdlc_scribe`, `sdlc_linter`.
