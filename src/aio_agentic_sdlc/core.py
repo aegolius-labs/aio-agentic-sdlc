@@ -143,6 +143,36 @@ def ensure_dependencies(data, requires):
     return warnings
 
 
+def reject_dependency_cycle(data, node):
+    """Refuse a write whose requires edges lead from node back to itself."""
+
+    requires_map = {}
+    for edge in data.get("edges", []):
+        if edge["relation"] == "requires":
+            requires_map.setdefault(edge["from"], []).append(edge["to"])
+
+    path = [node]
+    visited = set()
+
+    def reaches_node(current):
+        for dep in requires_map.get(current, []):
+            path.append(dep)
+            if dep == node:
+                return True
+            if dep not in visited:
+                visited.add(dep)
+                if reaches_node(dep):
+                    return True
+            path.pop()
+        return False
+
+    if reaches_node(node):
+        raise BacklogOperationError(
+            f"Dependency cycle: {' -> '.join(path)}. "
+            "An item cannot transitively require itself."
+        )
+
+
 def _compute_sorted_items(nodes, edges):
     visited = set()
     temp_mark = set()
@@ -367,6 +397,7 @@ def add_item(
             "scores": {},
         }
         set_requires(data, name, requires_list)
+        reject_dependency_cycle(data, name)
         set_parent(data, name, parent_id)
         return warnings, True
 
@@ -411,6 +442,7 @@ def update_item(
             requires_list = [r.strip() for r in requires.split(",")] if requires else []
             warnings = ensure_dependencies(data, requires_list)
             set_requires(data, name, requires_list)
+            reject_dependency_cycle(data, name)
         if ai_driven is not None:
             item["ai_driven"] = ai_driven
         if status is not None:
