@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 from aio_agentic_sdlc.dag_cli import cli
 from aio_agentic_sdlc.dag_manager import DAGManager
-from aio_agentic_sdlc.dag_models import Metadata, Node, NodeType
+from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
 from aio_agentic_sdlc.intent_ir import (
     AcceptanceCriterion,
     Ambiguity,
@@ -243,6 +243,9 @@ def test_intent_cli_validates_and_summarizes(tmp_path):
     assert "Rate limiter" in summary_result.output
 
 
+OTHER_ID = "00000000-0000-0000-0000-0000000000a2"
+
+
 def _manager_with_intent(state: ApprovalState) -> DAGManager:
     approval = (
         Approval(
@@ -255,28 +258,67 @@ def _manager_with_intent(state: ApprovalState) -> DAGManager:
     )
     intent = _intent_ir().model_copy(update={"approval": approval})
     node = Node(id=NODE_ID, type=NodeType.COMPONENT, name="Limiter", intent=intent)
-    return DAGManager(Metadata(name="Test", version="1.0"), [node], [])
+    other = Node(id=OTHER_ID, type=NodeType.COMPONENT, name="Store")
+    edge = Edge(source=NODE_ID, target=OTHER_ID, type=EdgeType.DEPENDS_ON)
+    return DAGManager(Metadata(name="Test", version="1.0"), [node, other], [edge])
 
 
-def test_removing_a_node_with_approved_intent_is_refused():
-    manager = _manager_with_intent(ApprovalState.APPROVED)
-    with pytest.raises(ValueError, match="approved Intent IR"):
+@pytest.mark.parametrize("state", list(ApprovalState))
+def test_no_node_carrying_intent_can_be_deleted(state):
+    manager = _manager_with_intent(state)
+    with pytest.raises(ValueError, match="cannot be deleted"):
         manager.remove_node(NODE_ID)
     assert NODE_ID in manager.nodes
 
 
+def test_deleting_a_plain_node_cannot_cascade_into_an_approved_node():
+    manager = _manager_with_intent(ApprovalState.APPROVED)
+    with pytest.raises(ValueError, match="frozen"):
+        manager.remove_node(OTHER_ID)
+    assert OTHER_ID in manager.nodes
+    assert len(manager.edges) == 1
+
+
+def test_plain_nodes_are_still_removable():
+    manager = _manager_with_intent(ApprovalState.REVIEW_REQUIRED)
+    manager.remove_node(OTHER_ID)
+    assert OTHER_ID not in manager.nodes
+    assert manager.edges == []
+
+
 @pytest.mark.parametrize(
-    "state", [ApprovalState.REVIEW_REQUIRED, ApprovalState.REJECTED]
+    "mutate",
+    [
+        lambda m: m.update_node(NODE_ID, name="Renamed"),
+        lambda m: m.update_node(NODE_ID, description="Rewritten"),
+        lambda m: m.remove_edge(NODE_ID, OTHER_ID, EdgeType.DEPENDS_ON),
+        lambda m: m.add_edge(
+            Edge(source=OTHER_ID, target=NODE_ID, type=EdgeType.CALLS)
+        ),
+    ],
+    ids=["rename", "describe", "remove-edge", "add-edge"],
 )
-def test_removing_a_node_without_approved_intent_still_works(state):
-    manager = _manager_with_intent(state)
-    manager.remove_node(NODE_ID)
-    assert NODE_ID not in manager.nodes
+def test_structure_of_an_approved_node_is_frozen(mutate):
+    manager = _manager_with_intent(ApprovalState.APPROVED)
+    before = (manager.nodes[NODE_ID], list(manager.edges))
+    with pytest.raises(ValueError, match="frozen"):
+        mutate(manager)
+    assert (manager.nodes[NODE_ID], manager.edges) == before
 
 
-def test_cli_node_remove_leaves_approved_intent_untouched(tmp_path):
+def test_intent_only_updates_still_reach_an_approved_node():
+    manager = _manager_with_intent(ApprovalState.APPROVED)
+    reopened = manager.nodes[NODE_ID].intent.model_copy(
+        update={"approval": Approval(state=ApprovalState.REVIEW_REQUIRED)}
+    )
+    manager.update_node(NODE_ID, intent=reopened)
+    manager.update_node(NODE_ID, name="Renamed")
+    assert manager.nodes[NODE_ID].name == "Renamed"
+
+
+def test_cli_node_remove_leaves_intent_untouched(tmp_path):
     path = tmp_path / "intention-dag.yaml"
-    _manager_with_intent(ApprovalState.APPROVED).save(str(path))
+    _manager_with_intent(ApprovalState.REJECTED).save(str(path))
     before = path.read_bytes()
 
     result = CliRunner().invoke(
