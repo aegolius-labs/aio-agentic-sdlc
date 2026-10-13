@@ -27,13 +27,16 @@ dependencies = [
     "tree-sitter-python>=0.25.0,<0.26",
     "google-antigravity",
     "jinja2>=3.1.6",
-    "sqlite-vec>=0.1.9",
 ]
 
 [project.optional-dependencies]
 # Duplicate PRD detection only. It pulls in torch, which dominates install time
 # and would otherwise delay every MCP server start.
-semantic = ["sentence-transformers>=5.7.0", "numpy>=2.2.6"]
+semantic = [
+    "sentence-transformers>=5.7.0",
+    "numpy>=2.2.6",
+    "sqlite-vec>=0.1.9",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/aegolius-labs/aio-agentic-sdlc"
@@ -45,8 +48,7 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "ruff>=0.14.0",
     "black>=25.9.0",
-    "sentence-transformers>=5.7.0",
-    "numpy>=2.2.6",
+    "aio-agentic-sdlc[semantic]",
 ]
 
 [project.scripts]

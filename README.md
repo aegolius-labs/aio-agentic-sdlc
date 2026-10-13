@@ -35,14 +35,14 @@ launcher remains stdio-based, so existing host configuration does not need a tra
 the SDK v2 migration.
 
 Semantic PRD search (`check_duplicate_prd`) is an optional extra because it pulls in
-`sentence-transformers` and torch, which would otherwise dominate every first start. Install it with
+`sentence-transformers`, torch and `sqlite-vec`, which would otherwise dominate every first start. Install it with
 `uvx --from "aio-agentic-sdlc[semantic] @ git+https://github.com/aegolius-labs/aio-agentic-sdlc" aio-agentic-sdlc-mcp`;
 without it, the other tools work and that one reports how to enable it.
 
 Semantic PRD search also requires Python's SQLite extension-loading support for `sqlite-vec`.
 Some macOS Python builds omit it; installing the Python package alone does not add that support.
 Use a UV-managed interpreter (`uvx --managed-python --python 3.12 --from
-git+https://github.com/aegolius-labs/aio-agentic-sdlc aio-agentic-sdlc-mcp`) or another
+"aio-agentic-sdlc[semantic] @ git+https://github.com/aegolius-labs/aio-agentic-sdlc" aio-agentic-sdlc-mcp`) or another
 extension-capable Python build. For development, select it with
 `uv sync --managed-python --python 3.12 --frozen --group dev`. CI uses this managed runtime on
 all three platforms and exercises real SQLite vector queries; it does not skip semantic search.

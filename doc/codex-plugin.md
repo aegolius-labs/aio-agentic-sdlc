@@ -188,6 +188,6 @@ uv sync --frozen --group dev
 - The development MCP launcher follows the repository's default Git branch. Pin it to a release tag
   when publishing a stable plugin version.
 - Duplicate PRD detection (`check_duplicate_prd`) needs the optional `semantic` extra, which
-  pulls in `sentence-transformers` and torch. The default launcher omits it so the server starts
+  pulls in `sentence-transformers`, torch and `sqlite-vec`. The default launcher omits it so the server starts
   quickly; that one tool reports how to enable it. To include it, launch with
   `uvx --from "aio-agentic-sdlc[semantic] @ git+https://github.com/aegolius-labs/aio-agentic-sdlc" aio-agentic-sdlc-mcp`.

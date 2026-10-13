@@ -758,7 +758,11 @@ def check_duplicate_prd(
                 f"- {res['filepath']} (Similarity: {res['similarity_score']:.2f})\n"
             )
         return output
-    except ImportError:
+    except ModuleNotFoundError as error:
+        # Only a module the extra provides means the extra is missing. Any other
+        # import failure is a broken install and must surface as itself.
+        if error.name not in {"sentence_transformers", "numpy", "sqlite_vec"}:
+            raise
         return _expected_error(
             "Error: Semantic search is an optional extra. Install "
             "aio-agentic-sdlc[semantic] to enable duplicate PRD detection."
