@@ -34,6 +34,10 @@ class BacklogStateError(ValueError):
     """Base error for invalid or unrecoverable local backlog state."""
 
 
+class DependencyCycleError(BacklogStateError):
+    """Raised when a write would make an item transitively require itself."""
+
+
 class UnsupportedBacklogSchema(BacklogStateError):
     """Raised when a backlog was produced by a newer framework version."""
 
@@ -218,6 +222,49 @@ def _migrate_v0_to_v1(data: dict[str, Any]) -> dict[str, Any]:
     return migrated
 
 
+def find_requires_cycle(
+    nodes: dict[str, Any] | list[str],
+    edges: list[dict[str, Any]],
+    start: str | None = None,
+) -> list[str] | None:
+    """Return one requires cycle as a closed path, such as ``[a, b, a]``, or None.
+
+    Only edges between known nodes count. The walk is iterative, so a long
+    dependency chain cannot exhaust the interpreter's recursion limit. Roots are
+    visited in node order and dependencies in edge order, which keeps the
+    reported cycle stable.
+    """
+
+    graph: dict[str, list[str]] = {}
+    for edge in edges:
+        if edge.get("relation") == "requires":
+            source, target = edge.get("from"), edge.get("to")
+            if source in nodes and target in nodes:
+                graph.setdefault(source, []).append(target)
+
+    done: set[str] = set()
+    for root in [start] if start is not None else list(nodes):
+        if root in done or root not in nodes:
+            continue
+        path = [root]
+        on_path = {root}
+        pending = [iter(graph.get(root, ()))]
+        while pending:
+            dep = next(pending[-1], None)
+            if dep is None:
+                pending.pop()
+                finished = path.pop()
+                on_path.discard(finished)
+                done.add(finished)
+            elif dep in on_path:
+                return path[path.index(dep) :] + [dep]
+            elif dep not in done:
+                path.append(dep)
+                on_path.add(dep)
+                pending.append(iter(graph.get(dep, ())))
+    return None
+
+
 def migrate_backlog_data(data: dict[str, Any]) -> dict[str, Any]:
     """Return a validated copy migrated to the current schema version."""
 
@@ -323,7 +370,20 @@ def _save_backlog_unlocked(
             current = migrate_backlog_data(json.load(handle))
         current_revision = current["revision"]
     else:
+        current = None
         current_revision = 0
+
+    # Every writer passes through here, so this is the one place a new cycle
+    # can be refused. A backlog that was already cyclic stays writable, so the
+    # cycle can be repaired; prioritization keeps reporting it until then.
+    cycle = find_requires_cycle(normalized["nodes"], normalized["edges"])
+    if cycle and (
+        current is None or not find_requires_cycle(current["nodes"], current["edges"])
+    ):
+        raise DependencyCycleError(
+            f"Dependency cycle: {' -> '.join(cycle)}. "
+            "An item cannot transitively require itself."
+        )
 
     if normalized["revision"] != current_revision:
         raise BacklogConflictError(
