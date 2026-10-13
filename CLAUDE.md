@@ -123,10 +123,10 @@ Stale quickly — re-measure rather than trusting these numbers.
 | Intention nodes | 61 (103 edges), all carrying Intent IR |
 | Approval states | 6 `approved`, 55 `review_required` |
 | Reality nodes | 320 (tests excluded since #102) |
-| Approved mapping receipts | 10 |
+| Approved mapping receipts | 7 (10 files carry `# aio-sdlc-node:` markers) |
 | Completed dogfood cycles | 10, under `.aio-agentic-sdlc/changes/` |
 
-The practical bottleneck is **mapping coverage**, not intent quality. With 10 receipts
+The practical bottleneck is **mapping coverage**, not intent quality. With 7 receipts
 against 320 Reality nodes, reconciliation cannot resolve most nodes in either direction —
 it cannot confirm what is done, so it cannot isolate what is missing.
 
