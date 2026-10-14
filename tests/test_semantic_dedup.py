@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 
 import pytest
 from mcp.client import Client
@@ -78,3 +79,40 @@ async def test_mcp_reports_sqlite_prerequisite_without_internal_details(
     assert "could not load sqlite-vec" in message
     assert "private-loader-detail" not in message
     assert str(tmp_path) not in message
+
+
+@pytest.mark.asyncio
+async def test_mcp_names_the_semantic_extra_when_the_model_stack_is_absent(
+    tmp_path, monkeypatch
+):
+    # A None entry in sys.modules makes the import raise ImportError.
+    monkeypatch.setitem(sys.modules, "sentence_transformers", None)
+    monkeypatch.setattr(semantic_dedup, "_model", None)
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "check_duplicate_prd",
+            {"proposed_content": "A requirement", "project_path": str(tmp_path)},
+        )
+    assert result.is_error is True
+    message = "".join(block.text for block in result.content if hasattr(block, "text"))
+    assert "aio-agentic-sdlc[semantic]" in message
+    # Reported before the cache is touched, whatever the interpreter's SQLite.
+    assert not (tmp_path / ".aio-agentic-sdlc" / "semantic-cache.db").exists()
+
+
+@pytest.mark.asyncio
+async def test_a_broken_dependency_inside_the_extra_is_not_reported_as_missing(
+    tmp_path, monkeypatch
+):
+    def broken_model():
+        raise ModuleNotFoundError("No module named 'torch'", name="torch")
+
+    monkeypatch.setattr(semantic_dedup, "get_model", broken_model)
+    async with Client(mcp) as client:
+        result = await client.call_tool(
+            "check_duplicate_prd",
+            {"proposed_content": "A requirement", "project_path": str(tmp_path)},
+        )
+    assert result.is_error is True
+    message = "".join(block.text for block in result.content if hasattr(block, "text"))
+    assert "aio-agentic-sdlc[semantic]" not in message

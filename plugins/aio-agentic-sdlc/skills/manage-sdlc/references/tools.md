@@ -12,7 +12,7 @@ Tool names may be namespaced by the host. Match them by the operation names belo
 | Reprioritize | `prioritize_backlog` | `uv run agb prioritize` |
 | Add blocker | `block_task` | `uv run agb block ...` |
 | Generate framework document | `generate_document` | No manual-file fallback |
-| Check PRD overlap | `check_duplicate_prd` | Use the Python API if MCP is unavailable |
+| Check PRD overlap | `check_duplicate_prd` | Use the Python API if MCP is unavailable; needs the `semantic` extra |
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
 | Reconcile DAG identity evidence | `reconcile_dags` | `uv run dag-tool reconcile ...` |

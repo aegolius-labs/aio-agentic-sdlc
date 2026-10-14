@@ -7,6 +7,9 @@ Act as a product manager for requirements and ideation. Do not implement code or
 2. Ask concise questions only for material gaps. Use the host's structured question UI when it is
    available; otherwise ask directly.
 3. Draft enough proposed content to run semantic duplicate detection before creating a PRD.
+   If `check_duplicate_prd` reports that the optional `semantic` extra is not installed, do not
+   skip the check silently: tell the user, offer the `aio-agentic-sdlc[semantic]` launcher, and
+   record "duplicate check unavailable" as the duplicate-check result.
 4. If overlap is reported, show the overlap and require the user to choose merge, amend, or proceed.
 5. Read [researcher.md](researcher.md) and obtain a viability assessment when product or dependency
    uncertainty is material.

@@ -187,6 +187,7 @@ uv sync --frozen --group dev
   after changing its bundled files.
 - The development MCP launcher follows the repository's default Git branch. Pin it to a release tag
   when publishing a stable plugin version.
-- The current dependency graph includes a large semantic-search stack, so first-time MCP setup is
-  heavier than the backlog operations alone require. Splitting semantic deduplication into an
-  optional extra is a useful follow-up optimization.
+- Duplicate PRD detection (`check_duplicate_prd`) needs the optional `semantic` extra, which
+  pulls in `sentence-transformers`, torch and `sqlite-vec`. The default launcher omits it so the server starts
+  quickly; that one tool reports how to enable it. To include it, launch with
+  `uvx --from "aio-agentic-sdlc[semantic] @ git+https://github.com/aegolius-labs/aio-agentic-sdlc" aio-agentic-sdlc-mcp`.
