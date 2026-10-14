@@ -7,7 +7,7 @@ name = "aio-agentic-sdlc"
 dynamic = ["version"]
 description = "Deterministic 3D Matrix Backlog Manager for Agentic Workflows"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { text = "PolyForm Noncommercial License 1.0.0" }
 authors = [
   { name="aegolius-labs" },
