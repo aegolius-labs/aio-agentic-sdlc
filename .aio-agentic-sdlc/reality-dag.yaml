@@ -1121,6 +1121,10 @@ nodes:
   type: component
   name: BacklogStateError
   description: Base error for invalid or unrecoverable local backlog state.
+- id: 01fd165b-1ab4-5277-9d23-d8be391b3401
+  type: component
+  name: DependencyCycleError
+  description: Raised when a write would make an item transitively require itself.
 - id: 1f20b5f6-2dc3-5786-b5d5-244e710c87a5
   type: component
   name: UnsupportedBacklogSchema
@@ -1137,6 +1141,14 @@ nodes:
   type: component
   name: recover_incomplete_transactions
   description: Reconcile prepared transactions against the current backlog hash.
+- id: f1581e89-30ee-5294-a489-31dde00c46f1
+  type: component
+  name: find_requires_cycle
+  description: "Return one requires cycle as a closed path, such as ``[a, b, a]``,\
+    \ or None.\n\n    Only edges between known nodes count. The walk is iterative,\
+    \ so a long\n    dependency chain cannot exhaust the interpreter's recursion limit.\
+    \ Roots are\n    visited in node order and dependencies in edge order, which keeps\
+    \ the\n    reported cycle stable.\n    "
 - id: c799e44e-62a1-5775-8bb2-ee8f180d4c6f
   type: component
   name: migrate_backlog_data
@@ -2143,6 +2155,9 @@ edges:
   target: 0c8a6b20-4822-57d7-be3f-8342e6623d3a
   type: contains
 - source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: 01fd165b-1ab4-5277-9d23-d8be391b3401
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   target: 1f20b5f6-2dc3-5786-b5d5-244e710c87a5
   type: contains
 - source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
@@ -2153,6 +2168,9 @@ edges:
   type: contains
 - source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   target: 6eef87c3-fd7e-5ef8-9efd-46026aa2e5cf
+  type: contains
+- source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
+  target: f1581e89-30ee-5294-a489-31dde00c46f1
   type: contains
 - source: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   target: c799e44e-62a1-5775-8bb2-ee8f180d4c6f

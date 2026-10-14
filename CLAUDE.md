@@ -114,7 +114,7 @@ When a conclusion implies the framework's own design is wrong, check the ADRs an
 change records under `.aio-agentic-sdlc/changes/` before asserting it. The design is
 usually deliberate and documented.
 
-## Corpus state as of 2026-10-12
+## Corpus state as of 2026-10-14
 
 Stale quickly — re-measure rather than trusting these numbers.
 
@@ -122,12 +122,12 @@ Stale quickly — re-measure rather than trusting these numbers.
 | --- | --- |
 | Intention nodes | 61 (103 edges), all carrying Intent IR |
 | Approval states | 6 `approved`, 55 `review_required` |
-| Reality nodes | 320 (tests excluded since #102) |
+| Reality nodes | 322 (tests excluded since #102) |
 | Approved mapping receipts | 7 (10 files carry `# aio-sdlc-node:` markers) |
 | Completed dogfood cycles | 10, under `.aio-agentic-sdlc/changes/` |
 
 The practical bottleneck is **mapping coverage**, not intent quality. With 7 receipts
-against 320 Reality nodes, reconciliation cannot resolve most nodes in either direction —
+against 322 Reality nodes, reconciliation cannot resolve most nodes in either direction —
 it cannot confirm what is done, so it cannot isolate what is missing.
 
 A roughly 1:5 Intention-to-Reality node ratio is expected, not a defect: Intention nodes are
@@ -189,8 +189,8 @@ uv sync --frozen --group dev
 uv run --no-sync pytest -W error
 ```
 
-`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **457 passed,
-2 skipped** (measured 2026-10-12). Windows counts differ because of the symlink tests
+`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **478 passed,
+2 skipped** (measured 2026-10-14). Windows counts differ because of the symlink tests
 below.
 
 Seven symlink and TOCTOU tests fail on the current Windows machine with
