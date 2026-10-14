@@ -1,7 +1,9 @@
 """Tests for the topological sorting and scoring engine in prioritize_cmd."""
 
+import json
 import os
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -140,11 +142,11 @@ class TestDiamondDependency:
 
 class TestCircularDependency:
     def test_circular_raises(self):
-        _save(
-            {
-                "X": _make_item(3, 3, requires=["Y"]),
-                "Y": _make_item(3, 3, requires=["X"]),
-            }
-        )
+        # Saves now refuse new cycles, so model one that predates that check.
+        _save({"X": _make_item(3, 3, requires=["Y"]), "Y": _make_item(3, 3)})
+        backlog = Path(".aio-agentic-sdlc") / "backlog.json"
+        raw = json.loads(backlog.read_text(encoding="utf-8"))
+        raw["edges"].append({"from": "Y", "to": "X", "relation": "requires"})
+        backlog.write_text(json.dumps(raw), encoding="utf-8")
         with pytest.raises(SystemExit):
             _run_prioritize()
