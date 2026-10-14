@@ -1,4 +1,5 @@
 import glob
+import importlib.util
 import os
 import sqlite3
 import threading
@@ -19,6 +20,12 @@ _project_locks: dict[str, threading.RLock] = {}
 
 class SemanticCacheError(RuntimeError):
     """A bounded, actionable semantic-search prerequisite failure."""
+
+
+SEMANTIC_EXTRA_MISSING = (
+    "Semantic search is an optional extra. Install aio-agentic-sdlc[semantic] "
+    "to enable duplicate PRD detection."
+)
 
 
 def _canonical_cache_identity(project_path: str) -> str:
@@ -227,6 +234,10 @@ def find_duplicate_prds(
     Note: threshold is cosine distance (0 to 2). Smaller is more similar.
     Distance of 0.2 means 0.8 cosine similarity.
     """
+    # Check for the model stack before touching the cache, so a missing extra
+    # is reported as such and no cache database is created for it.
+    if model is None and importlib.util.find_spec("sentence_transformers") is None:
+        raise SemanticCacheError(SEMANTIC_EXTRA_MISSING)
     with _cache_guard(project_path):
         db = _get_db_unlocked(project_path)
         try:
