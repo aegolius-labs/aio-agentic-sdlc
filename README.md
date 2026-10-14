@@ -1,6 +1,6 @@
-# Agentic Backlog Manager
+# aio-agentic-sdlc
 
-A deterministic, 3-Dimensional Impact/Effort/Dependency backlog manager designed for AI/Agentic workflows.
+An agentic SDLC framework whose backlog is the computed diff between an Intention DAG (what the software should be) and a Reality DAG (what it is). At its core is a deterministic, 3-Dimensional Impact/Effort/Dependency backlog manager designed for AI/Agentic workflows.
 
 It replaces token-heavy LLM prioritization of Markdown files with a strict, deterministic JSON-based tracking system. It calculates recursive dependency scores, performs topological sorting to ensure prerequisites come first, and auto-generates human-readable Markdown exports.
 
