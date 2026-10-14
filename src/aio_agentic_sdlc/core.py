@@ -4,6 +4,7 @@ import os
 import yaml
 
 from .config import load_config
+from .state import find_requires_cycle
 from .state import load_backlog as _load_backlog
 from .state import mutate_backlog as _mutate_backlog
 from .state import save_backlog as _save_backlog
@@ -144,32 +145,35 @@ def ensure_dependencies(data, requires):
 
 
 def _compute_sorted_items(nodes, edges):
-    visited = set()
-    temp_mark = set()
-    order = []
+    cycle = find_requires_cycle(nodes, edges)
+    if cycle:
+        raise BacklogOperationError(
+            f"Circular dependency detected involving [{cycle[0]}]. Analyze items to clarify what genuinely depends on what."
+        )
 
     requires_map = {n: [] for n in nodes}
     for e in edges:
         if e["relation"] == "requires" and e["from"] in requires_map:
             requires_map[e["from"]].append(e["to"])
 
-    def visit(n):
-        if n in temp_mark:
-            raise BacklogOperationError(
-                f"Circular dependency detected involving [{n}]. Analyze items to clarify what genuinely depends on what."
-            )
-        if n not in visited:
-            temp_mark.add(n)
-            for dep in requires_map.get(n, []):
-                if dep in nodes:
-                    visit(dep)
-            temp_mark.remove(n)
-            visited.add(n)
-            order.append(n)
-
-    for node in nodes:
-        if node not in visited:
-            visit(node)
+    # Iterative post-order walk in the same order as the former recursive one,
+    # so long dependency chains cannot hit the recursion limit.
+    visited = set()
+    order = []
+    for root in nodes:
+        if root in visited:
+            continue
+        visited.add(root)
+        pending = [(root, iter(requires_map.get(root, [])))]
+        while pending:
+            current, deps = pending[-1]
+            dep = next((d for d in deps if d in nodes and d not in visited), None)
+            if dep is None:
+                pending.pop()
+                order.append(current)
+            else:
+                visited.add(dep)
+                pending.append((dep, iter(requires_map.get(dep, []))))
 
     for name, item in nodes.items():
         if _get_status(item) == "Completed":

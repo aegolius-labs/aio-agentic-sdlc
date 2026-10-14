@@ -5,6 +5,7 @@ from typing import Dict, List
 import yaml
 
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node
+from aio_agentic_sdlc.intent_ir import ApprovalState
 
 
 class DAGValidationError(ValueError):
@@ -196,6 +197,10 @@ class DAGManager:
 
         node = self.nodes[node_id]
         update_data = {k: v for k, v in kwargs.items() if v is not None}
+        # An intent-only update is the gated Intent IR path (intent set and
+        # migration); any other field is a structural edit.
+        if set(update_data) - {"intent"}:
+            self._require_structurally_mutable(node_id)
         updated_node = Node.model_validate({**node.model_dump(), **update_data})
         self.nodes[node_id] = updated_node
 
@@ -203,12 +208,46 @@ class DAGManager:
         if node_id not in self.nodes:
             raise DAGValidationError(f"Node {node_id} does not exist.")
 
+        # Deleting a node would discard its Intent IR payload and revision
+        # history, including the audit trail of a rejection. Rejected intent
+        # stays in the graph as its own record; triage already withholds it.
+        if self.nodes[node_id].intent is not None:
+            raise DAGValidationError(
+                f"Node {node_id} carries Intent IR and cannot be deleted. Mark it "
+                "'rejected' with `dag-tool intent set` instead; the node stays as "
+                "the audit record and is withheld from implementation."
+            )
+        for edge in self.edges:
+            if node_id in (edge.source, edge.target):
+                self._require_structurally_mutable(edge.source)
+                self._require_structurally_mutable(edge.target)
+
         del self.nodes[node_id]
 
         # Cascade remove edges
         self.edges = [
             e for e in self.edges if e.source != node_id and e.target != node_id
         ]
+
+    def _require_structurally_mutable(self, node_id: str):
+        """Refuse structural edits to a node whose intent is approved.
+
+        Its name, description and edges are part of what was approved. To change
+        them, move the intent out of 'approved' with `dag-tool intent set` (an
+        audited revision), edit, and have it re-approved.
+        """
+
+        node = self.nodes.get(node_id)
+        if (
+            node is not None
+            and node.intent is not None
+            and node.intent.approval.state == ApprovalState.APPROVED
+        ):
+            raise DAGValidationError(
+                f"Node {node_id} carries approved Intent IR, so its structure is "
+                "frozen. Move it out of 'approved' with `dag-tool intent set`, make "
+                "the change, then have it re-approved."
+            )
 
     def get_node(self, node_id: str) -> Node:
         if node_id not in self.nodes:
@@ -234,6 +273,8 @@ class DAGManager:
             raise DAGValidationError(f"Source node {edge.source} does not exist.")
         if edge.target not in self.nodes:
             raise DAGValidationError(f"Target node {edge.target} does not exist.")
+        self._require_structurally_mutable(edge.source)
+        self._require_structurally_mutable(edge.target)
 
         self.edges.append(edge)
 
@@ -245,6 +286,8 @@ class DAGManager:
             raise e
 
     def remove_edge(self, source: str, target: str, edge_type: EdgeType):
+        self._require_structurally_mutable(source)
+        self._require_structurally_mutable(target)
         initial_len = len(self.edges)
         self.edges = [
             e

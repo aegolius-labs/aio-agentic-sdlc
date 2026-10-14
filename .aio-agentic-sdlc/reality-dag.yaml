@@ -60,6 +60,14 @@ nodes:
   type: module
   name: __init__.py
   description: Module src.aio_agentic_sdlc.__init__
+- id: 553c596a-6285-532c-81cf-5a561a3992a3
+  type: module
+  name: antigravity_compat.py
+  description: Module src.aio_agentic_sdlc.antigravity_compat
+- id: 60b6af8e-5a49-51b9-9912-8b399679828d
+  type: component
+  name: local_agent_config
+  description: Function local_agent_config
 - id: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
   type: module
   name: archiver.py
@@ -75,9 +83,9 @@ nodes:
 - id: dfb4466f-fa2d-53d5-9fd2-6993d425e519
   type: component
   name: archive
-  description: "\r\n        Moves a file to the archive directory.\r\n        If a\
-    \ file with the same name exists, it appends a timestamp to prevent overwriting.\r\
-    \n        Returns the new path of the archived file.\r\n        "
+  description: "\n        Moves a file to the archive directory.\n        If a file\
+    \ with the same name exists, it appends a timestamp to prevent overwriting.\n\
+    \        Returns the new path of the archived file.\n        "
 - id: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
   type: module
   name: cli.py
@@ -566,9 +574,9 @@ nodes:
 - id: fa35fa8a-b6b5-40ca-9080-b31421117e37
   type: component
   name: DiffingEngine
-  description: "\r\n    Computes the difference between an Intention DAG and a Reality\
-    \ DAG,\r\n    generating a backlog of tasks required to reconcile Reality with\
-    \ Intention.\r\n    "
+  description: "\n    Computes the difference between an Intention DAG and a Reality\
+    \ DAG,\n    generating a backlog of tasks required to reconcile Reality with Intention.\n\
+    \    "
 - id: 502fdf74-dcf2-53ca-b801-b2cb869c5a7d
   type: component
   name: __init__
@@ -920,6 +928,31 @@ nodes:
   type: component
   name: main
   description: Function main
+- id: 5406acd4-3d11-5240-8675-a123aa874379
+  type: module
+  name: observed_state.py
+  description: Module src.aio_agentic_sdlc.observed_state
+- id: a4df05fd-3748-5cf1-98eb-aaa2de677843
+  type: component
+  name: ObservedStateError
+  description: Raised when an observed-state document violates the Seam A contract.
+- id: 63918480-2a83-5c7a-8871-50fce5f076fb
+  type: component
+  name: observed_state_digest
+  description: 'Return the kit''s digest of a document: canonical JSON without `digest`.'
+- id: 8b7b81ac-dc4d-5f9c-9631-4f92606bdf1c
+  type: component
+  name: validate_observed_state
+  description: Return the document unchanged if it honours contract v1, else raise.
+- id: 165fc06b-f46e-51e4-87d1-77af24172f7a
+  type: component
+  name: load_observed_state
+  description: Read and validate one observed-state document from disk.
+- id: c802135e-e86d-5b1b-bab1-4ed05ca55ffd
+  type: component
+  name: map_observed_state
+  description: Map observed items to Intention nodes by canonical GUID, as evidence
+    only.
 - id: 654e7846-a5b4-5627-af8a-6045142b4851
   type: module
   name: orchestrator_loop.py
@@ -927,23 +960,23 @@ nodes:
 - id: 2ebf00ef-c11d-501f-add4-f86a1df8be8a
   type: component
   name: ingest_diff
-  description: "\r\n    Loads intention/reality DAGs via DAGManager, uses DiffingEngine\
-    \ to calculate the diff,\r\n    and merges the resulting tasks and edges into\
-    \ the local framework backlog\r\n    using core.load_backlog and core.save_backlog,\
-    \ followed by core.prioritize_items.\r\n    "
+  description: "\n    Loads intention/reality DAGs via DAGManager, uses DiffingEngine\
+    \ to calculate the diff,\n    and merges the resulting tasks and edges into the\
+    \ local framework backlog\n    using core.load_backlog and core.save_backlog,\
+    \ followed by core.prioritize_items.\n    "
 - id: aa788b5d-b918-5414-b688-a1db5fda7ea4
   type: component
   name: execute_task_with_agent
-  description: "\r\n    Instantiates the Agent using LocalAgentConfig. Configures\
-    \ system_instructions\r\n    for the 'sdlc_orchestrator' role, applies CapabilitiesConfig,\
-    \ and streams\r\n    the chat response for the task provided.\r\n    "
+  description: "\n    Instantiates the Agent using LocalAgentConfig. Configures system_instructions\n\
+    \    for the 'sdlc_orchestrator' role, applies CapabilitiesConfig, and streams\n\
+    \    the chat response for the task provided.\n    "
 - id: 47757762-ac3c-582e-a93a-0bee49c1de94
   type: component
   name: main_loop
-  description: "\r\n    1. Invokes ingest_diff().\r\n    2. Fetches the highest-priority\
-    \ unblocked task via core.get_next_item().\r\n    3. Sets task status to 'In Progress'\
-    \ via core.set_status().\r\n    4. Awaits execute_task_with_agent(task).\r\n \
-    \   5. Marks status 'Completed' (or 'Blocked' on failure).\r\n    "
+  description: "\n    1. Invokes ingest_diff().\n    2. Fetches the highest-priority\
+    \ unblocked task via core.get_next_item().\n    3. Sets task status to 'In Progress'\
+    \ via core.set_status().\n    4. Awaits execute_task_with_agent(task).\n    5.\
+    \ Marks status 'Completed' (or 'Blocked' on failure).\n    "
 - id: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   type: module
   name: reality_dag_generator.py
@@ -1002,7 +1035,12 @@ nodes:
 - id: b49bf431-c08c-536f-a772-b3babe3a1e3a
   type: component
   name: __init__
-  description: Function __init__
+  description: "Optionally attach agentic-backlog-kit observed state as evidence.\n\
+    \n        Observations are mapped by canonical GUID and appended to the matching\n\
+    \        intent record's evidence. They never change a classification or\n   \
+    \     whether approval is required: GitHub is a projection of the work, and\n\
+    \        a closed issue is not proof that Reality satisfies Intention.\n     \
+    \   "
 - id: 9e5d1e31-36dc-56a2-a15a-37a11bf2745e
   type: component
   name: iter_intent_records
@@ -1035,9 +1073,9 @@ nodes:
 - id: 78731c65-6497-566e-9df6-ee22d88861c8
   type: component
   name: find_duplicate_prds
-  description: "\r\n    Search for similar PRDs.\r\n    Returns a list of matching\
-    \ documents.\r\n    Note: threshold is cosine distance (0 to 2). Smaller is more\
-    \ similar.\r\n    Distance of 0.2 means 0.8 cosine similarity.\r\n    "
+  description: "\n    Search for similar PRDs.\n    Returns a list of matching documents.\n\
+    \    Note: threshold is cosine distance (0 to 2). Smaller is more similar.\n \
+    \   Distance of 0.2 means 0.8 cosine similarity.\n    "
 - id: bc9340ac-838c-5761-bd32-d04ca334c376
   type: module
   name: source_locations.py
@@ -1110,10 +1148,9 @@ nodes:
 - id: a9dea982-28b4-5eec-a5d6-a6eb739cdedc
   type: component
   name: mutate_backlog
-  description: "Apply one read-modify-write transaction while holding both state locks.\r\
-    \n\r\n    The callback returns ``(result, changed)``. A false ``changed`` value\
-    \ preserves\r\n    read-only/no-op behavior without incrementing the backlog revision.\r\
-    \n    "
+  description: "Apply one read-modify-write transaction while holding both state locks.\n\
+    \n    The callback returns ``(result, changed)``. A false ``changed`` value preserves\n\
+    \    read-only/no-op behavior without incrementing the backlog revision.\n    "
 - id: 4ccffb18-3908-5c7d-9be0-a2826d069185
   type: component
   name: save_backlog
@@ -1149,16 +1186,15 @@ nodes:
 - id: 370f8b4f-0766-5ffa-a93f-948947910c79
   type: component
   name: generate_document
-  description: "\r\n    Generates a document from a Jinja2 template and writes it\
-    \ to output_path.\r\n\r\n    Args:\r\n        template_name: The name of the template\
-    \ file in the templates/ directory.\r\n        data: A dictionary of data to populate\
-    \ the template.\r\n        output_path: The path where the generated document\
-    \ will be saved.\r\n        templates_dir: Optional explicit template directory.\
-    \ When omitted, use the templates\r\n            bundled with the installed framework\
-    \ package.\r\n        project_path: Optional project root for private recovery\
-    \ artifacts. When omitted, the\r\n            output directory is treated as the\
-    \ project root.\r\n\r\n    Returns:\r\n        The content of the generated document.\r\
-    \n    "
+  description: "\n    Generates a document from a Jinja2 template and writes it to\
+    \ output_path.\n\n    Args:\n        template_name: The name of the template file\
+    \ in the templates/ directory.\n        data: A dictionary of data to populate\
+    \ the template.\n        output_path: The path where the generated document will\
+    \ be saved.\n        templates_dir: Optional explicit template directory. When\
+    \ omitted, use the templates\n            bundled with the installed framework\
+    \ package.\n        project_path: Optional project root for private recovery artifacts.\
+    \ When omitted, the\n            output directory is treated as the project root.\n\
+    \n    Returns:\n        The content of the generated document.\n    "
 - id: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   type: module
   name: workspace.py
@@ -1302,8 +1338,8 @@ nodes:
 - id: 037c26cb-574d-5946-9ca3-14b082668762
   type: component
   name: extract_h2
-  description: "\r\n    Reads a markdown file and returns a list of strings containing\
-    \ all H2 headers (lines starting with '## ').\r\n    "
+  description: "\n    Reads a markdown file and returns a list of strings containing\
+    \ all H2 headers (lines starting with '## ').\n    "
 edges:
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 01972ce1-dba9-54a3-9f75-771d02ad2cec
@@ -1337,6 +1373,12 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 391a970e-235c-5c2e-9563-704be8eea2dc
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 553c596a-6285-532c-81cf-5a561a3992a3
+  type: contains
+- source: 553c596a-6285-532c-81cf-5a561a3992a3
+  target: 60b6af8e-5a49-51b9-9912-8b399679828d
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
@@ -1970,6 +2012,24 @@ edges:
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: f5e29b19-f15e-58aa-9438-30e772912751
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 5406acd4-3d11-5240-8675-a123aa874379
+  type: contains
+- source: 5406acd4-3d11-5240-8675-a123aa874379
+  target: a4df05fd-3748-5cf1-98eb-aaa2de677843
+  type: contains
+- source: 5406acd4-3d11-5240-8675-a123aa874379
+  target: 63918480-2a83-5c7a-8871-50fce5f076fb
+  type: contains
+- source: 5406acd4-3d11-5240-8675-a123aa874379
+  target: 8b7b81ac-dc4d-5f9c-9631-4f92606bdf1c
+  type: contains
+- source: 5406acd4-3d11-5240-8675-a123aa874379
+  target: 165fc06b-f46e-51e4-87d1-77af24172f7a
+  type: contains
+- source: 5406acd4-3d11-5240-8675-a123aa874379
+  target: c802135e-e86d-5b1b-bab1-4ed05ca55ffd
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 654e7846-a5b4-5627-af8a-6045142b4851
