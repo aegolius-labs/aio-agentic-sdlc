@@ -32,6 +32,7 @@ EXPECTED_TOOLS = {
     "approve_mapping",
     "block_task",
     "check_duplicate_prd",
+    "check_intent_consistency",
     "create_intent_node",
     "generate_document",
     "generate_reality",
@@ -70,6 +71,7 @@ EXPECTED_TOOL_DESCRIPTIONS = {
     "approve_mapping": "Approve one fresh candidate and atomically persist verified source evidence.",
     "block_task": "Add a blocker to a task, preventing it from being worked on.",
     "check_duplicate_prd": "Check if a proposed PRD is similar to canonical project specs.",
+    "check_intent_consistency": "Report internal contradictions in the Intention DAG without mutating it.",
     "create_intent_node": "Atomically create a canonical node with its initial Intent IR payload.",
     "generate_document": "Generate a document from a template using the provided data.",
     "generate_reality": "Scan the codebase and update the Reality DAG in-process.",
@@ -201,6 +203,7 @@ EXPECTED_ARGUMENT_CONTRACT = {
         {"project_path": ".", "require_all": True},
     ),
     "validate_traceability": (set(), {"project_path": "."}),
+    "check_intent_consistency": (set(), {"project_path": ".", "max_items": 100}),
     "visualize_dag": (
         set(),
         {
@@ -1006,6 +1009,12 @@ async def test_v2_client_exercises_every_published_tool(mode, tmp_path, monkeypa
         assert "ProtocolComponent" in await call_success(
             "review_intent", {"project_path": project_path, "node_id": node_id}
         )
+        consistency = json.loads(
+            await call_success(
+                "check_intent_consistency", {"project_path": project_path}
+            )
+        )
+        assert consistency["summary"]["by_severity"]["error"] == 0
 
         review = json.loads(
             await call_success(

@@ -120,8 +120,8 @@ Stale quickly — re-measure rather than trusting these numbers.
 
 | | |
 | --- | --- |
-| Intention nodes | 61 (103 edges), all carrying Intent IR |
-| Approval states | 6 `approved`, 55 `review_required` |
+| Intention nodes | 62 (104 edges), all carrying Intent IR |
+| Approval states | 6 `approved`, 56 `review_required` |
 | Reality nodes | 322 (tests excluded since #102) |
 | Approved mapping receipts | 7 (10 files carry `# aio-sdlc-node:` markers) |
 | Completed dogfood cycles | 10, under `.aio-agentic-sdlc/changes/` |
@@ -135,16 +135,16 @@ architectural components, Reality nodes are individual symbols.
 
 ## Surfaces
 
-- **MCP server** (`aio-agentic-sdlc-mcp`) — 23 tools over stdio, official Python SDK v2
+- **MCP server** (`aio-agentic-sdlc-mcp`) — 24 tools over stdio, official Python SDK v2
   `MCPServer`. Backlog: `add_task`, `update_task`, `update_task_status`, `remove_task`,
   `block_task`, `get_next_task`, `prioritize_backlog`. Intent: `create_intent_node`,
-  `set_intent`, `review_intent`, `validate_intent`. Mapping: `review_mapping`,
+  `set_intent`, `review_intent`, `validate_intent`, `check_intent_consistency`. Mapping: `review_mapping`,
   `approve_mapping`, `review_mapping_receipt`, `refresh_mapping_receipt`. Reconciliation:
   `reconcile_dags`, `triage_reconciliation_drift`, `visualize_dag`, `generate_reality`,
   `validate_traceability`. Artifacts: `generate_document`, `promote_spec`,
   `check_duplicate_prd`.
 - **`dag-tool`** — `diff`, `reconcile`, `triage`, `visualize`, `validate`,
-  `validate-intent`, `intent`, `intent-summary`, `mapping`, `node`, `edge`,
+  `validate-intent`, `check-consistency`, `intent`, `intent-summary`, `mapping`, `node`, `edge`,
   `generate-reality`.
 - **`aio-sdlc` / `aio-agentic-sdlc` / `agb`** — backlog CLI: `init`, `add`, `update`,
   `remove`, `prioritize`, `next`, `status`, `block`, `unblock`, `export`, `plan`, `apply`,

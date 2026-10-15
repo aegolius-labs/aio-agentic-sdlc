@@ -2985,6 +2985,58 @@ nodes:
       rationale: Felix explicitly approved implementing the mapping-tool extension
         presented after MCP v2 QA, while retaining separate approval for every exact
         source identity and evidence digest.
+- id: 2131072d-9bb1-4236-9b9a-141ee087fa4b
+  type: component
+  name: Intention DAG Consistency Check
+  domain: governance
+  description: Read-only advisory check of the Intention DAG for internal contradiction,
+    overlap, and hierarchy errors.
+  intent:
+    schema_version: 1
+    provenance:
+    - source_type: document
+      reference: github:aegolius-labs/aio-agentic-sdlc#12
+      statement: No existing tool checks the Intention DAG for internal contradiction;
+        a self-contradictory Intention DAG makes the computed diff wrong.
+    - source_type: human_statement
+      reference: claude-project:aegolius-labs-products:sdlc-vision-gap:2026-10-15
+      statement: Felix chose to implement the Intention DAG self-consistency checks
+        as a new read-only tool rather than extending validate_intent.
+    assumptions:
+    - The check reads only layer 1 and never mutates the Intention DAG.
+    - Deterministic findings are reported; semantic contradiction between acceptance
+      criteria is a stated limitation rather than a heuristic verdict.
+    - Schema validation stays strict in validate_intent; consistency findings are
+      advisory unless a caller opts into failing on errors.
+    ambiguities: []
+    confidence: 0.9
+    acceptance_criteria:
+    - id: INTENT-CONSISTENCY-AC1
+      statement: A read-only CLI command and MCP tool report duplicate or overlapping
+        Intention nodes, contradictory approval states across relationships, inverted
+        or ambiguous containment hierarchy, and acceptance criteria that only restate
+        the node description, with complete totals and bounded detail.
+      required_evidence:
+      - test:intent-consistency-checks
+      - test:intent-consistency-mcp-contract
+    - id: INTENT-CONSISTENCY-AC2
+      statement: The report never mutates canonical state, and a strict mode fails
+        only on error-severity findings.
+      required_evidence:
+      - test:intent-consistency-read-only
+      - test:intent-consistency-strict-exit
+    revision_history:
+    - revision: 1
+      recorded_at: '2026-10-15T22:40:00Z'
+      actor: sdlc_intake
+      generator_version: claude-code-project-thread
+      summary: 'Record issue #12 as intent after the owner chose a distinct read-only
+        tool.'
+    responsible_agent: sdlc_intake
+    generator_version: claude-code-project-thread
+    approval:
+      state: review_required
+      rationale: Shape decided by the owner; node wording awaits owner approval.
 edges:
 - source: 4d76717e-55cd-4768-b05e-06a3cce1128b
   target: 54b91d55-08fe-48df-be35-445be7cd1e46
@@ -3340,3 +3392,8 @@ edges:
   type: depends_on
   description: Explicit candidate selection and receipt refresh extend the existing
     approval-gated source mapping contract.
+- source: 2131072d-9bb1-4236-9b9a-141ee087fa4b
+  target: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  type: depends_on
+  description: Consistency checks read the Intent IR v1 approval states and acceptance
+    criteria.

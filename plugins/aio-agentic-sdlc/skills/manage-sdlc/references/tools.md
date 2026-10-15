@@ -29,6 +29,7 @@ Tool names may be namespaced by the host. Match them by the operation names belo
 | Apply legacy Intent IR migration | Not yet exposed | `uv run dag-tool intent apply-migration ...` |
 | Validate Intent IR | `validate_intent` | `uv run dag-tool validate-intent --file ...` |
 | Review Intent IR | `review_intent` | `uv run dag-tool intent-summary --file ...` |
+| Check Intention DAG consistency | `check_intent_consistency` | `uv run dag-tool check-consistency --file ...` |
 | Promote accepted spec | `promote_spec` | No manual-move fallback |
 
 Always pass an absolute `project_path` to tools that accept it. For `generate_document`, also pass

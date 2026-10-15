@@ -41,6 +41,7 @@ from .dag_visualization import (
     render_dag,
 )
 from .drift_triage import DriftTriageEngine, DriftTriageError, TriageDecisionSet
+from .intent_consistency import IntentConsistencyChecker, IntentConsistencyError
 from .intent_ir import IntentIR
 from .intent_store import (
     IntentStoreError,
@@ -1214,6 +1215,35 @@ def validate_intent(
         return "Intent IR validation passed."
     except (DAGNotFoundError, DAGValidationError, ValidationError) as e:
         return _expected_error(f"Error validating Intent IR: {str(e)}")
+
+
+@mcp.tool()
+def check_intent_consistency(
+    project_path: Annotated[
+        str, Field(description="Absolute path to the project directory")
+    ] = ".",
+    max_items: Annotated[
+        int,
+        Field(
+            ge=1,
+            description="Maximum findings returned; totals remain complete",
+        ),
+    ] = 100,
+) -> str:
+    """Report internal contradictions in the Intention DAG without mutating it."""
+    try:
+        intention_path = os.path.join(os.path.abspath(project_path), INTENTION_DAG_FILE)
+        report = IntentConsistencyChecker(DAGManager.load(intention_path)).analyze(
+            max_items=max_items
+        )
+        return json.dumps(report, indent=2)
+    except (
+        DAGNotFoundError,
+        DAGValidationError,
+        IntentConsistencyError,
+        ValidationError,
+    ) as e:
+        return _expected_error(f"Error checking Intention DAG consistency: {str(e)}")
 
 
 @mcp.tool()

@@ -77,7 +77,7 @@ because their intent is `review_required`.
   authority model's layer 5.
 - [ ] Replace the mechanically copied acceptance criteria on approved nodes
   with criteria that name their required evidence.
-- [ ] Intention DAG self-consistency check as a new read-only tool (#12).
+- [x] Intention DAG self-consistency check as a new read-only tool (#12).
 
 ## M2: Mapping coverage
 
