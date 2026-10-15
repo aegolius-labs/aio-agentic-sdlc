@@ -479,11 +479,25 @@ def plan_cmd(args):
 def apply_cmd(args):
     import asyncio
 
+    from .dag_store import guarded_file_path
+    from .drift_triage import TriageDecisionSet
     from .orchestrator_loop import main_loop
 
     try:
-        asyncio.run(main_loop())
-        print("Apply completed.")
+        decisions = None
+        if getattr(args, "decisions", None):
+            decision_path = guarded_file_path(args.decisions)
+            decisions = TriageDecisionSet.model_validate_json(
+                decision_path.read_text(encoding="utf-8")
+            )
+        executed = asyncio.run(main_loop(decisions))
+        if executed:
+            print(f"Apply completed: executed '{executed}'.")
+        else:
+            print(
+                "Apply completed: no triage-authorized work. Approve intent and "
+                "record triage decisions (dag-tool triage) to authorize implementation."
+            )
     except Exception as e:
         print(f"Error during apply: {e}", file=sys.stderr)
         sys.exit(1)
@@ -735,8 +749,15 @@ def main():
 
     subparsers.add_parser("plan", help="Calculate and output the DAG diff (plan)")
 
-    subparsers.add_parser(
+    p_apply = subparsers.add_parser(
         "apply", help="Apply the diff and run the SDLC orchestrator loop"
+    )
+    p_apply.add_argument(
+        "--decisions",
+        help=(
+            "Digest-bound JSON triage decisions; only triage-authorized work "
+            "is executed"
+        ),
     )
 
     p_migrate_state = subparsers.add_parser(

@@ -270,7 +270,12 @@ def prioritize_items(project_path="."):
     )
 
 
-def get_next_item(project_path="."):
+def get_next_item(project_path=".", *, where=None):
+    """Return the highest-priority workable item and an optional warning.
+
+    ``where`` optionally restricts which items may be selected; it receives
+    each backlog item and must return True for an eligible one.
+    """
     import copy
 
     data = load_backlog(project_path)
@@ -288,11 +293,19 @@ def get_next_item(project_path="."):
     target_key = None
     for key in ordered_keys:
         item = nodes[key]
+        if where is not None and not where(item):
+            continue
         if _get_status(item) != "Completed" and not _get_blockers(item):
             target_key = key
             break
 
     if target_key is None:
+        if where is not None:
+            return (
+                None,
+                "No eligible workable items remain. Items are completed, blocked, "
+                "or not eligible.",
+            )
         return (
             None,
             "No workable items remain. All items are either completed or blocked.",
