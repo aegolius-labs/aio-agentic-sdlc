@@ -377,6 +377,36 @@ def add_item(
     return _mutate_backlog(project_path, operation="backlog.add", mutator=mutate)
 
 
+def _validate_hierarchy_change(data, name, item_type, parent_id, project_path, config):
+    """Check a type or parent change the same way add_item checks a new item.
+
+    The item is validated against its resulting parent, and when its type
+    changes, every existing child is validated against the new type, so a
+    change cannot leave the hierarchy inverted on either side.
+    """
+
+    item = data["nodes"][name]
+    new_type = item_type if item_type is not None else item.get("item_type", "Task")
+    new_parent = parent_id if parent_id is not None else get_parent(data, name)
+    if new_parent == name:
+        raise BacklogOperationError(f"Item '{name}' cannot be its own parent.")
+    validate_hierarchy(new_type, new_parent or None, data, project_path, config=config)
+    if item_type is None:
+        return
+    probe = {"nodes": {**data["nodes"], name: {**item, "item_type": new_type}}}
+    for edge in get_edges(data, to_node=name, relation="parent"):
+        child = data["nodes"].get(edge["from"])
+        if child is None:
+            continue
+        validate_hierarchy(
+            child.get("item_type", "Task"),
+            name,
+            probe,
+            project_path,
+            config=config,
+        )
+
+
 def update_item(
     name,
     impact=None,
@@ -396,12 +426,19 @@ def update_item(
             "Description cannot be empty. Please provide a detailed description of the task."
         )
 
+    config = load_config(project_path)
+
     def mutate(data):
         if name not in data.get("nodes", {}):
             raise BacklogOperationError(f"Item '{name}' not found.")
 
         item = data["nodes"][name]
         warnings = []
+
+        if item_type is not None or parent_id is not None:
+            _validate_hierarchy_change(
+                data, name, item_type, parent_id, project_path, config
+            )
 
         if item_type is not None:
             item["item_type"] = item_type
