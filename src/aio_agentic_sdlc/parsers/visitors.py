@@ -30,10 +30,22 @@ STRUCTURAL_CONTAINER_TYPES = {
 
 
 def _docstring_text(string_node: Node) -> str:
+    """Return a docstring literal's body without its prefix or delimiters.
+
+    Only the string_start and string_end tokens are removed, so a prefix such
+    as ``r`` goes with the opening quotes, and a quote that belongs to the
+    content, as in ``'''Say "hi".'''``, is kept.
+    """
+
+    start = next((c for c in string_node.children if c.type == "string_start"), None)
+    end = next((c for c in string_node.children if c.type == "string_end"), None)
+    source = string_node.text
+    if start is not None and end is not None:
+        offset = string_node.start_byte
+        source = source[start.end_byte - offset : end.start_byte - offset]
+    text = source.decode("utf8")
     # Normalize line endings so a CRLF checkout yields the same Reality as LF.
-    text = string_node.text.decode("utf8")
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
-    return text.strip("'\"")
+    return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
 class TreeSitterVisitor:
