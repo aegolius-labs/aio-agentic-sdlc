@@ -21,6 +21,10 @@ from aio_agentic_sdlc.drift_triage import (
     TriageDecisionSet,
     render_drift_triage,
 )
+from aio_agentic_sdlc.intent_consistency import (
+    IntentConsistencyChecker,
+    render_intent_consistency,
+)
 from aio_agentic_sdlc.intent_ir import IntentIR
 from aio_agentic_sdlc.intent_migration import LegacyIntentMigrator
 from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
@@ -88,6 +92,52 @@ def validate_intent(file, require_all):
         click.echo("Intent IR is valid.")
     except Exception as e:
         click.secho(f"Error validating Intent IR: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.command("check-consistency")
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the Intention DAG yaml file.",
+)
+@click.option(
+    "--max-items",
+    type=click.IntRange(min=1),
+    default=100,
+    show_default=True,
+    help="Maximum findings returned without hiding complete totals.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json"], case_sensitive=False),
+    default="human",
+    show_default=True,
+    help="Render a human brief or the complete machine report.",
+)
+@click.option(
+    "--strict",
+    is_flag=True,
+    help="Exit non-zero when any error-severity finding is reported.",
+)
+def check_consistency(file, max_items, output_format, strict):
+    """Report internal contradictions in the Intention DAG without mutating it."""
+    try:
+        report = IntentConsistencyChecker(DAGManager.load(file)).analyze(
+            max_items=max_items
+        )
+    except Exception as e:
+        click.secho(
+            f"Error checking Intention DAG consistency: {str(e)}", err=True, fg="red"
+        )
+        sys.exit(1)
+    if output_format.casefold() == "json":
+        click.echo(json.dumps(report, indent=2))
+    else:
+        click.echo(render_intent_consistency(report))
+    if strict and report["summary"]["by_severity"]["error"]:
         sys.exit(1)
 
 

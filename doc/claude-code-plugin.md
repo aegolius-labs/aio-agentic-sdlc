@@ -7,7 +7,7 @@ integrated.
 ## 1. Open the repository in Claude Code
 
 Claude Code auto-discovers `.mcp.json` at the project root. Opening this repository is
-enough — the 23 tools, 2 resources, and 1 prompt register automatically. Nothing to
+enough — the 24 tools, 2 resources, and 1 prompt register automatically. Nothing to
 install.
 
 This does **not** load the `manage-sdlc` skill. You get the tools; you do not get the
@@ -77,7 +77,7 @@ example the installed plugin plus a local override — collide.
 ## Verifying the connection
 
 The server identifies itself as `aio-agentic-sdlc` with the installed distribution
-version. A healthy handshake reports protocol `2025-11-25`, 23 tools, 2 resources, and
+version. A healthy handshake reports protocol `2025-11-25`, 24 tools, 2 resources, and
 1 prompt. Running from a source tree with no installed distribution metadata reports
 version `0.0.0+unknown`, which is expected rather than an error.
 

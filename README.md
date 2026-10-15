@@ -10,7 +10,7 @@ The `aio-agentic-sdlc` framework includes several built-in features that ensure 
 
 - **Canonical GUID Traceability**: Node IDs map natively and consistently across your PRDs, codebase comments, and DAG structures.
 - **QA Sandbox Isolation**: QA agents operate strictly within robust `.qa-sandbox/<session-id>/` environments to ensure they cannot leak or destructively modify core source files.
-- **MCP Server Integration**: The official Python MCP SDK v2 `MCPServer` exposes the Agentic Backlog server over stdio with 23 tools, two resources, and one prompt; the two additive tools maintain source-identity receipts.
+- **MCP Server Integration**: The official Python MCP SDK v2 `MCPServer` exposes the Agentic Backlog server over stdio with 24 tools, two resources, and one prompt; the two additive tools maintain source-identity receipts.
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
 - **Evidence-Gated Reconciliation**: GUID matches are confirmed deterministically, structural matches remain review candidates, and unmatched Reality observations never become deletion work by default.
@@ -147,7 +147,14 @@ uv run dag-tool intent create-node --file .aio-agentic-sdlc/intention-dag.yaml -
   --type component --name "Capability" --payload-file intent.json
 uv run dag-tool validate-intent --file .aio-agentic-sdlc/intention-dag.yaml
 uv run dag-tool intent-summary --file .aio-agentic-sdlc/intention-dag.yaml
+uv run dag-tool check-consistency --file .aio-agentic-sdlc/intention-dag.yaml
 ```
+
+`check-consistency` reports internal contradictions in the Intention DAG without mutating it:
+duplicate or overlapping nodes, approval states that contradict across relationships, inverted or
+ambiguous containment, open ambiguities on approved intent, and acceptance criteria that only
+restate the description. Findings are advisory; `--strict` exits non-zero on error-severity
+findings. Whether two prose statements contradict in meaning is not judged.
 
 Use `--allow-partial` during migration while legacy nodes do not yet contain Intent IR. Strict
 validation remains the default.
