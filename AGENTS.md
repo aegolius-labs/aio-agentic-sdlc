@@ -8,6 +8,7 @@ order when you are new to the repository.
 | Read | When you need to know |
 | --- | --- |
 | `doc/VISION.md` | Why the framework exists: the backlog is the diff of the Intention and Reality DAGs. Read before any architectural change. |
+| `ROADMAP.md` | The milestone sequence toward the vision and what "done" means. It orders Intention nodes; it is not a second source of intent. |
 | `doc/authority-model.md` | Which layer owns which kind of truth, and why evidence never becomes intent. Normative. |
 | `doc/architecture.md` | Repository layout, data flow, and how framework detection and SDD reconciliation fit together. |
 | `doc/adr/0001-versioned-local-state.md` | How backlog writes are locked, revisioned, journaled, and recovered. |
