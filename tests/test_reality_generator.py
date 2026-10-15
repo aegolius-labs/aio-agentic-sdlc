@@ -531,3 +531,26 @@ def test_docstring_descriptions_do_not_depend_on_line_endings():
     lf, crlf = descriptions
     assert crlf == lf
     assert not any("\r" in description for description in crlf.values())
+
+
+def test_docstring_descriptions_keep_content_quotes_and_drop_prefixes():
+    """Only the delimiters and string prefix are removed from a docstring."""
+
+    source = (
+        "def quoted():\n"
+        '    """Return "hi"."""\n'
+        "\n"
+        "def raw():\n"
+        '    r"""Match \\d+ digits."""\n'
+        "\n"
+        "def single():\n"
+        "    'Ends with \"quote\"'\n"
+    )
+    with tempfile.TemporaryDirectory() as tmpdir:
+        Path(tmpdir, "quotes.py").write_text(source, encoding="utf-8")
+        manager = _generate(tmpdir)
+        descriptions = {n.name: n.description for n in manager.nodes.values()}
+
+    assert descriptions["quoted"] == 'Return "hi".'
+    assert descriptions["raw"] == "Match \\d+ digits."
+    assert descriptions["single"] == 'Ends with "quote"'
