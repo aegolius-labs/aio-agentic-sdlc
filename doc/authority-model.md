@@ -98,9 +98,28 @@ The projection is therefore lossy in one direction by design. The canonical GUID
 must be carried into the ABK item and into the GitHub issue body marker so that
 a projected issue can always be traced back to its Intention DAG node.
 
-Projection is **one-way**. ABK's existing additive, update-only apply semantics
-already satisfy this: it never deletes issues, removes relationships, archives
-Project items, or closes issues automatically.
+Projection is **one-way**: what ABK writes to GitHub follows from layer 3 and
+never from GitHub's own state. Since ABK's R10 (2026-10-15) that is no longer
+the same as being additive. Each write it may now make either follows the
+manifest or rests on evidence GitHub already holds:
+
+- **Removing a relationship the manifest no longer declares.** A parent or
+  dependency link between two manifest items is removed when the manifest
+  drops it. That makes the projection *more* faithful to layer 3, not less.
+  Links to issues outside the manifest are never touched. Each removal records
+  how to restore it.
+- **Closing a parent whose children are all closed.** This is the one closure
+  ABK proposes. It rests on evidence, the closure of every child, and is bound
+  to that observed state. It is never a reaction to the manifest's silence.
+- **Pre-authorized Priority-only plans.** Priority is derived from layer 3, and
+  GitHub cannot compute it.
+
+Every one of these goes through ABK's plan, digest (or the engine-checked
+Priority-only exemption), apply and receipt contract. ABK still never deletes
+issues, archives Project items, or closes an issue because the manifest stopped
+listing it. GitHub's own closure of an issue when a pull request carrying
+`Closes #N` merges is evidence, and it reaches the layers above only through
+the return channel below.
 
 The return channel carries evidence only. `abk observe` emits a versioned
 `abk-observed-state` document recording, for each managed issue, its item ID,
