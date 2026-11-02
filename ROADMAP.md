@@ -72,6 +72,8 @@ Goal: the diff can authorize work. Today triage withholds 52 of 56 items
 because their intent is `review_required`.
 
 - [ ] Review all 55 `review_required` nodes: approve, revise or retire each.
+  The grouped proposal is in
+  [doc/reviews/intent-review-2026-10-15.md](doc/reviews/intent-review-2026-10-15.md).
 - [ ] Resolve the nodes that contradict other documents: the licensing and
   EULA nodes against `COMMERCIAL.md`, and the QA swarm nodes against the
   authority model's layer 5.
