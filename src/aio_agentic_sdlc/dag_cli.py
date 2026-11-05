@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +21,14 @@ from aio_agentic_sdlc.drift_triage import (
     DriftTriageEngine,
     TriageDecisionSet,
     render_drift_triage,
+)
+from aio_agentic_sdlc.evidence import (
+    EVIDENCE_LEDGER_FILE,
+    EvidenceEvaluator,
+    EvidenceLevel,
+    EvidenceRecord,
+    load_evidence_ledger,
+    record_evidence,
 )
 from aio_agentic_sdlc.intent_consistency import (
     IntentConsistencyChecker,
@@ -713,19 +722,47 @@ def diff(intention, reality, mode, max_tasks, max_candidates):
     ),
 )
 @click.option(
+    "--evidence",
+    "evidence_ledger",
+    type=click.Path(exists=True, dir_okay=False),
+    help=(
+        "Evidence ledger to grade each node's acceptance criteria against "
+        "(ADR 0003). Never changes a classification."
+    ),
+)
+@click.option(
     "--output",
     type=click.Path(dir_okay=False),
     help="Atomically write the JSON report instead of printing it.",
 )
-def reconcile(intention, reality, max_items, max_candidates, observed_state, output):
+def reconcile(
+    intention,
+    reality,
+    max_items,
+    max_candidates,
+    observed_state,
+    evidence_ledger,
+    output,
+):
     """Render a bounded, read-only reconciliation evidence report."""
 
     try:
         intent_manager = DAGManager.load(intention)
         reality_manager = DAGManager.load(reality)
         observed = load_observed_state(observed_state) if observed_state else None
+        evaluator = (
+            EvidenceEvaluator(
+                load_evidence_ledger(evidence_ledger),
+                project_root=_workspace_root(intention),
+            )
+            if evidence_ledger
+            else None
+        )
         report = ReconciliationEngine(
-            intent_manager, reality_manager, observed_state=observed
+            intent_manager,
+            reality_manager,
+            observed_state=observed,
+            evidence=evaluator,
         ).analyze(
             max_items=max_items,
             max_candidates=max_candidates,
@@ -735,13 +772,96 @@ def reconcile(intention, reality, max_items, max_candidates, observed_state, out
                 report,
                 output,
                 protected_paths=(intention, reality)
-                + ((observed_state,) if observed_state else ()),
+                + ((observed_state,) if observed_state else ())
+                + ((evidence_ledger,) if evidence_ledger else ()),
             )
             click.echo(f"Reconciliation report saved to {output}.")
         else:
             click.echo(json.dumps(report, indent=2))
     except Exception as e:
         click.secho(f"Error reconciling DAGs: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+def _workspace_root(intention_path):
+    """The project root when the DAG sits in its framework workspace."""
+
+    parent = Path(os.path.abspath(intention_path)).parent
+    return parent.parent if parent.name == ".aio-agentic-sdlc" else None
+
+
+@cli.group("evidence")
+def evidence():
+    """Record acceptance evidence in the committed ledger (ADR 0003)."""
+
+
+@evidence.command("record")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Path to the project containing the canonical framework workspace.",
+)
+@click.option("--intent-id", required=True, help="Canonical Intention node GUID.")
+@click.option("--criterion-id", required=True, help="Acceptance criterion ID.")
+@click.option(
+    "--reference", required=True, help="The criterion's required evidence reference."
+)
+@click.option(
+    "--level",
+    required=True,
+    type=click.Choice(
+        [
+            level.value
+            for level in EvidenceLevel
+            if level not in (EvidenceLevel.DECLARED, EvidenceLevel.MAPPED)
+        ]
+    ),
+    help="Evidence level this record demonstrates.",
+)
+@click.option(
+    "--locator",
+    required=True,
+    help="Where the evidence lives: a path, test node ID or URL.",
+)
+@click.option("--summary", required=True, help="What the evidence shows.")
+@click.option("--recorded-by", required=True, help="Identity recording the evidence.")
+@click.option("--recorded-at", required=True, help="Timezone-aware ISO-8601 timestamp.")
+@click.option("--approved-by", help="The approver; required for approved evidence.")
+def evidence_record(
+    project_path,
+    intent_id,
+    criterion_id,
+    reference,
+    level,
+    locator,
+    summary,
+    recorded_by,
+    recorded_at,
+    approved_by,
+):
+    """Append one record bound to an existing acceptance criterion."""
+
+    try:
+        root = Path(os.path.abspath(project_path))
+        record = EvidenceRecord(
+            intent_id=intent_id,
+            criterion_id=criterion_id,
+            reference=reference,
+            level=level,
+            locator=locator,
+            summary=summary,
+            recorded_by=recorded_by,
+            recorded_at=recorded_at,
+            approved_by=approved_by,
+        )
+        intention = DAGManager.load(str(root / INTENTION_DAG_FILE))
+        count = record_evidence(
+            root / EVIDENCE_LEDGER_FILE, intention, record, project_root=root
+        )
+        click.echo(f"Recorded {level} evidence for {criterion_id} ({count} records).")
+    except Exception as e:
+        click.secho(f"Error recording evidence: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 

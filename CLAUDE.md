@@ -144,7 +144,7 @@ architectural components, Reality nodes are individual symbols.
   `validate_traceability`. Artifacts: `generate_document`, `promote_spec`,
   `check_duplicate_prd`.
 - **`dag-tool`** — `diff`, `reconcile`, `triage`, `visualize`, `validate`,
-  `validate-intent`, `check-consistency`, `intent`, `intent-summary`, `mapping`, `node`, `edge`,
+  `validate-intent`, `check-consistency`, `intent`, `intent-summary`, `mapping`, `evidence`, `node`, `edge`,
   `generate-reality`.
 - **`aio-sdlc` / `aio-agentic-sdlc` / `agb`** — backlog CLI: `init`, `add`, `update`,
   `remove`, `prioritize`, `next`, `status`, `block`, `unblock`, `export`, `plan`, `apply`,
@@ -170,6 +170,8 @@ discovery depends on that filename and location.
 
 - `intention-dag.yaml` — durable, committed, version-controlled intent.
 - `reality-dag.yaml` — regenerable observation; committed but never hand-edited.
+- `evidence.json` — committed acceptance evidence ledger (ADR 0003), written only by
+  `dag-tool evidence record`.
 - `backlog.json` — gitignored local execution queue derived from the diff.
 - `state-audit.jsonl` — gitignored append-only transaction journal.
 - `config.json` — project-local hierarchy and validation configuration.
