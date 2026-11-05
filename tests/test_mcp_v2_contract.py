@@ -103,7 +103,7 @@ INTEGER_ARGUMENTS = {
     "max_candidates",
 }
 NUMBER_ARGUMENTS = {"similarity_threshold"}
-BOOLEAN_ARGUMENTS = {"require_all"}
+BOOLEAN_ARGUMENTS = {"require_all", "include_acceptance"}
 
 EXPECTED_ARGUMENT_CONTRACT = {
     "add_task": (
@@ -153,7 +153,12 @@ EXPECTED_ARGUMENT_CONTRACT = {
     "promote_spec": ({"feature_name"}, {"project_path": "."}),
     "reconcile_dags": (
         set(),
-        {"project_path": ".", "max_items": 100, "max_candidates": 20},
+        {
+            "project_path": ".",
+            "max_items": 100,
+            "max_candidates": 20,
+            "include_acceptance": False,
+        },
     ),
     "remove_task": ({"name"}, {"project_path": "."}),
     "review_intent": (set(), {"project_path": ".", "node_id": None}),

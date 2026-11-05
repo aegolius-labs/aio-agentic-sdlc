@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "plan_digest": "c41faf8d0decd176871d15873d37096c110a54259c1a577dd172c21e902a1e30",
+  "decisions": [
+    {
+      "subject_key": "intent:d64fbc3a-bdde-5672-8645-4aaa75464e46",
+      "classification": "missing_implementation",
+      "rationale": "Intent Translation Benchmark is approved as wanted but not built (review packet group B). No source symbol implements it, so the gap is missing implementation, not tooling drift.",
+      "evidence": [
+        "doc/reviews/intent-review-2026-10-15.md#b-approve-as-wanted-not-built-yet-11",
+        "ROADMAP.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-05T19:00:00+00:00"
+    },
+    {
+      "subject_key": "intent:cb02a996-6d3f-5610-9043-b1e768587d84",
+      "classification": "missing_implementation",
+      "rationale": "Closed-loop Reference Demo is approved as wanted but not built (review packet group B). No source symbol implements it, so the gap is missing implementation, not tooling drift.",
+      "evidence": [
+        "doc/reviews/intent-review-2026-10-15.md#b-approve-as-wanted-not-built-yet-11",
+        "ROADMAP.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-05T19:00:00+00:00"
+    },
+    {
+      "subject_key": "intent:4f6cdecf-639d-50e5-bc6d-ad71c1750000",
+      "classification": "missing_implementation",
+      "rationale": "Agent Runtime Portability is approved as wanted but not built (review packet group B). No source symbol implements it, so the gap is missing implementation, not tooling drift.",
+      "evidence": [
+        "doc/reviews/intent-review-2026-10-15.md#b-approve-as-wanted-not-built-yet-11",
+        "ROADMAP.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-05T19:00:00+00:00"
+    },
+    {
+      "subject_key": "intent:15302505-8828-525a-bebb-f72621f467a1",
+      "classification": "missing_implementation",
+      "rationale": "Cross-language Ontology Portability is approved as wanted but not built (review packet group B). No source symbol implements it, so the gap is missing implementation, not tooling drift.",
+      "evidence": [
+        "doc/reviews/intent-review-2026-10-15.md#b-approve-as-wanted-not-built-yet-11",
+        "ROADMAP.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-05T19:00:00+00:00"
+    },
+    {
+      "subject_key": "intent:82579715-d088-51ac-999f-4a95235b561c",
+      "classification": "missing_implementation",
+      "rationale": "Product Hardening is approved as wanted but not built (review packet group B). No source symbol implements it, so the gap is missing implementation, not tooling drift.",
+      "evidence": [
+        "doc/reviews/intent-review-2026-10-15.md#b-approve-as-wanted-not-built-yet-11",
+        "ROADMAP.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-05T19:00:00+00:00"
+    }
+  ]
+}

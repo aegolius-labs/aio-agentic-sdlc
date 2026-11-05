@@ -16,6 +16,8 @@ Tool names may be namespaced by the host. Match them by the operation names belo
 | Validate GUID links | `validate_traceability` | Use the Python API if MCP is unavailable |
 | Generate Reality DAG | `generate_reality` | `uv run dag-tool generate-reality ...` |
 | Reconcile DAG identity evidence | `reconcile_dags` | `uv run dag-tool reconcile ...` |
+| Grade acceptance evidence | `reconcile_dags` with `include_acceptance` | `uv run dag-tool reconcile --evidence .aio-agentic-sdlc/evidence.json ...` |
+| Record acceptance evidence | CLI only | `uv run dag-tool evidence record --project-path ... --intent-id ... --criterion-id ... --reference ... --level ...` |
 | Visualize or compare canonical DAGs | `visualize_dag` | `uv run dag-tool visualize --project-path ... --view ...` |
 | Triage reconciliation drift | `triage_reconciliation_drift` | `uv run dag-tool triage ...` |
 | Review a source mapping | `review_mapping` | `uv run dag-tool mapping review ...` |

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+      "criterion_id": "EVIDENCE-AC1",
+      "reference": "test:evidence-level-state-machine",
+      "level": "tested",
+      "locator": "tests/test_evidence.py::test_evidence_level_state_machine",
+      "summary": "Asserts the six-level order, the required level per reference kind, and that grading moves from declared to mapped to complete only with qualifying records.",
+      "recorded_by": "claude-code-project-thread",
+      "recorded_at": "2026-11-05T19:35:00Z"
+    },
+    {
+      "intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+      "criterion_id": "EVIDENCE-AC1",
+      "reference": "schema:evidence-v1",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/evidence.py::EvidenceLedger",
+      "summary": "EvidenceLedger and EvidenceRecord define the strict schema version 1 ledger; ADR 0003 documents it.",
+      "recorded_by": "claude-code-project-thread",
+      "recorded_at": "2026-11-05T19:35:00Z"
+    },
+    {
+      "intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+      "criterion_id": "EVIDENCE-AC2",
+      "reference": "test:reconciliation-evidence-report",
+      "level": "tested",
+      "locator": "tests/test_evidence.py::test_reconciliation_evidence_report",
+      "summary": "Asserts reconciliation cites supporting records, lists unverified criteria, reports orphaned records, and leaves classifications unchanged.",
+      "recorded_by": "claude-code-project-thread",
+      "recorded_at": "2026-11-05T19:35:00Z"
+    },
+    {
+      "intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+      "criterion_id": "EVIDENCE-AC2",
+      "reference": "demo:traceability-report",
+      "level": "behaviorally_verified",
+      "locator": ".aio-agentic-sdlc/changes/explicit-evidence-model/report.json",
+      "summary": "dag-tool reconcile --evidence run on this repository: each intent record grades its criteria, cites supporting records and lists the unverified ones.",
+      "recorded_by": "claude-code-project-thread",
+      "recorded_at": "2026-11-05T19:35:00Z"
+    }
+  ]
+}

@@ -213,7 +213,9 @@ nodes:
 - id: 43a7b4d2-1d7b-5f7d-b216-ee2e0694921e
   type: component
   name: get_next_item
-  description: Function get_next_item
+  description: "Return the highest-priority workable item and an optional warning.\n\
+    \n    ``where`` optionally restricts which items may be selected; it receives\n\
+    \    each backlog item and must return True for an eligible one.\n    "
 - id: 19ec3ffc-ed29-51ca-886f-c90fd1874216
   type: component
   name: add_item
@@ -266,6 +268,11 @@ nodes:
   type: component
   name: validate_intent
   description: Validate the Intent IR payloads and coverage of an Intention DAG.
+- id: 37ee052f-8265-5b4d-840a-e603a091c6bd
+  type: component
+  name: check_consistency
+  description: Report internal contradictions in the Intention DAG without mutating
+    it.
 - id: 83f1a4a0-b8a4-5f52-83d7-999c06fb1ef2
   type: component
   name: intent_summary
@@ -327,6 +334,14 @@ nodes:
   type: component
   name: reconcile
   description: Render a bounded, read-only reconciliation evidence report.
+- id: 3ce2fd65-81c4-5040-9b58-99b037c29bea
+  type: component
+  name: evidence
+  description: Record acceptance evidence in the committed ledger (ADR 0003).
+- id: b46a2aca-7a70-5927-a270-34c3b52fb892
+  type: component
+  name: evidence_record
+  description: Append one record bound to an existing acceptance criterion.
 - id: 3e8a1ea7-2960-5b5d-ab75-4b455163995e
   type: component
   name: visualize
@@ -633,6 +648,100 @@ nodes:
   type: component
   name: render_drift_triage
   description: Render a GUID-last human brief from a drift triage report.
+- id: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  type: module
+  name: evidence.py
+  description: Module src.aio_agentic_sdlc.evidence
+- id: ddaeeefa-9825-525b-88b5-d06ab34bb5e8
+  type: component
+  name: EvidenceError
+  description: The evidence ledger or a record cannot be used.
+- id: 65f9d986-f3d7-5e62-b9ba-1acb70b04afd
+  type: component
+  name: EvidenceLevel
+  description: Class EvidenceLevel
+- id: 4577defb-1d8b-5774-8f4f-98b690b25ca6
+  type: component
+  name: rank
+  description: Function rank
+- id: e76f182e-570a-5575-8029-19c978c4f4ab
+  type: component
+  name: required_level
+  description: Return the level a required evidence reference must reach.
+- id: 193e688a-46ba-53c4-8309-0603da1c32d3
+  type: entity
+  name: EvidenceRecord
+  description: One observation that one required evidence reference reached a level.
+- id: e866c3ee-7b73-5530-bb26-5085b816098d
+  type: component
+  name: canonical_intent_id
+  description: Function canonical_intent_id
+- id: 465db0b6-b3aa-5e3c-a1b6-3fb2b65fda49
+  type: component
+  name: timezone_aware
+  description: Function timezone_aware
+- id: ab0f81cc-f890-5720-b81c-9e4830e3d534
+  type: component
+  name: recorded_level_rules
+  description: Function recorded_level_rules
+- id: f2376ed8-b9af-515f-9827-4ff09d758312
+  type: component
+  name: key
+  description: Function key
+- id: d65a076e-ec66-5225-a492-29199ab2e440
+  type: entity
+  name: EvidenceLedger
+  description: The committed evidence ledger, schema version 1.
+- id: 0832ebed-e715-5804-8694-8bad443c3608
+  type: component
+  name: load_evidence_ledger
+  description: Load and validate a ledger; a missing file is an empty ledger.
+- id: e0d7c364-1e0f-507e-848a-21bb6022c328
+  type: component
+  name: record_evidence
+  description: Append one record bound to an existing criterion; return the record
+    count.
+- id: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  type: component
+  name: EvidenceEvaluator
+  description: Grade acceptance criteria against derived levels and ledger records.
+- id: 55b558ba-8d84-5112-8d24-4db984673ee3
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 95cb4fbe-244e-5f84-812b-cf5400200d5e
+  type: component
+  name: evaluate
+  description: Return the node's acceptance grading, or None without Intent IR.
+- id: 7d1b8a4a-8b0d-5899-a0d8-80e22e3323da
+  type: component
+  name: orphaned_records
+  description: Records whose intent, criterion or reference no longer exists.
+- id: e63a391f-87b9-5327-b422-35e94f8b8ed5
+  type: module
+  name: intent_consistency.py
+  description: Module src.aio_agentic_sdlc.intent_consistency
+- id: 75a405fa-34ce-5be3-b369-2c365fd70bbd
+  type: component
+  name: IntentConsistencyError
+  description: The Intention DAG cannot be checked.
+- id: 3fe91368-3385-568d-ab02-95b67c9d2604
+  type: component
+  name: IntentConsistencyChecker
+  description: Report internal contradictions in one Intention DAG without mutating
+    it.
+- id: 82eebb87-24f6-56b4-b655-23625918a84e
+  type: component
+  name: __init__
+  description: Function __init__
+- id: ded7d268-4821-592c-a144-5a9621e9425d
+  type: component
+  name: analyze
+  description: Return a bounded report with complete totals.
+- id: a22d475d-86e1-515a-9bc6-bed573829115
+  type: component
+  name: render_intent_consistency
+  description: Render a short human brief of a consistency report.
 - id: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
   type: module
   name: intent_ir.py
@@ -912,6 +1021,11 @@ nodes:
   name: validate_intent
   description: Validate Intent IR payloads and coverage in the canonical Intention
     DAG.
+- id: 30070c10-b829-5995-8a0b-31624c3a7f98
+  type: component
+  name: check_intent_consistency
+  description: Report internal contradictions in the Intention DAG without mutating
+    it.
 - id: 869f4f9e-cfef-5819-b456-2bff82979318
   type: component
   name: review_intent
@@ -957,13 +1071,26 @@ nodes:
   type: module
   name: orchestrator_loop.py
   description: Module src.aio_agentic_sdlc.orchestrator_loop
+- id: f57d62b8-7a86-5f3f-9851-47345f57ce14
+  type: component
+  name: triage_subject_key
+  description: Return the drift-triage subject key for a safe diff task, or None.
+- id: 54c1a005-787a-5953-a28a-212cac729c7d
+  type: component
+  name: authorized_subjects
+  description: "Return the triage subject keys whose implementation is authorized.\n\
+    \n    Only approved intent that triage classifies as ``missing_implementation``\n\
+    \    is authorized, so unapproved intent never reaches an implementing agent.\n\
+    \    "
 - id: 2ebf00ef-c11d-501f-add4-f86a1df8be8a
   type: component
   name: ingest_diff
   description: "\n    Loads intention/reality DAGs via DAGManager, uses DiffingEngine\
     \ to calculate the diff,\n    and merges the resulting tasks and edges into the\
     \ local framework backlog\n    using core.load_backlog and core.save_backlog,\
-    \ followed by core.prioritize_items.\n    "
+    \ followed by core.prioritize_items.\n\n    Each ingested task records whether\
+    \ drift triage authorizes its\n    implementation. Execution fields of tasks already\
+    \ in the backlog are kept.\n    "
 - id: aa788b5d-b918-5414-b688-a1db5fda7ea4
   type: component
   name: execute_task_with_agent
@@ -974,9 +1101,11 @@ nodes:
   type: component
   name: main_loop
   description: "\n    1. Invokes ingest_diff().\n    2. Fetches the highest-priority\
-    \ unblocked task via core.get_next_item().\n    3. Sets task status to 'In Progress'\
-    \ via core.set_status().\n    4. Awaits execute_task_with_agent(task).\n    5.\
-    \ Marks status 'Completed' (or 'Blocked' on failure).\n    "
+    \ unblocked task that triage authorizes\n       for implementation via core.get_next_item().\n\
+    \    3. Sets task status to 'In Progress' via core.set_status().\n    4. Awaits\
+    \ execute_task_with_agent(task).\n    5. Marks status 'Completed' (or 'Blocked'\
+    \ on failure).\n\n    Returns the executed task's name, or None when nothing is\
+    \ authorized.\n    "
 - id: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   type: module
   name: reality_dag_generator.py
@@ -1039,8 +1168,10 @@ nodes:
     \n        Observations are mapped by canonical GUID and appended to the matching\n\
     \        intent record's evidence. They never change a classification or\n   \
     \     whether approval is required: GitHub is a projection of the work, and\n\
-    \        a closed issue is not proof that Reality satisfies Intention.\n     \
-    \   "
+    \        a closed issue is not proof that Reality satisfies Intention.\n\n   \
+    \     With an evidence evaluator, each intent record also grades its\n       \
+    \ acceptance criteria (ADR 0003). Grading never changes a\n        classification:\
+    \ a confirmed node can still be incomplete.\n        "
 - id: 9e5d1e31-36dc-56a2-a15a-37a11bf2745e
   type: component
   name: iter_intent_records
@@ -1540,6 +1671,9 @@ edges:
   target: 62d9aa92-3b61-593d-89b6-6307d3b9a092
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 37ee052f-8265-5b4d-840a-e603a091c6bd
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 83f1a4a0-b8a4-5f52-83d7-999c06fb1ef2
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -1583,6 +1717,12 @@ edges:
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 2b77c80b-27d1-5b82-b03c-3d3c7333d62b
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 3ce2fd65-81c4-5040-9b58-99b037c29bea
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: b46a2aca-7a70-5927-a270-34c3b52fb892
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 3e8a1ea7-2960-5b5d-ab75-4b455163995e
@@ -1810,6 +1950,75 @@ edges:
   target: e62dee61-dd2b-5342-af0e-1c48e3b1d93d
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: ddaeeefa-9825-525b-88b5-d06ab34bb5e8
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: 65f9d986-f3d7-5e62-b9ba-1acb70b04afd
+  type: contains
+- source: 65f9d986-f3d7-5e62-b9ba-1acb70b04afd
+  target: 4577defb-1d8b-5774-8f4f-98b690b25ca6
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: e76f182e-570a-5575-8029-19c978c4f4ab
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: 193e688a-46ba-53c4-8309-0603da1c32d3
+  type: contains
+- source: 193e688a-46ba-53c4-8309-0603da1c32d3
+  target: e866c3ee-7b73-5530-bb26-5085b816098d
+  type: contains
+- source: 193e688a-46ba-53c4-8309-0603da1c32d3
+  target: 465db0b6-b3aa-5e3c-a1b6-3fb2b65fda49
+  type: contains
+- source: 193e688a-46ba-53c4-8309-0603da1c32d3
+  target: ab0f81cc-f890-5720-b81c-9e4830e3d534
+  type: contains
+- source: 193e688a-46ba-53c4-8309-0603da1c32d3
+  target: f2376ed8-b9af-515f-9827-4ff09d758312
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: d65a076e-ec66-5225-a492-29199ab2e440
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: 0832ebed-e715-5804-8694-8bad443c3608
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: e0d7c364-1e0f-507e-848a-21bb6022c328
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  type: contains
+- source: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  target: 55b558ba-8d84-5112-8d24-4db984673ee3
+  type: contains
+- source: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  target: 95cb4fbe-244e-5f84-812b-cf5400200d5e
+  type: contains
+- source: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
+  target: 7d1b8a4a-8b0d-5899-a0d8-80e22e3323da
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: e63a391f-87b9-5327-b422-35e94f8b8ed5
+  type: contains
+- source: e63a391f-87b9-5327-b422-35e94f8b8ed5
+  target: 75a405fa-34ce-5be3-b369-2c365fd70bbd
+  type: contains
+- source: e63a391f-87b9-5327-b422-35e94f8b8ed5
+  target: 3fe91368-3385-568d-ab02-95b67c9d2604
+  type: contains
+- source: 3fe91368-3385-568d-ab02-95b67c9d2604
+  target: 82eebb87-24f6-56b4-b655-23625918a84e
+  type: contains
+- source: 3fe91368-3385-568d-ab02-95b67c9d2604
+  target: ded7d268-4821-592c-a144-5a9621e9425d
+  type: contains
+- source: e63a391f-87b9-5327-b422-35e94f8b8ed5
+  target: a22d475d-86e1-515a-9bc6-bed573829115
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
   type: contains
 - source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
@@ -2014,6 +2223,9 @@ edges:
   target: 69438715-a4a3-5f13-8f5c-7d2a9b08ace4
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
+  target: 30070c10-b829-5995-8a0b-31624c3a7f98
+  type: contains
+- source: 905cfe1d-7c37-50cf-b768-9132c88169e7
   target: 869f4f9e-cfef-5819-b456-2bff82979318
   type: contains
 - source: 905cfe1d-7c37-50cf-b768-9132c88169e7
@@ -2045,6 +2257,12 @@ edges:
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 654e7846-a5b4-5627-af8a-6045142b4851
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: f57d62b8-7a86-5f3f-9851-47345f57ce14
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: 54c1a005-787a-5953-a28a-212cac729c7d
   type: contains
 - source: 654e7846-a5b4-5627-af8a-6045142b4851
   target: 2ebf00ef-c11d-501f-add4-f86a1df8be8a

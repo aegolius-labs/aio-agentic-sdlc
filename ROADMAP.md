@@ -1,6 +1,6 @@
 # AIO Agentic SDLC Roadmap
 
-Last updated: 2026-10-15
+Last updated: 2026-11-05
 
 ## Product goal
 
@@ -74,9 +74,9 @@ because their intent is `review_required`.
 - [ ] Review all 55 `review_required` nodes: approve, revise or retire each.
   The grouped proposal is in
   [doc/reviews/intent-review-2026-10-15.md](doc/reviews/intent-review-2026-10-15.md).
-- [ ] Resolve the nodes that contradict other documents: the licensing and
+- [x] Resolve the nodes that contradict other documents: the licensing and
   EULA nodes against `COMMERCIAL.md`, and the QA swarm nodes against the
-  authority model's layer 5.
+  authority model's layer 5. Rejected or revised in #145.
 - [ ] Replace the mechanically copied acceptance criteria on approved nodes
   with criteria that name their required evidence.
 - [x] Intention DAG self-consistency check as a new read-only tool (#12).
@@ -98,8 +98,8 @@ nodes are confirmed against 322 Reality nodes.
 
 Intention node: Explicit Evidence Model (`6b1b3459`).
 
-- [ ] Completion distinguishes declared, mapped, structural, tested,
-  behaviorally verified and approved evidence.
+- [x] Completion distinguishes declared, mapped, structural, tested,
+  behaviorally verified and approved evidence (ADR 0003).
 - [ ] A confirmed node whose acceptance criteria lack their required evidence
   stays in the diff.
 - [ ] `apply` marks a task complete only on evidence, not because an agent

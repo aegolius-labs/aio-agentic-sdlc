@@ -15,6 +15,7 @@ from uuid import UUID
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Node, NodeType
 from aio_agentic_sdlc.dag_store import guarded_file_path
+from aio_agentic_sdlc.evidence import EvidenceEvaluator
 from aio_agentic_sdlc.observed_state import map_observed_state
 
 REPORT_SCHEMA_VERSION = 1
@@ -24,6 +25,7 @@ PROTECTED_STATE_FILENAMES = {
     "intention-dag.yaml",
     "reality-dag.yaml",
     "backlog.json",
+    "evidence.json",
     "state-audit.jsonl",
     "state.lock",
 }
@@ -128,6 +130,7 @@ class ReconciliationEngine:
         reality: DAGManager,
         *,
         observed_state: dict[str, Any] | None = None,
+        evidence: EvidenceEvaluator | None = None,
     ):
         """Optionally attach agentic-backlog-kit observed state as evidence.
 
@@ -135,10 +138,15 @@ class ReconciliationEngine:
         intent record's evidence. They never change a classification or
         whether approval is required: GitHub is a projection of the work, and
         a closed issue is not proof that Reality satisfies Intention.
+
+        With an evidence evaluator, each intent record also grades its
+        acceptance criteria (ADR 0003). Grading never changes a
+        classification: a confirmed node can still be incomplete.
         """
 
         self.intention = intention
         self.reality = reality
+        self.evidence = evidence
         self.observed = (
             map_observed_state(observed_state, intention)
             if observed_state is not None
@@ -295,6 +303,13 @@ class ReconciliationEngine:
             )
             if node_id in observations:
                 record["evidence"].append(dict(observations[node_id]))
+            if self.evidence is not None:
+                acceptance = self.evidence.evaluate(
+                    self.intention.nodes[node_id],
+                    mapped=record["classification"] == "confirmed",
+                )
+                if acceptance is not None:
+                    record["acceptance"] = acceptance
             yield record
 
     def iter_intent_records(
@@ -328,12 +343,21 @@ class ReconciliationEngine:
         retained_by_classification: dict[str, list[dict[str, Any]]] = {
             classification: [] for classification in CLASSIFICATION_PRIORITY
         }
+        acceptance_counts = {"complete": 0, "incomplete": 0, "criteria_unverified": 0}
         for record in self._iter_intent_records(
             context,
             max_candidates=max_candidates,
         ):
             classification = record["classification"]
             classification_counts[classification] += 1
+            if "acceptance" in record:
+                acceptance = record["acceptance"]
+                acceptance_counts[
+                    "complete" if acceptance["complete"] else "incomplete"
+                ] += 1
+                acceptance_counts["criteria_unverified"] += acceptance[
+                    "criteria_unverified"
+                ]
             if len(retained_by_classification[classification]) < max_items:
                 retained_by_classification[classification].append(record)
 
@@ -394,6 +418,14 @@ class ReconciliationEngine:
             },
             "items": all_items,
         }
+        if self.evidence is not None:
+            orphaned = self.evidence.orphaned_records(self.intention)
+            report["acceptance"] = {
+                **acceptance_counts,
+                "ledger_records": len(self.evidence.ledger.records),
+                "orphaned_records": len(orphaned),
+                "orphaned": orphaned[:max_items],
+            }
         if self.observed is not None:
             unmapped = self.observed["unmapped"]
             report["observed_state"] = {

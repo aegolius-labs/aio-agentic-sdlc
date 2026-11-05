@@ -41,6 +41,12 @@ from .dag_visualization import (
     render_dag,
 )
 from .drift_triage import DriftTriageEngine, DriftTriageError, TriageDecisionSet
+from .evidence import (
+    EVIDENCE_LEDGER_FILE,
+    EvidenceError,
+    EvidenceEvaluator,
+    load_evidence_ledger,
+)
 from .intent_consistency import IntentConsistencyChecker, IntentConsistencyError
 from .intent_ir import IntentIR
 from .intent_store import (
@@ -83,6 +89,8 @@ _PROTECTED_STATE_PATHS = (
     STATE_LOCK_FILE,
     MAPPING_LOCK_FILE,
     WORKSPACE_MIGRATION_LOCK_FILE,
+    EVIDENCE_LEDGER_FILE,
+    f"{EVIDENCE_LEDGER_FILE}.lock",
     f"{WORKSPACE_DIR}/.intention-dag.yaml.lock",
     f"{WORKSPACE_DIR}/.reality-dag.yaml.lock",
     f"{WORKSPACE_DIR}/.spec-promotion.lock",
@@ -819,6 +827,15 @@ def reconcile_dags(
             description="Maximum candidate identities retained per evidence record",
         ),
     ] = 20,
+    include_acceptance: Annotated[
+        bool,
+        Field(
+            description=(
+                "Grade each node's acceptance criteria against the project's "
+                "evidence ledger; never changes a classification"
+            ),
+        ),
+    ] = False,
 ) -> str:
     """Classify Intention/Reality identity evidence without mutating project state."""
 
@@ -826,7 +843,15 @@ def reconcile_dags(
         project_root = os.path.abspath(project_path)
         intention = DAGManager.load(os.path.join(project_root, INTENTION_DAG_FILE))
         reality = DAGManager.load(os.path.join(project_root, REALITY_DAG_FILE))
-        report = ReconciliationEngine(intention, reality).analyze(
+        evaluator = (
+            EvidenceEvaluator(
+                load_evidence_ledger(os.path.join(project_root, EVIDENCE_LEDGER_FILE)),
+                project_root=project_root,
+            )
+            if include_acceptance
+            else None
+        )
+        report = ReconciliationEngine(intention, reality, evidence=evaluator).analyze(
             max_items=max_items,
             max_candidates=max_candidates,
         )
@@ -834,6 +859,7 @@ def reconcile_dags(
     except (
         DAGValidationError,
         DAGNotFoundError,
+        EvidenceError,
         ReconciliationError,
         ValidationError,
     ) as e:

@@ -13,6 +13,7 @@ order when you are new to the repository.
 | `doc/architecture.md` | Repository layout, data flow, and how framework detection and SDD reconciliation fit together. |
 | `doc/adr/0001-versioned-local-state.md` | How backlog writes are locked, revisioned, journaled, and recovered. |
 | `doc/adr/0002-intent-ir-v1.md` | The Intent IR contract: provenance, ambiguity, confidence, acceptance evidence, approval states. |
+| `doc/adr/0003-explicit-evidence-model.md` | Evidence levels, the committed evidence ledger, and when a node counts as complete. |
 | `doc/mapping-review.md` | What approving an Intention-to-source mapping does and does not mean. |
 | `doc/dag-visualization.md` | Read-only views for comparing the two DAGs without parsing raw YAML. |
 | `doc/claude-code-plugin.md` | Using the MCP server and plugin from Claude Code or Claude Desktop. |
