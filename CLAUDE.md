@@ -156,8 +156,10 @@ architectural components, Reality nodes are individual symbols.
 Three hosts are supported from one shared skill body at
 `plugins/aio-agentic-sdlc/skills/`. Roles are Antigravity-native under `.agents/agents/`,
 adapted for Codex under `.codex/agents/`. Each host adds only a thin manifest:
-`.claude-plugin/` for Claude Code, `.codex-plugin/` for Codex, both inside
-`plugins/aio-agentic-sdlc/`, with a marketplace at the repository root for each.
+`.claude-plugin/` for Claude Code, `.codex-plugin/` for Codex, and `plugin.json` plus
+`mcp_config.json` for Antigravity, all inside `plugins/aio-agentic-sdlc/`. Claude Code
+and Codex each have a marketplace at the repository root; Antigravity installs from the
+git URL (see `doc/antigravity-plugin.md`).
 `tests/test_host_manifest_parity.py` fails if they drift or if host-specific wording
 leaks into the shared skill.
 

@@ -1,9 +1,13 @@
-"""The Claude Code and Codex host manifests must describe one shared skill body.
+"""The Claude Code, Codex and Antigravity manifests must describe one skill body.
 
 `skills/` is the single source of truth for behavior. Each host gets a thin
 manifest over it; skill content is never forked per host. These tests fail when
-the two manifests drift apart or when host-specific language leaks into the
-shared skill.
+the manifests drift apart or when host-specific language leaks into the shared
+skill.
+
+Antigravity reads `plugin.json` and `mcp_config.json` at the plugin root, and
+discovers `skills/` there. `agy plugin install` on the repository root or its
+git URL finds the top-level `plugins/` folder and installs this directory.
 """
 
 import json
@@ -19,6 +23,19 @@ CODEX_MARKETPLACE = REPO_ROOT / ".agents" / "plugins" / "marketplace.json"
 SKILLS_DIR = PLUGIN_ROOT / "skills"
 ROOT_MCP = REPO_ROOT / ".mcp.json"
 PLUGIN_MCP = PLUGIN_ROOT / ".mcp.json"
+ANTIGRAVITY_PLUGIN = PLUGIN_ROOT / "plugin.json"
+ANTIGRAVITY_MCP = PLUGIN_ROOT / "mcp_config.json"
+# Top-level fields Antigravity documents for plugin.json. It discards others,
+# such as author and homepage, so a manifest using them would mislead readers.
+ANTIGRAVITY_FIELDS = {
+    "name",
+    "displayName",
+    "description",
+    "logo",
+    "suggestedPrompts",
+    "version",
+    "disabled",
+}
 
 
 def _load(path: Path) -> dict:
@@ -26,9 +43,9 @@ def _load(path: Path) -> dict:
 
 
 class TestHostManifestsExist(unittest.TestCase):
-    def test_both_host_plugin_manifests_are_present(self):
-        self.assertTrue(CLAUDE_PLUGIN.is_file(), f"missing {CLAUDE_PLUGIN}")
-        self.assertTrue(CODEX_PLUGIN.is_file(), f"missing {CODEX_PLUGIN}")
+    def test_every_host_plugin_manifest_is_present(self):
+        for path in (CLAUDE_PLUGIN, CODEX_PLUGIN, ANTIGRAVITY_PLUGIN, ANTIGRAVITY_MCP):
+            self.assertTrue(path.is_file(), f"missing {path}")
 
     def test_both_host_marketplaces_are_present(self):
         self.assertTrue(CLAUDE_MARKETPLACE.is_file(), f"missing {CLAUDE_MARKETPLACE}")
@@ -68,6 +85,25 @@ class TestHostManifestParity(unittest.TestCase):
             self.codex["interface"]["displayName"],
             "Claude displayName and Codex interface.displayName must match",
         )
+
+
+class TestAntigravityManifest(unittest.TestCase):
+    def setUp(self):
+        self.antigravity = _load(ANTIGRAVITY_PLUGIN)
+        self.claude = _load(CLAUDE_PLUGIN)
+
+    def test_identity_agrees_with_the_claude_manifest(self):
+        for field in ("name", "displayName", "description"):
+            self.assertEqual(self.antigravity[field], self.claude[field], field)
+
+    def test_uses_only_documented_fields(self):
+        self.assertLessEqual(set(self.antigravity), ANTIGRAVITY_FIELDS)
+
+    def test_declares_no_version_that_could_drift(self):
+        self.assertNotIn("version", self.antigravity)
+
+    def test_mcp_config_matches_the_other_hosts(self):
+        self.assertEqual(_load(ANTIGRAVITY_MCP), _load(PLUGIN_MCP))
 
 
 class TestMarketplaceEntries(unittest.TestCase):

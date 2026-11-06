@@ -18,6 +18,7 @@ order when you are new to the repository.
 | `doc/dag-visualization.md` | Read-only views for comparing the two DAGs without parsing raw YAML. |
 | `doc/claude-code-plugin.md` | Using the MCP server and plugin from Claude Code or Claude Desktop. |
 | `doc/codex-plugin.md` | Using the plugin from Codex, and validating plugin or skill changes. |
+| `doc/antigravity-plugin.md` | Installing and validating the plugin in Antigravity. |
 | `README.md` | Installation, the backlog CLI, and the `dag-tool` command reference. |
 | `plugins/aio-agentic-sdlc/skills/manage-sdlc/` | The operational workflow and role references agents follow. |
 
@@ -79,13 +80,15 @@ and confirm before proceeding.
 
 ## Host plugins
 
-- The distributable plugin lives under `plugins/aio-agentic-sdlc/` and serves both hosts
+- The distributable plugin lives under `plugins/aio-agentic-sdlc/` and serves all three hosts
   from one shared `skills/` body. Never fork skill content per host, and keep
   host-specific wording in the manifests.
 - Codex: `.codex-plugin/plugin.json`, marketplace `.agents/plugins/marketplace.json`.
 - Claude Code: `.claude-plugin/plugin.json`, marketplace `.claude-plugin/marketplace.json`
   at the repository root. See `doc/claude-code-plugin.md`.
-- `tests/test_host_manifest_parity.py` enforces that the two manifests agree.
+- Antigravity: `plugin.json` and `mcp_config.json` at the plugin root. See
+  `doc/antigravity-plugin.md`.
+- `tests/test_host_manifest_parity.py` enforces that the manifests agree.
 - Project-scoped named agents live under `.codex/agents/` and adapt the legacy Antigravity roles.
 - Validate plugin changes with the plugin and skill validators documented in
   `doc/codex-plugin.md`.
