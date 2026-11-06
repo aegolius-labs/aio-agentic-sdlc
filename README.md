@@ -56,6 +56,12 @@ packages the `manage-sdlc` workflow skill and starts this project's MCP server t
 [Codex plugin guide](doc/codex-plugin.md) for the architecture, local installation, migration map,
 and validation commands.
 
+### Antigravity plugin
+
+Antigravity users can run `agy plugin install https://github.com/aegolius-labs/aio-agentic-sdlc`.
+It installs the same `manage-sdlc` skill and MCP server. See the
+[Antigravity plugin guide](doc/antigravity-plugin.md).
+
 Add the following to your IDE's `mcp.json` or equivalent configuration file:
 
 ```json
