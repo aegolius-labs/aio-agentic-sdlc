@@ -1,6 +1,6 @@
 # AIO Agentic SDLC Roadmap
 
-Last updated: 2026-11-05
+Last updated: 2026-11-07
 
 ## Product goal
 
@@ -137,3 +137,10 @@ Ontology Portability (`15302505`), Product Hardening (`82579715`).
 - [ ] Python and TypeScript parsers emit the same core ontology.
 - [ ] A clean environment installs and validates the CLI, MCP server and both
   host plugins through documented contracts.
+- [ ] Proposal, no Intention node yet: record opt-in usage evidence under the
+  organization's
+  [usage evidence contract](https://github.com/aegolius-labs/.github/blob/main/docs/usage-evidence.md).
+  `dag-tool` and `aio-sdlc` append one event per command in a project that
+  opted in, and nothing from the project itself. Usage is evidence about this
+  framework as a product, never intent. The owner approved the route on
+  2026-11-07; it becomes work only once Intake records it as a node.
