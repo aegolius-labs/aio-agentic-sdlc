@@ -53,11 +53,11 @@ jobs:
       - name: Run warning-strict test suite
         run: uv run --no-sync pytest -W error
 
-      - name: Report stale mapping receipts
+      - name: Fail on stale mapping receipts
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        # Warn-only while receipts already known to be stale await a named
-        # approver's refresh. Drop --warn-only to make a stale receipt fail CI.
-        run: uv run --no-sync dag-tool mapping receipt check --project-path . --format github --warn-only
+        # A stale receipt fails CI: refresh it with a named approver through
+        # `dag-tool mapping receipt review` and `refresh`.
+        run: uv run --no-sync dag-tool mapping receipt check --project-path . --format github
 
   clean-install:
     name: Clean install (wheel, no dev dependencies)

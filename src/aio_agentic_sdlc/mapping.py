@@ -2112,6 +2112,8 @@ class MappingEngine:
                 "postcondition": postcondition,
             }
 
+    # aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:50:53+00:00","approved_by":"Felix","candidate_reality_id":"a03577cc-ff8f-588e-ab72-553938656f7b","evidence_digest":"4925758e417d2e4bc528e19e9b11e5e0873fe566665f7d6d5aab33c560bb8d74","intent_id":"15019926-c6be-5c98-b558-954c7657e5c6","rationale":"Felix approved this mapping on the 2026-11-08 follow-up decision card after its evidence digest changed: MappingEngine.refresh_receipt is the implementation identity of 'Explicit Source Identity Maintenance'. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/mapping.py","source_sha256":"2065241f5330ef8b6b5c00f4fbf54ec12d8fb1fc4abb9e6a3cb3adb78fe3817e","symbol_kind":"function","symbol_name":"refresh_receipt"}
+    # aio-sdlc-node: 15019926-c6be-5c98-b558-954c7657e5c6
     def refresh_receipt(
         self,
         intent_id: str,

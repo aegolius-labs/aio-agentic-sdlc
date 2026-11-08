@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "plan_digest": "a1e2561597ccb0091c834fef9249fd1ee5815e9a672624e47d3fae0ebe0e7f62",
+  "decisions": [
+    {
+      "subject_key": "intent:07e7e16c-c4d7-4f59-ac98-5d33599f0270",
+      "classification": "framework_tooling_drift",
+      "rationale": "Observed from .agents/agents/*.md, but agent files have no source location, so the node cannot be mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:15302505-8828-525a-bebb-f72621f467a1",
+      "classification": "missing_implementation",
+      "rationale": "Only the Python parser exists; there is no TypeScript parser (ROADMAP M6). Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:22822d50-4438-4b48-821f-451933f557dd",
+      "classification": "framework_tooling_drift",
+      "rationale": "Observed from .agents/agents/*.md, but agent files have no source location, so the node cannot be mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:2499ec97-aa53-4f54-8a55-5406403a647b",
+      "classification": "framework_tooling_drift",
+      "rationale": "migrate_ids_cmd in cli.py implements it, but cli.py already carries the CLI Entrypoint receipt and a file holds exactly one mapping receipt, so it cannot be mapped. Felix chose this classification on the 2026-11-08 follow-up decision card.",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:50:53+00:00"
+    },
+    {
+      "subject_key": "intent:277fe548-6b99-4711-a89c-b681d262f820",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:2e8a1562-7e77-4402-992f-f461e8c7161f",
+      "classification": "missing_implementation",
+      "rationale": "iter_canonical_node_markers reads Python comments only; markers in agent frontmatter are not extracted, so the node's full responsibility is not implemented and it is left unmapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:40566eb0-0911-40cc-a1df-9ff6697734c8",
+      "classification": "missing_implementation",
+      "rationale": "Nothing pauses the pipeline for a human before merge. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:48295997-8b54-4168-bccc-30d49ae766d8",
+      "classification": "framework_tooling_drift",
+      "rationale": "Observed from .agents/agents/*.md, but agent files have no source location, so the node cannot be mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:4d76717e-55cd-4768-b05e-06a3cce1128b",
+      "classification": "framework_tooling_drift",
+      "rationale": "The Python Reality parser emits modules and symbols, never systems or containers, and the mapping adapter rejects module candidates, so this exists but cannot be observed or mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:4f6cdecf-639d-50e5-bc6d-ad71c1750000",
+      "classification": "missing_implementation",
+      "rationale": "RUNTIME-AC1 is met since #157 put agent invocation behind agent_runtime, but RUNTIME-AC2, Codex-native orchestration advancing one task through its lifecycle, has not been validated (ROADMAP M6). Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:54b91d55-08fe-48df-be35-445be7cd1e46",
+      "classification": "framework_tooling_drift",
+      "rationale": "The Python Reality parser emits modules and symbols, never systems or containers, and the mapping adapter rejects module candidates, so this exists but cannot be observed or mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:64b5afea-5e38-4659-82bb-662be3f3458e",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:6ff0c1eb-b872-4036-987b-20988d9b380f",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:7418a0a0-0d7e-45ba-94a3-b388cfa0ec5f",
+      "classification": "framework_tooling_drift",
+      "rationale": "The module kind is not supported by the mapping adapter, so this exists but cannot be mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:7b029abd-1321-4cd7-9c1d-9e9f7b62046c",
+      "classification": "missing_implementation",
+      "rationale": "No gate-or-bypass operational mode configuration exists. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:82579715-d088-51ac-999f-4a95235b561c",
+      "classification": "missing_implementation",
+      "rationale": "A clean wheel install of the CLI is now checked in CI (#160), but HARDENING-AC1 also covers the MCP server and Codex plugin, and HARDENING-AC2 recovery procedures and adopter-facing dogfooding reports are not done (ROADMAP M6). Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:908d2539-0567-41cd-9d34-260e1ef345a1",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:a6cf0410-832b-4597-a505-8fd5eb90d367",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:bcb5855b-46cf-475c-bf5c-5267a124e58a",
+      "classification": "framework_tooling_drift",
+      "rationale": "Observed from .agents/agents/*.md, but agent files have no source location, so the node cannot be mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:c2d35f1b-2d6c-43db-9c54-91f1f5d125f2",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:cb02a996-6d3f-5610-9043-b1e768587d84",
+      "classification": "missing_implementation",
+      "rationale": "No reproducible closed-loop demo script exists (ROADMAP M4). Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:cb432b58-db06-4d49-a6ab-c11c9e86bcc2",
+      "classification": "framework_tooling_drift",
+      "rationale": "The Python Reality parser emits modules and symbols, never systems or containers, and the mapping adapter rejects module candidates, so this exists but cannot be observed or mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:d4049c0c-4bf8-4d13-94b6-5e5410190f49",
+      "classification": "framework_tooling_drift",
+      "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:d64fbc3a-bdde-5672-8645-4aaa75464e46",
+      "classification": "missing_implementation",
+      "rationale": "No golden intent-translation corpus exists (ROADMAP M4). Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:f1009cfe-9cde-4260-9235-72886d71fa94",
+      "classification": "framework_tooling_drift",
+      "rationale": "The Python Reality parser emits modules and symbols, never systems or containers, and the mapping adapter rejects module candidates, so this exists but cannot be observed or mapped. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "intent:f4d2f082-e822-4aa6-b74d-38b14bd84c87",
+      "classification": "missing_implementation",
+      "rationale": "The Seam B consumer of agentic-qa-kit evidence is not built (ROADMAP M5). Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    },
+    {
+      "subject_key": "relationship:0fea8fea-9a23-404b-a16b-a9c9c3990e1b:contains:d0307d83-371e-4bb6-925d-84a4b70beb6b",
+      "classification": "framework_tooling_drift",
+      "rationale": "The Reality DAG Generator uses the Parser Factory from another module; that is not a containment the parser emits. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:08:23+00:00"
+    }
+  ]
+}

@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Changed
+
+- CI fails on a stale or invalid mapping receipt instead of only annotating
+  it. The two stale receipts were refreshed, and the owner-approved mappings
+  and triage decisions of 2026-11-08 are recorded under
+  `.aio-agentic-sdlc/changes/mapping-triage-2026-11-08/`.
+
+## [0.44.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.44.0) (2026-11-08)
+
 ### Added
 
 - `dag-tool export-abk` projects the work drift triage authorizes into an
