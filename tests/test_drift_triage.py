@@ -13,6 +13,7 @@ from aio_agentic_sdlc.drift_triage import (
     TriageDecisionSet,
     render_drift_triage,
 )
+from aio_agentic_sdlc.evidence import EvidenceEvaluator, EvidenceLedger
 from aio_agentic_sdlc.intent_ir import (
     AcceptanceCriterion,
     Approval,
@@ -189,6 +190,7 @@ def test_triage_withholds_unapproved_intent_from_implementation():
     assert report["summary"] == {
         "plan_tasks": 1,
         "missing_implementation": 0,
+        "acceptance_evidence_required": 0,
         "obsolete_or_unapproved_intent": 1,
         "framework_tooling_drift": 0,
         "identity_review_required": 0,
@@ -432,7 +434,11 @@ def test_cli_triage_writes_reproducible_report_without_mutating_dags(tmp_path):
     reality = _dag([])
     intention.save(str(intention_path))
     reality.save(str(reality_path))
-    engine = DriftTriageEngine(intention, reality)
+    # The CLI grades acceptance by default, so the ledger beside the DAG
+    # (missing here, so empty) binds the digest too.
+    engine = DriftTriageEngine(
+        intention, reality, evidence=EvidenceEvaluator(EvidenceLedger())
+    )
     decisions_path.write_text(
         json.dumps(
             {

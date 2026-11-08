@@ -1,6 +1,6 @@
 # AIO Agentic SDLC Roadmap
 
-Last updated: 2026-11-07
+Last updated: 2026-11-08
 
 ## Product goal
 
@@ -100,8 +100,9 @@ Intention node: Explicit Evidence Model (`6b1b3459`).
 
 - [x] Completion distinguishes declared, mapped, structural, tested,
   behaviorally verified and approved evidence (ADR 0003).
-- [ ] A confirmed node whose acceptance criteria lack their required evidence
-  stays in the diff.
+- [x] A confirmed node whose acceptance criteria lack their required evidence
+  stays in the diff as a `verify_acceptance` task, which triage authorizes
+  for approved intent as `acceptance_evidence_required`.
 - [ ] `apply` marks a task complete only on evidence, not because an agent
   call returned.
 

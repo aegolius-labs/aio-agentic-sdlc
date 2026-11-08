@@ -950,6 +950,15 @@ def triage_reconciliation_drift(
             description="Maximum triage records returned; totals remain complete",
         ),
     ] = 100,
+    include_acceptance: Annotated[
+        bool,
+        Field(
+            description=(
+                "Keep confirmed nodes whose acceptance criteria lack required "
+                "evidence in triage, graded against the project's evidence ledger"
+            ),
+        ),
+    ] = True,
 ) -> str:
     """Classify safe reconciliation work before backlog execution."""
 
@@ -962,7 +971,15 @@ def triage_reconciliation_drift(
             if decisions_json.strip()
             else None
         )
-        report = DriftTriageEngine(intention, reality).analyze(
+        evaluator = (
+            EvidenceEvaluator(
+                load_evidence_ledger(os.path.join(project_root, EVIDENCE_LEDGER_FILE)),
+                project_root=project_root,
+            )
+            if include_acceptance
+            else None
+        )
+        report = DriftTriageEngine(intention, reality, evidence=evaluator).analyze(
             decisions=decisions,
             max_items=max_items,
         )
@@ -971,6 +988,7 @@ def triage_reconciliation_drift(
         DAGValidationError,
         DriftTriageError,
         DAGNotFoundError,
+        EvidenceError,
         ReconciliationError,
         ValidationError,
     ) as e:

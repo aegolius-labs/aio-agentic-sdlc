@@ -4,6 +4,7 @@ from uuid import UUID
 
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType
+from aio_agentic_sdlc.evidence import EvidenceEvaluator
 from aio_agentic_sdlc.reconciliation import ReconciliationEngine
 
 
@@ -59,10 +60,19 @@ class DiffingEngine:
         reality: DAGManager,
         *,
         policy: DiffPolicy | None = None,
+        evidence: EvidenceEvaluator | None = None,
     ):
+        """With an evidence evaluator, safe plans keep incomplete nodes.
+
+        A confirmed node whose acceptance criteria lack their required
+        evidence (ADR 0003) stays in the diff as a ``verify_acceptance``
+        task instead of leaving it because a source mapping exists.
+        """
+
         self.intention = intention
         self.reality = reality
         self.policy = policy or DiffPolicy.safe()
+        self.evidence = evidence
 
     def calculate_diff(self) -> Dict[str, Any]:
         """Calculate a bounded safe plan unless legacy behavior is explicit."""
@@ -128,6 +138,37 @@ class DiffingEngine:
         )
         return name, task
 
+    def _acceptance_task(self, record: Dict[str, Any]):
+        acceptance = record.get("acceptance")
+        if acceptance is None or acceptance["complete"]:
+            return None
+        intent_node = self.intention.nodes[record["intent"]["id"]]
+        unverified = list(acceptance["unverified_criteria"])
+        name = (
+            f"Verify acceptance of {intent_node.type.value.capitalize()} "
+            f"'{intent_node.name}' [{intent_node.id}]"
+        )
+        task = self._base_task(
+            f"Node ID: {intent_node.id}\nConfirmed by canonical GUID, but "
+            f"{len(unverified)} of {acceptance['criteria_total']} acceptance "
+            "criteria lack their required evidence: "
+            + ", ".join(unverified)
+            + ". Produce the evidence each criterion names and record it with "
+            "`dag-tool evidence record`; a mapping alone is not done."
+        )
+        task.update(
+            {
+                "category": "Verification",
+                "action": "verify_acceptance",
+                "evidence": {
+                    "canonical_guid": intent_node.id,
+                    "acceptance_level": acceptance["level"],
+                    "unverified_criteria": unverified,
+                },
+            }
+        )
+        return name, task
+
     def _review_task(self, record: Dict[str, Any]):
         intent = record["intent"]
         node_label = f"{intent['type'].capitalize()} '{intent['name']}'"
@@ -173,7 +214,9 @@ class DiffingEngine:
         return name, task
 
     def _calculate_safe(self) -> Dict[str, Any]:
-        engine = ReconciliationEngine(self.intention, self.reality)
+        engine = ReconciliationEngine(
+            self.intention, self.reality, evidence=self.evidence
+        )
         classification_order = ("confirmed", "candidate", "ambiguous", "unmapped")
         retained_by_classification = {
             classification: [] for classification in classification_order
@@ -187,6 +230,8 @@ class DiffingEngine:
             "unmapped": 0,
             "unclassified_reality": 0,
         }
+        if self.evidence is not None:
+            summary["acceptance_incomplete"] = 0
         confirmed_ids = set()
         total_tasks = 0
         for record in engine.iter_intent_records(
@@ -196,10 +241,13 @@ class DiffingEngine:
             summary[classification] += 1
             task_entry = None
             if record["classification"] == "confirmed":
+                acceptance = record.get("acceptance")
+                if acceptance is not None and not acceptance["complete"]:
+                    summary["acceptance_incomplete"] += 1
                 confirmed_ids.add(str(UUID(record["intent"]["id"])))
-                drift_task = self._confirmed_drift_task(record)
-                if drift_task:
-                    task_entry = drift_task
+                task_entry = self._confirmed_drift_task(
+                    record
+                ) or self._acceptance_task(record)
             else:
                 task_entry = self._review_task(record)
             if task_entry:
