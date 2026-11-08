@@ -22,7 +22,6 @@ source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "filelock" },
-    { name = "google-antigravity" },
     { name = "jinja2" },
     { name = "mcp" },
     { name = "pydantic" },
@@ -32,6 +31,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+antigravity = [
+    { name = "google-antigravity" },
+]
 semantic = [
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
@@ -41,7 +43,7 @@ semantic = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "aio-agentic-sdlc", extra = ["semantic"] },
+    { name = "aio-agentic-sdlc", extra = ["antigravity", "semantic"] },
     { name = "black" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -52,7 +54,7 @@ dev = [
 requires-dist = [
     { name = "click", specifier = ">=8.0.0" },
     { name = "filelock", specifier = ">=3.32.2" },
-    { name = "google-antigravity" },
+    { name = "google-antigravity", marker = "extra == 'antigravity'" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "mcp", specifier = ">=2.0.0,<3" },
     { name = "numpy", marker = "extra == 'semantic'", specifier = ">=2.2.6" },
@@ -63,10 +65,11 @@ requires-dist = [
     { name = "tree-sitter", specifier = ">=0.25.2,<0.26" },
     { name = "tree-sitter-python", specifier = ">=0.25.0,<0.26" },
 ]
-provides-extras = ["semantic"]
+provides-extras = ["antigravity", "semantic"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "aio-agentic-sdlc", extras = ["antigravity"] },
     { name = "aio-agentic-sdlc", extras = ["semantic"] },
     { name = "black", specifier = ">=25.9.0" },
     { name = "pytest", specifier = ">=9.1.0" },

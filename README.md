@@ -103,6 +103,26 @@ agb migrate-state --retire-legacy
 
 *(Note: `aio-agentic-sdlc` can also be used if you prefer the full name)*
 
+### Choosing an Agent Runtime
+
+`aio-sdlc apply` and the PRD step of `aio-sdlc plan` hand work to an agent.
+Which agent runs it is configuration, so you install only what your host needs.
+Set it in `.aio-agentic-sdlc/config.json`:
+
+```json
+{ "runtime": "command", "runtime_command": ["claude", "-p"] }
+```
+
+- `command` runs any agent CLI with the instructions and task on stdin, for
+  example `["claude", "-p"]` for Claude Code or `["codex", "exec", "-"]` for Codex.
+- `antigravity` uses the Google Antigravity SDK. It's an optional extra:
+  `uv tool install 'aio-agentic-sdlc[antigravity] @ git+https://github.com/aegolius-labs/aio-agentic-sdlc'`.
+  When that SDK is installed and nothing is configured, it's the default.
+
+`AIO_SDLC_RUNTIME` and `AIO_SDLC_RUNTIME_COMMAND` override the file for one
+shell. The MCP server and every other command need no runtime. A runtime only
+does the work: a task still completes only once it leaves the diff.
+
 ### Migrating an Existing Checkout
 
 Before using a project created with the former root-level layout, run:

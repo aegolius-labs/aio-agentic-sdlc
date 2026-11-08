@@ -38,14 +38,9 @@ def mock_authorized_subjects():
 @pytest.fixture
 def mock_agent():
     with patch(
-        "aio_agentic_sdlc.orchestrator_loop.Agent", new_callable=MagicMock
-    ) as mock_agent_class:
-        mock_agent_instance = MagicMock()
-        mock_agent_instance.chat = AsyncMock()
-        mock_agent_instance.__aenter__ = AsyncMock(return_value=mock_agent_instance)
-        mock_agent_instance.__aexit__ = AsyncMock(return_value=None)
-        mock_agent_class.return_value = mock_agent_instance
-        yield mock_agent_class
+        "aio_agentic_sdlc.orchestrator_loop.run_agent", new_callable=AsyncMock
+    ) as mock_run_agent:
+        yield mock_run_agent
 
 
 def test_ingest_diff(mock_dag_manager, mock_diffing_engine, mock_core):
@@ -149,14 +144,10 @@ async def test_execute_task_with_agent(mock_agent):
 
     await orchestrator_loop.execute_task_with_agent(task)
 
-    mock_agent.assert_called_once()
-
-    agent_inst = mock_agent.return_value
-    agent_inst.chat.assert_called_once()
-
-    args, kwargs = agent_inst.chat.call_args
-    prompt = args[0] if args else kwargs.get("prompt", "")
-    assert "do something" in prompt or "do something" in str(kwargs)
+    mock_agent.assert_awaited_once()
+    instructions, prompt = mock_agent.await_args.args
+    assert "sdlc_orchestrator" in instructions
+    assert "do something" in prompt
 
 
 @pytest.mark.asyncio

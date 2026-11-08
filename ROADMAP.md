@@ -139,8 +139,9 @@ Reference Demo (`cb02a996`).
 Intention nodes: Agent Runtime Portability (`4f6cdecf`), Cross-language
 Ontology Portability (`15302505`), Product Hardening (`82579715`).
 
-- [ ] Agent invocation sits behind a runtime adapter. Today the loop imports
-  `google.antigravity` directly.
+- [x] Agent invocation sits behind a runtime adapter (`agent_runtime`):
+  `antigravity` or any agent CLI through `command`, chosen by configuration.
+  `google-antigravity` is now an optional extra.
 - [ ] Python and TypeScript parsers emit the same core ontology.
 - [ ] A clean environment installs and validates the CLI, MCP server and both
   host plugins through documented contracts.
