@@ -1,4 +1,5 @@
 import asyncio
+import os
 from uuid import UUID
 
 from google.antigravity import Agent
@@ -8,6 +9,12 @@ from aio_agentic_sdlc.antigravity_compat import local_agent_config
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.drift_triage import DriftTriageEngine
+from aio_agentic_sdlc.evidence import (
+    EVIDENCE_LEDGER_FILE,
+    EvidenceEvaluator,
+    EvidenceLedger,
+    load_evidence_ledger,
+)
 from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE
 
 # Backlog-entry fields that belong to execution, not to the diff. Re-ingesting
@@ -39,14 +46,26 @@ def triage_subject_key(task):
         return None
 
 
-def authorized_subjects(intention_dag, reality_dag, decisions=None):
+def workspace_evidence():
+    """Grade acceptance against the workspace ledger; missing means empty."""
+
+    ledger = (
+        load_evidence_ledger(EVIDENCE_LEDGER_FILE)
+        if os.path.isdir(os.path.dirname(EVIDENCE_LEDGER_FILE))
+        else EvidenceLedger()
+    )
+    return EvidenceEvaluator(ledger, project_root=".")
+
+
+def authorized_subjects(intention_dag, reality_dag, decisions=None, evidence=None):
     """Return the triage subject keys whose implementation is authorized.
 
     Only approved intent that triage classifies as ``missing_implementation``
-    is authorized, so unapproved intent never reaches an implementing agent.
+    or ``acceptance_evidence_required`` is authorized, so unapproved intent
+    never reaches an implementing agent.
     """
 
-    engine = DriftTriageEngine(intention_dag, reality_dag)
+    engine = DriftTriageEngine(intention_dag, reality_dag, evidence=evidence)
     total = max(1, len(intention_dag.nodes) + len(intention_dag.edges))
     report = engine.analyze(decisions=decisions, max_items=total)
     return {
@@ -68,11 +87,13 @@ def ingest_diff(decisions=None):
     intention_dag = DAGManager.load(INTENTION_DAG_FILE)
     reality_dag = DAGManager.load(REALITY_DAG_FILE)
 
-    diffing_engine = DiffingEngine(intention_dag, reality_dag)
+    evidence = workspace_evidence()
+
+    diffing_engine = DiffingEngine(intention_dag, reality_dag, evidence=evidence)
     diff = diffing_engine.calculate_diff()
     tasks = diff.get("nodes", {})
     edges = diff.get("edges", [])
-    authorized = authorized_subjects(intention_dag, reality_dag, decisions)
+    authorized = authorized_subjects(intention_dag, reality_dag, decisions, evidence)
 
     backlog = core.load_backlog() or {}
 

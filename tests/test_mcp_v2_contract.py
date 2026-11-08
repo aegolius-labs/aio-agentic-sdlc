@@ -183,7 +183,12 @@ EXPECTED_ARGUMENT_CONTRACT = {
     ),
     "triage_reconciliation_drift": (
         set(),
-        {"project_path": ".", "decisions_json": "", "max_items": 100},
+        {
+            "project_path": ".",
+            "decisions_json": "",
+            "max_items": 100,
+            "include_acceptance": True,
+        },
     ),
     "update_task": (
         {"name"},

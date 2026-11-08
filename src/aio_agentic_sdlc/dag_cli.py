@@ -663,7 +663,16 @@ def mapping_receipt_refresh(
     show_default=True,
     help="Maximum candidate identities retained in each safe task.",
 )
-def diff(intention, reality, mode, max_tasks, max_candidates):
+@click.option(
+    "--acceptance/--no-acceptance",
+    default=True,
+    show_default=True,
+    help=(
+        "Grade acceptance against the evidence.json beside the Intention DAG, so "
+        "a confirmed node lacking required evidence stays in the plan (ADR 0003)."
+    ),
+)
+def diff(intention, reality, mode, max_tasks, max_candidates, acceptance):
     """Calculates the diff between Intention DAG and Reality DAG."""
     try:
         intent_manager = DAGManager.load(intention)
@@ -676,7 +685,12 @@ def diff(intention, reality, mode, max_tasks, max_candidates):
             if mode == "safe"
             else DiffPolicy.legacy_structural()
         )
-        engine = DiffingEngine(intent_manager, reality_manager, policy=policy)
+        engine = DiffingEngine(
+            intent_manager,
+            reality_manager,
+            policy=policy,
+            evidence=_acceptance_evaluator(intention) if acceptance else None,
+        )
         diff_result = engine.calculate_diff()
 
         click.echo(json.dumps(diff_result, indent=2))
@@ -781,6 +795,19 @@ def reconcile(
     except Exception as e:
         click.secho(f"Error reconciling DAGs: {str(e)}", err=True, fg="red")
         sys.exit(1)
+
+
+def _acceptance_ledger_path(intention_path):
+    return Path(os.path.abspath(intention_path)).parent / "evidence.json"
+
+
+def _acceptance_evaluator(intention_path):
+    """Evaluate the ledger beside the Intention DAG; missing means empty."""
+
+    return EvidenceEvaluator(
+        load_evidence_ledger(_acceptance_ledger_path(intention_path)),
+        project_root=_workspace_root(intention_path),
+    )
 
 
 def _workspace_root(intention_path):
@@ -981,7 +1008,16 @@ def visualize(
     type=click.Path(dir_okay=False),
     help="Atomically write the JSON report instead of printing it.",
 )
-def triage(intention, reality, decisions, max_items, output_format, output):
+@click.option(
+    "--acceptance/--no-acceptance",
+    default=True,
+    show_default=True,
+    help=(
+        "Grade acceptance against the evidence.json beside the Intention DAG, so "
+        "a confirmed node lacking required evidence stays in the plan (ADR 0003)."
+    ),
+)
+def triage(intention, reality, decisions, max_items, output_format, output, acceptance):
     """Classify safe reconciliation work before backlog execution."""
 
     try:
@@ -993,7 +1029,11 @@ def triage(intention, reality, decisions, max_items, output_format, output):
             decision_set = TriageDecisionSet.model_validate_json(
                 decision_path.read_text(encoding="utf-8")
             )
-        report = DriftTriageEngine(intent_manager, reality_manager).analyze(
+        report = DriftTriageEngine(
+            intent_manager,
+            reality_manager,
+            evidence=_acceptance_evaluator(intention) if acceptance else None,
+        ).analyze(
             decisions=decision_set,
             max_items=max_items,
         )
@@ -1001,6 +1041,8 @@ def triage(intention, reality, decisions, max_items, output_format, output):
             protected_paths = [intention, reality]
             if decisions:
                 protected_paths.append(decisions)
+            if acceptance:
+                protected_paths.append(str(_acceptance_ledger_path(intention)))
             write_reconciliation_report(
                 report,
                 output,

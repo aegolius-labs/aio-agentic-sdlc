@@ -21,6 +21,7 @@ from pydantic import (
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import EdgeType, Node, NodeType
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
+from aio_agentic_sdlc.evidence import EvidenceEvaluator
 from aio_agentic_sdlc.intent_ir import ApprovalState
 
 TRIAGE_SCHEMA_VERSION = 1
@@ -236,17 +237,31 @@ class DriftTriageEngine:
 
     _classification_order = (
         "missing_implementation",
+        "acceptance_evidence_required",
         "needs_classification",
         "identity_review_required",
         "framework_tooling_drift",
         "obsolete_or_unapproved_intent",
     )
 
-    def __init__(self, intention: DAGManager, reality: DAGManager):
+    def __init__(
+        self,
+        intention: DAGManager,
+        reality: DAGManager,
+        *,
+        evidence: EvidenceEvaluator | None = None,
+    ):
+        """With an evidence evaluator, incomplete confirmed nodes stay in triage.
+
+        The ledger then also binds the plan digest, so decisions recorded
+        against one evidence state cannot be replayed against another.
+        """
+
         intention.validate()
         reality.validate()
         self.intention = intention
         self.reality = reality
+        self.evidence = evidence
         self._intent_by_canonical_id = self._canonical_node_index(
             intention,
             dag_name="Intention DAG",
@@ -278,20 +293,21 @@ class DriftTriageEngine:
     def source_identity(self) -> dict[str, str]:
         intention_sha256 = _canonical_dag_sha256(self.intention)
         reality_sha256 = _canonical_dag_sha256(self.reality)
-        plan_digest = hashlib.sha256(
-            _canonical_json(
-                {
-                    "triage_contract": TRIAGE_SCHEMA_VERSION,
-                    "intention_sha256": intention_sha256,
-                    "reality_sha256": reality_sha256,
-                }
-            )
-        ).hexdigest()
-        return {
+        bound = {
+            "triage_contract": TRIAGE_SCHEMA_VERSION,
             "intention_sha256": intention_sha256,
             "reality_sha256": reality_sha256,
-            "plan_digest": plan_digest,
         }
+        if self.evidence is not None:
+            bound["evidence_sha256"] = hashlib.sha256(
+                _canonical_json(self.evidence.ledger.model_dump(mode="json"))
+            ).hexdigest()
+        plan_digest = hashlib.sha256(_canonical_json(bound)).hexdigest()
+        identity = {
+            key: value for key, value in bound.items() if key.endswith("sha256")
+        }
+        identity["plan_digest"] = plan_digest
+        return identity
 
     def _full_safe_plan(self) -> dict[str, Any]:
         maximum_tasks = max(1, len(self.intention.nodes) + len(self.intention.edges))
@@ -299,6 +315,7 @@ class DriftTriageEngine:
             self.intention,
             self.reality,
             policy=DiffPolicy.safe(max_tasks=maximum_tasks),
+            evidence=self.evidence,
         ).calculate_diff()
         if plan["meta"]["truncated"]:
             raise DriftTriageError(
@@ -346,6 +363,15 @@ class DriftTriageEngine:
                 "until the canonical intent is approved or retired."
             )
             decision_source = "approval_gate"
+        elif action == "verify_acceptance":
+            classification = "acceptance_evidence_required"
+            unverified = ", ".join(task["evidence"]["unverified_criteria"])
+            reason = (
+                "Approved intent is confirmed in Reality, but these acceptance "
+                f"criteria lack their required evidence: {unverified}. The work is "
+                "to produce and record that evidence (ADR 0003)."
+            )
+            decision_source = "evidence_gate"
         elif decision is None:
             classification = "needs_classification"
             reason = (
@@ -366,7 +392,10 @@ class DriftTriageEngine:
             "reason": reason,
             "decision_source": decision_source,
             "implementation_authorized": classification
-            == DriftClassification.MISSING_IMPLEMENTATION.value
+            in {
+                DriftClassification.MISSING_IMPLEMENTATION.value,
+                "acceptance_evidence_required",
+            }
             and _is_approved(node),
             "evidence": {
                 "approval_state": approval_state,
@@ -481,6 +510,7 @@ class DriftTriageEngine:
         summary = {
             "plan_tasks": plan["meta"]["total_tasks"],
             "missing_implementation": 0,
+            "acceptance_evidence_required": 0,
             "obsolete_or_unapproved_intent": 0,
             "framework_tooling_drift": 0,
             "identity_review_required": 0,
@@ -551,7 +581,9 @@ def render_drift_triage(report: dict[str, Any]) -> str:
         "Reconciliation drift triage",
         "",
         f"{limit['returned_items']} of {limit['total_items']} triage items shown.",
-        f"Actionable missing implementation: {summary['actionable_implementation']}",
+        f"Actionable implementation: {summary['actionable_implementation']}",
+        "Acceptance evidence required: "
+        f"{summary.get('acceptance_evidence_required', 0)}",
         f"Needs classification: {summary['needs_classification']}",
         f"Identity review required: {summary['identity_review_required']}",
         f"Framework tooling drift: {summary['framework_tooling_drift']}",
