@@ -131,9 +131,9 @@ Reference Demo (`cb02a996`).
 
 ## M5: Federation seams
 
-- [ ] Seam A forward direction: export derived work as an
+- [x] Seam A forward direction: export derived work as an
   `agentic-backlog-kit` manifest carrying canonical GUIDs, with fixtures held
-  on both sides.
+  on both sides. `dag-tool export-abk`, contract `seam-a-work` v1.
 - [ ] Seam B: a QA finding inside accepted intent reverts the responsible
   node (`revert-node`) through an approval-gated transition, and only findings
   outside intent become Bug payloads.

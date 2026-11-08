@@ -8,6 +8,7 @@ from typing import Any
 import click
 
 from aio_agentic_sdlc import __version__
+from aio_agentic_sdlc.abk_export import export_abk_manifest, newly_finished
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
 from aio_agentic_sdlc.dag_store import (
@@ -1138,6 +1139,96 @@ def triage(intention, reality, decisions, max_items, output_format, output, acce
         click.secho(
             f"Error triaging reconciliation drift: {str(e)}", err=True, fg="red"
         )
+        sys.exit(1)
+
+
+@cli.command("export-abk")
+@click.option(
+    "--intention",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the canonical Intention DAG yaml file.",
+)
+@click.option(
+    "--reality",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the generated Reality DAG yaml file.",
+)
+@click.option(
+    "--base-manifest",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help="Agentic Backlog Kit manifest supplying github, workflow and scoring.",
+)
+@click.option(
+    "--output",
+    required=True,
+    type=click.Path(dir_okay=False),
+    help="Where to write the manifest; may be the base manifest itself.",
+)
+@click.option(
+    "--observed-state",
+    type=click.Path(exists=True, dir_okay=False),
+    help="`abk observe` document; exported items whose issue is closed are dropped.",
+)
+@click.option(
+    "--decisions",
+    type=click.Path(exists=True, dir_okay=False),
+    help="Optional digest-bound JSON triage decisions.",
+)
+def export_abk(intention, reality, base_manifest, output, observed_state, decisions):
+    """Project authorized work into an Agentic Backlog Kit manifest (Seam A).
+
+    Writes one manifest file and never calls GitHub: apply it with the kit's
+    own plan, confirm and apply flow.
+    """
+
+    try:
+        decision_set = None
+        if decisions:
+            decision_set = TriageDecisionSet.model_validate_json(
+                guarded_file_path(decisions).read_text(encoding="utf-8")
+            )
+        observed = load_observed_state(observed_state) if observed_state else None
+        base = json.loads(guarded_file_path(base_manifest).read_text(encoding="utf-8"))
+        manifest = export_abk_manifest(
+            DAGManager.load(intention),
+            DAGManager.load(reality),
+            base,
+            evidence=_acceptance_evaluator(intention),
+            decisions=decision_set,
+            observed_state=observed,
+        )
+        write_reconciliation_report(
+            manifest,
+            output,
+            protected_paths=(
+                intention,
+                reality,
+                str(_acceptance_ledger_path(intention)),
+                *([decisions] if decisions else []),
+                *([observed_state] if observed_state else []),
+            ),
+        )
+        exported = [item for item in manifest["items"] if item.get("guid")]
+        click.echo(
+            f"Exported {len(exported)} GUID item(s) to {output}. Review and apply "
+            "it with the backlog kit's plan and apply flow."
+        )
+        finished = newly_finished(base, manifest)
+        if finished:
+            transitions = " ".join(
+                f"--transition {item_id}={next(i['status'] for i in manifest['items'] if i['id'] == item_id)}"
+                for item_id in finished
+            )
+            click.echo(
+                f"{len(finished)} item(s) left the diff. The kit keeps an existing "
+                "card's Status, so move them with its reviewed transition: "
+                f"sync-plan {transitions}"
+            )
+    except Exception as e:
+        click.secho(f"Error exporting the ABK manifest: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
