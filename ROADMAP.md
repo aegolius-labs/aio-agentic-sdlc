@@ -68,12 +68,16 @@ itself:
 
 ## M1: Intent review
 
-Goal: the diff can authorize work. Today triage withholds 52 of 56 items
-because their intent is `review_required`.
+Goal: the diff can authorize work. Since the owner's review on 2026-11-05
+(#145), 45 nodes are approved, 6 rejected and 11 still `review_required`, so
+intent approval no longer blocks most of the diff. As of 2026-11-08 the
+blocker is classification: 35 approved items await a mapping or a triage
+decision (M2).
 
 - [ ] Review all 55 `review_required` nodes: approve, revise or retire each.
   The grouped proposal is in
   [doc/reviews/intent-review-2026-10-15.md](doc/reviews/intent-review-2026-10-15.md).
+  45 were decided in #145; 11 remain, deferred by that review.
 - [x] Resolve the nodes that contradict other documents: the licensing and
   EULA nodes against `COMMERCIAL.md`, and the QA swarm nodes against the
   authority model's layer 5. Rejected or revised in #145.
@@ -83,8 +87,8 @@ because their intent is `review_required`.
 
 ## M2: Mapping coverage
 
-Goal: reconciliation resolves most nodes in both directions. Today 10 of 61
-nodes are confirmed against 322 Reality nodes.
+Goal: reconciliation resolves most nodes in both directions. As of
+2026-11-08, 11 of 62 nodes are confirmed against 351 Reality nodes.
 
 - [ ] Map every approved node that has an implementation, through the
   read-only review and approval flow.

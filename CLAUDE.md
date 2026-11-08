@@ -114,21 +114,21 @@ When a conclusion implies the framework's own design is wrong, check the ADRs an
 change records under `.aio-agentic-sdlc/changes/` before asserting it. The design is
 usually deliberate and documented.
 
-## Corpus state as of 2026-10-14
+## Corpus state as of 2026-11-08
 
 Stale quickly — re-measure rather than trusting these numbers.
 
 | | |
 | --- | --- |
-| Intention nodes | 62 (104 edges), all carrying Intent IR |
-| Approval states | 6 `approved`, 56 `review_required` |
-| Reality nodes | 322 (tests excluded since #102) |
-| Approved mapping receipts | 7 (10 files carry `# aio-sdlc-node:` markers) |
-| Completed dogfood cycles | 10, under `.aio-agentic-sdlc/changes/` |
+| Intention nodes | 62 (101 edges), all carrying Intent IR |
+| Approval states | 45 `approved`, 11 `review_required`, 6 `rejected` (owner review, #145) |
+| Reality nodes | 351 (tests excluded since #102) |
+| Confirmed nodes | 11; 8 mapping receipts (13 files carry `# aio-sdlc-node:` markers) |
+| Completed dogfood cycles | 12, under `.aio-agentic-sdlc/changes/` |
 
-The practical bottleneck is **mapping coverage**, not intent quality. With 7 receipts
-against 322 Reality nodes, reconciliation cannot resolve most nodes in either direction —
-it cannot confirm what is done, so it cannot isolate what is missing.
+The practical bottleneck is **mapping coverage and triage classification**, not intent
+quality. 35 approved items are unconfirmed and unclassified, so reconciliation cannot
+tell whether they are done or missing, and `apply` will not touch them.
 
 A roughly 1:5 Intention-to-Reality node ratio is expected, not a defect: Intention nodes are
 architectural components, Reality nodes are individual symbols.
@@ -193,8 +193,8 @@ uv sync --frozen --group dev
 uv run --no-sync pytest -W error
 ```
 
-`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **478 passed,
-2 skipped** (measured 2026-10-14). Windows counts differ because of the symlink tests
+`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **517 passed,
+2 skipped** (measured 2026-11-08). Windows counts differ because of the symlink tests
 below.
 
 Seven symlink and TOCTOU tests fail on the current Windows machine with
