@@ -683,6 +683,8 @@ def migrate_ids_cmd(args):
     print("Migration complete.")
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:50:53+00:00","approved_by":"Felix","candidate_reality_id":"2e6bd533-369f-5cd8-90cd-89b90fe9d973","evidence_digest":"042d131fb9a25313f92725c7e7ed408f1a7d2b932fef4aeda491a477cf864740","intent_id":"f24b7477-032b-4f93-abcf-9b1c70627900","rationale":"Felix approved this mapping on the 2026-11-08 follow-up decision card after its evidence digest changed: cli.main is the implementation identity of 'CLI Entrypoint'. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/cli.py","source_sha256":"e84eb68052b0b0b7ea9dba1979c5f3b6c0d6c16066f835a5bfbaa9dda6cc6986","symbol_kind":"function","symbol_name":"main"}
+# aio-sdlc-node: f24b7477-032b-4f93-abcf-9b1c70627900
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
     parser.add_argument(

@@ -128,6 +128,8 @@ def get_package_templates_dir() -> Path:
     return Path(__file__).parent / "templates"
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:08:23+00:00","approved_by":"Felix","candidate_reality_id":"370f8b4f-0766-5ffa-a93f-948947910c79","evidence_digest":"c9b98e4c5667bdab6903d391052ea4a3aa2a7164050f20a7096af87140cd39d3","intent_id":"5a81e63d-85c7-4704-a0b1-e076367b2fd1","rationale":"Felix approved the 2026-11-08 mapping and triage packet on its decision card: generate_document is the implementation identity of 'Artifact Templating Engine'. Evidence digest unchanged since the packet. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/templating_engine.py","source_sha256":"779db2b93444fc75ad2018af87b133a91b7b725e6c882010e3658a79f7720c5a","symbol_kind":"function","symbol_name":"generate_document"}
+# aio-sdlc-node: 5a81e63d-85c7-4704-a0b1-e076367b2fd1
 def generate_document(
     template_name: str,
     data: Dict[str, Any],

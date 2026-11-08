@@ -122,13 +122,16 @@ Stale quickly — re-measure rather than trusting these numbers.
 | --- | --- |
 | Intention nodes | 62 (101 edges), all carrying Intent IR |
 | Approval states | 45 `approved`, 11 `review_required`, 6 `rejected` (owner review, #145) |
-| Reality nodes | 351 (tests excluded since #102) |
-| Confirmed nodes | 11; 8 mapping receipts (13 files carry `# aio-sdlc-node:` markers) |
+| Reality nodes | 373 (tests excluded since #102) |
+| Confirmed nodes | 18; 15 mapping receipts (19 files carry `# aio-sdlc-node:` markers) |
 | Completed dogfood cycles | 12, under `.aio-agentic-sdlc/changes/` |
 
-The practical bottleneck is **mapping coverage and triage classification**, not intent
-quality. 35 approved items are unconfirmed and unclassified, so reconciliation cannot
-tell whether they are done or missing, and `apply` will not touch them.
+The owner's 2026-11-08 packet mapped or classified all 35 approved items
+that were unconfirmed and unclassified (`.aio-agentic-sdlc/changes/mapping-triage-2026-11-08/`).
+Triage now authorizes 17 items. The remaining bottleneck is the **Reality observation gap**:
+agents, containers, directories and data files can't be observed or mapped, so 32 items
+sit as `framework_tooling_drift`. Triage decisions also bind to the whole-DAG digest
+and go stale on any DAG or evidence change.
 
 A roughly 1:5 Intention-to-Reality node ratio is expected, not a defect: Intention nodes are
 architectural components, Reality nodes are individual symbols.
@@ -193,7 +196,7 @@ uv sync --frozen --group dev
 uv run --no-sync pytest -W error
 ```
 
-`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **517 passed,
+`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **547 passed,
 2 skipped** (measured 2026-11-08). Windows counts differ because of the symlink tests
 below.
 

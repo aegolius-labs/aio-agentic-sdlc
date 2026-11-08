@@ -61,6 +61,8 @@ def _edge_key(edge: Edge) -> tuple[str, str, str, str]:
     return (edge.source, edge.target, edge.type.value, edge.description or "")
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:08:23+00:00","approved_by":"Felix","candidate_reality_id":"a70ce5eb-4ce7-58a7-ae41-db176a6bcde6","evidence_digest":"b67e2ff440ed33733afd98159ee683580f279aed60fd9b168c622faf02c6355e","intent_id":"f4658dd7-1ea1-5e1f-b851-2a376cc1649a","rationale":"Felix approved the 2026-11-08 mapping and triage packet on its decision card: LegacyIntentMigrator is the implementation identity of 'Legacy Intent IR Migration'. Evidence digest unchanged since the packet. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/intent_migration.py","source_sha256":"5079ed45ed420e0d372e055952bd8cfd846f28471538d7cc6e09227ed4d01653","symbol_kind":"class","symbol_name":"LegacyIntentMigrator"}
+# aio-sdlc-node: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
 class LegacyIntentMigrator:
     """Inventory, compile, and atomically apply review-required legacy intent."""
 

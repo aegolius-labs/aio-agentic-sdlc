@@ -90,6 +90,8 @@ def _finding(
     return finding
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:08:23+00:00","approved_by":"Felix","candidate_reality_id":"3fe91368-3385-568d-ab02-95b67c9d2604","evidence_digest":"36bf1cbd4c57618b7782bbb032fb8a29e2cbcf0294e7cd8f3345114088736004","intent_id":"2131072d-9bb1-4236-9b9a-141ee087fa4b","rationale":"Felix approved the 2026-11-08 mapping and triage packet on its decision card: IntentConsistencyChecker is the implementation identity of 'Intention DAG Consistency Check'. Evidence digest unchanged since the packet. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/intent_consistency.py","source_sha256":"ce3e441821f3a5995053ab5a1605e014c874379b07deb711aae009a58369fbae","symbol_kind":"class","symbol_name":"IntentConsistencyChecker"}
+# aio-sdlc-node: 2131072d-9bb1-4236-9b9a-141ee087fa4b
 class IntentConsistencyChecker:
     """Report internal contradictions in one Intention DAG without mutating it."""
 

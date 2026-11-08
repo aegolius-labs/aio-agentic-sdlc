@@ -88,19 +88,22 @@ decision (M2).
 ## M2: Mapping coverage
 
 Goal: reconciliation resolves most nodes in both directions. As of
-2026-11-08, 11 of 62 nodes are confirmed against 351 Reality nodes.
+2026-11-08, 18 of 62 nodes are confirmed against 373 Reality nodes.
 
-- [ ] Map every approved node that has an implementation, through the
-  read-only review and approval flow.
-- [ ] Refresh stale mapping receipts after source edits, and make the stale
+- [x] Map every approved node that has an implementation, through the
+  read-only review and approval flow. The owner's 2026-11-08 packet mapped 8
+  and classified the rest (`changes/mapping-triage-2026-11-08/`).
+- [x] Refresh stale mapping receipts after source edits, and make the stale
   state visible in CI so it does not accumulate. `dag-tool mapping receipt
-  check` now reports every stale receipt, and CI annotates them on each pull
-  request. Two receipts (`diffing_engine.py`, `mcp_server.py`) await a named
-  approver's refresh; after that, CI drops `--warn-only` so a new stale
-  receipt fails the build.
+  check` reports every stale receipt, and CI fails on one.
 - [ ] Emit `depends_on` relationships for component endpoints in the Reality
   parser, or record them as a permanent observation limit (two items are
   `framework_tooling_drift` today).
+- [ ] Observe agents, containers, directories and data files, or record them
+  as a permanent observation limit. They account for most of the 32
+  `framework_tooling_drift` items.
+- [ ] Make triage decisions durable per subject, so an owner's decision isn't
+  re-derived each time the whole-DAG digest changes.
 
 ## M3: Evidence decides done
 

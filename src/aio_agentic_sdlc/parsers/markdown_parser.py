@@ -7,6 +7,8 @@ from aio_agentic_sdlc.dag_models import EdgeType, NodeType
 from .base import BaseFileParser
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:08:23+00:00","approved_by":"Felix","candidate_reality_id":"a4114ac7-09b1-5a58-ae83-45acdaff1884","evidence_digest":"26b71cb95a38245614b5184811d5ef6b0a0e5f19d39198298d338c98a8c5ebd8","intent_id":"a937dc0f-c261-461a-975f-03950289be88","rationale":"Felix approved the 2026-11-08 mapping and triage packet on its decision card: MarkdownAgentParser is the implementation identity of 'Markdown Parser'. Evidence digest unchanged since the packet. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/parsers/markdown_parser.py","source_sha256":"57b1e6742d70dc10cdc9443f2ed0d3d1c00fe23dfbdad3e5f56b3868eda7f9ed","symbol_kind":"class","symbol_name":"MarkdownAgentParser"}
+# aio-sdlc-node: a937dc0f-c261-461a-975f-03950289be88
 class MarkdownAgentParser(BaseFileParser):
     def parse(self, generator, file_path: str):
         rel_path = os.path.relpath(file_path, generator.root_dir)

@@ -105,6 +105,8 @@ class Approval(IntentModel):
         return self
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:08:23+00:00","approved_by":"Felix","candidate_reality_id":"4e7e0f73-3eae-5f42-866a-a1d999e70a85","evidence_digest":"b4987cd86eae183512d08f78911dcea5b703f705e4c1a409bd23e2020085eba1","intent_id":"7bcd1683-2a10-5cbc-ab91-440ea920eaf1","rationale":"Felix approved the 2026-11-08 mapping and triage packet on its decision card: IntentIR is the implementation identity of 'Intent IR v1'. Evidence digest unchanged since the packet. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/intent_ir.py","source_sha256":"a6616795f296fbb99474f0283218ce44e3b13fa6669c9993ed18b254b65912e1","symbol_kind":"class","symbol_name":"IntentIR"}
+# aio-sdlc-node: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
 class IntentIR(IntentModel):
     """Canonical Intent IR v1 payload attached to an Intention DAG node."""
 

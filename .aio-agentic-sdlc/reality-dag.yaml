@@ -60,6 +60,71 @@ nodes:
   type: module
   name: __init__.py
   description: Module src.aio_agentic_sdlc.__init__
+- id: 61272897-55df-56f2-a1ce-be2651e85384
+  type: module
+  name: abk_export.py
+  description: Module src.aio_agentic_sdlc.abk_export
+- id: 3a381c7b-8b68-536f-8b96-19a3fc8be380
+  type: component
+  name: AbkExportError
+  description: Raised when the base manifest or the derived work cannot be exported.
+- id: ec5f8ea2-38e9-51f7-a5ff-3f80bc43bf02
+  type: component
+  name: export_abk_manifest
+  description: Return ``base_manifest`` with its GUID items replaced by authorized
+    work.
+- id: 91841cba-d306-56a8-804d-bb40beef975b
+  type: component
+  name: newly_finished
+  description: Item ids this export moved to a done status that were not done before.
+- id: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  type: module
+  name: agent_runtime.py
+  description: Module src.aio_agentic_sdlc.agent_runtime
+- id: 9959961a-95ef-53b8-86f7-3fd804ce173b
+  type: component
+  name: AgentRuntimeError
+  description: Raised when no runtime is configured or the selected one fails.
+- id: bcdcecde-40d9-509a-883b-1ef654133f2d
+  type: component
+  name: AgentRuntime
+  description: The stable contract every runtime implements.
+- id: ba2c444a-ac4d-52c4-b7f3-cf3cac81523d
+  type: component
+  name: run
+  description: Run one agent turn to completion; raise on failure.
+- id: 26504515-f14f-598b-84c0-519805469e2e
+  type: component
+  name: AntigravityRuntime
+  description: Google Antigravity SDK, imported only when this runtime is used.
+- id: 7231f8f2-d505-5a99-8fd9-b7adb19b3422
+  type: component
+  name: run
+  description: Function run
+- id: 4106f39a-02d2-596f-9fd6-52aaa62100ad
+  type: component
+  name: CommandRuntime
+  description: Run an agent CLI with the prompt on stdin.
+- id: 7c916ba2-8011-588d-9221-59518c014f32
+  type: component
+  name: __init__
+  description: Function __init__
+- id: d50a662e-6266-5ef2-951b-aff0f013f447
+  type: component
+  name: compose
+  description: Function compose
+- id: 3900c3e0-b8b4-5c81-b4f7-fe6972d6ebd0
+  type: component
+  name: run
+  description: Function run
+- id: b9c84b59-15af-5c77-959e-ab2cbc5480fa
+  type: component
+  name: resolve_runtime
+  description: Return the configured runtime, or explain how to configure one.
+- id: 8cfea047-cf9e-5796-9de3-764bd93d26ff
+  type: component
+  name: run_agent
+  description: Run one agent turn on the configured runtime.
 - id: 553c596a-6285-532c-81cf-5a561a3992a3
   type: module
   name: antigravity_compat.py
@@ -146,7 +211,7 @@ nodes:
   type: component
   name: migrate_ids_cmd
   description: Function migrate_ids_cmd
-- id: 2e6bd533-369f-5cd8-90cd-89b90fe9d973
+- id: f24b7477-032b-4f93-abcf-9b1c70627900
   type: component
   name: main
   description: Function main
@@ -322,6 +387,12 @@ nodes:
   type: component
   name: mapping_receipt_review
   description: Render fresh maintenance evidence for one confirmed source receipt.
+- id: 56062394-4a0d-51ef-9c44-15a17bb3b25a
+  type: component
+  name: mapping_receipt_check
+  description: "Report every mapping receipt whose source changed since approval.\n\
+    \n    Read-only. Exits 1 when any receipt is stale or invalid, unless\n    --warn-only.\
+    \ Refreshing a receipt still needs a named approver.\n    "
 - id: f491645f-4535-5738-a7f6-90fc849714a5
   type: component
   name: mapping_receipt_refresh
@@ -350,6 +421,12 @@ nodes:
   type: component
   name: triage
   description: Classify safe reconciliation work before backlog execution.
+- id: 330f4f65-91f6-5678-8358-0ee4eae3d616
+  type: component
+  name: export_abk
+  description: "Project authorized work into an Agentic Backlog Kit manifest (Seam\
+    \ A).\n\n    Writes one manifest file and never calls GitHub: apply it with the\
+    \ kit's\n    own plan, confirm and apply flow.\n    "
 - id: 0ed46e46-0115-5f0f-91cc-5e79007a6add
   type: component
   name: generate_reality
@@ -595,7 +672,10 @@ nodes:
 - id: 502fdf74-dcf2-53ca-b801-b2cb869c5a7d
   type: component
   name: __init__
-  description: Function __init__
+  description: "With an evidence evaluator, safe plans keep incomplete nodes.\n\n\
+    \        A confirmed node whose acceptance criteria lack their required\n    \
+    \    evidence (ADR 0003) stays in the diff as a ``verify_acceptance``\n      \
+    \  task instead of leaving it because a source mapping exists.\n        "
 - id: 49ec4886-cacf-50a5-ba6b-061df8eb6cf6
   type: component
   name: calculate_diff
@@ -635,7 +715,10 @@ nodes:
 - id: 1f8c04f8-491f-540f-b1dc-bd49934fc0e3
   type: component
   name: __init__
-  description: Function __init__
+  description: "With an evidence evaluator, incomplete confirmed nodes stay in triage.\n\
+    \n        The ledger then also binds the plan digest, so decisions recorded\n\
+    \        against one evidence state cannot be replayed against another.\n    \
+    \    "
 - id: 8e1fd93b-b18e-5bb1-ac83-4e3ffc4d96a6
   type: component
   name: source_identity
@@ -725,16 +808,16 @@ nodes:
   type: component
   name: IntentConsistencyError
   description: The Intention DAG cannot be checked.
-- id: 3fe91368-3385-568d-ab02-95b67c9d2604
+- id: 2131072d-9bb1-4236-9b9a-141ee087fa4b
   type: component
   name: IntentConsistencyChecker
   description: Report internal contradictions in one Intention DAG without mutating
     it.
-- id: 82eebb87-24f6-56b4-b655-23625918a84e
+- id: 06694c0d-397b-5589-8664-e8d60cf666ed
   type: component
   name: __init__
   description: Function __init__
-- id: ded7d268-4821-592c-a144-5a9621e9425d
+- id: 8cec8d36-0bc9-5c35-9fcf-ef129729fdd5
   type: component
   name: analyze
   description: Return a bounded report with complete totals.
@@ -798,11 +881,11 @@ nodes:
   type: component
   name: require_approval_audit_fields
   description: Function require_approval_audit_fields
-- id: 4e7e0f73-3eae-5f42-866a-a1d999e70a85
+- id: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
   type: component
   name: IntentIR
   description: Canonical Intent IR v1 payload attached to an Intention DAG node.
-- id: d9ff483d-1f84-5eec-9be6-5d7c286090ab
+- id: 089f958d-8d30-50ca-9aba-61fb839a70fe
   type: component
   name: validate_revision_history
   description: Function validate_revision_history
@@ -810,23 +893,23 @@ nodes:
   type: module
   name: intent_migration.py
   description: Module src.aio_agentic_sdlc.intent_migration
-- id: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+- id: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
   type: component
   name: LegacyIntentMigrator
   description: Inventory, compile, and atomically apply review-required legacy intent.
-- id: a83d9847-1c02-51ff-97e4-710e0f6720dc
+- id: dbb6d8cc-6b97-5289-a290-1f3641b6d0b9
   type: component
   name: __init__
   description: Function __init__
-- id: 2ca51b52-848b-5f29-a2f1-f2384a3a04fd
+- id: c4862302-067f-5757-a168-b3081abb9219
   type: component
   name: inventory
   description: Return complete totals with bounded, deterministic legacy-node detail.
-- id: 9e2449d0-40fd-5b0c-adca-8170145ab790
+- id: 5d4705b6-7b81-5b32-a4d0-48c4f92e4ec6
   type: component
   name: plan
   description: Compile a coherent plan while excluding concurrent DAG writers.
-- id: cd1f7638-14ae-52ae-85e7-13397158226d
+- id: eabfa143-a6ab-5228-921d-eb79c6ba6d1b
   type: component
   name: apply
   description: Apply a complete plan as one optimistic, atomic DAG transition.
@@ -895,11 +978,15 @@ nodes:
   type: component
   name: review_receipt_refresh
   description: Review fresh evidence for one already confirmed mapping receipt.
+- id: 473a8479-c1dd-5576-81c0-d3e49e60f86a
+  type: component
+  name: check_receipts
+  description: Report the freshness of every source mapping receipt. Read-only.
 - id: a2a30d01-4de7-5dee-bca7-ef3a5f806538
   type: component
   name: approve
   description: Atomically persist one approved candidate as verified source evidence.
-- id: a03577cc-ff8f-588e-ab72-553938656f7b
+- id: 15019926-c6be-5c98-b558-954c7657e5c6
   type: component
   name: refresh_receipt
   description: Atomically replace one confirmed receipt from exact fresh evidence.
@@ -1071,17 +1158,25 @@ nodes:
   type: module
   name: orchestrator_loop.py
   description: Module src.aio_agentic_sdlc.orchestrator_loop
+- id: 0144e598-45fe-5c5b-99a7-baa8bfac9f6c
+  type: component
+  name: is_diff_task
+  description: Return whether a backlog item was cut from the safe diff.
 - id: f57d62b8-7a86-5f3f-9851-47345f57ce14
   type: component
   name: triage_subject_key
   description: Return the drift-triage subject key for a safe diff task, or None.
+- id: 174cedd7-b91a-52cb-a15f-2500f918900b
+  type: component
+  name: workspace_evidence
+  description: Grade acceptance against the workspace ledger; missing means empty.
 - id: 54c1a005-787a-5953-a28a-212cac729c7d
   type: component
   name: authorized_subjects
   description: "Return the triage subject keys whose implementation is authorized.\n\
     \n    Only approved intent that triage classifies as ``missing_implementation``\n\
-    \    is authorized, so unapproved intent never reaches an implementing agent.\n\
-    \    "
+    \    or ``acceptance_evidence_required`` is authorized, so unapproved intent\n\
+    \    never reaches an implementing agent.\n    "
 - id: 2ebf00ef-c11d-501f-add4-f86a1df8be8a
   type: component
   name: ingest_diff
@@ -1089,23 +1184,27 @@ nodes:
     \ to calculate the diff,\n    and merges the resulting tasks and edges into the\
     \ local framework backlog\n    using core.load_backlog and core.save_backlog,\
     \ followed by core.prioritize_items.\n\n    Each ingested task records whether\
-    \ drift triage authorizes its\n    implementation. Execution fields of tasks already\
-    \ in the backlog are kept.\n    "
+    \ drift triage authorizes its\n    implementation. The backlog equals the diff:\
+    \ a diff task that is no longer\n    in the diff completes, and a completed one\
+    \ that is back in the diff\n    reopens. Other execution state of tasks already\
+    \ in the backlog is kept,\n    and items not cut from the diff are never touched.\n\
+    \    "
 - id: aa788b5d-b918-5414-b688-a1db5fda7ea4
   type: component
   name: execute_task_with_agent
-  description: "\n    Instantiates the Agent using LocalAgentConfig. Configures system_instructions\n\
-    \    for the 'sdlc_orchestrator' role, applies CapabilitiesConfig, and streams\n\
-    \    the chat response for the task provided.\n    "
+  description: "Run the task on the configured agent runtime as the sdlc_orchestrator.\n\
+    \n    The runtime is chosen by configuration (see ``agent_runtime``), so the\n\
+    \    loop has no dependency on any one vendor's SDK.\n    "
 - id: 47757762-ac3c-582e-a93a-0bee49c1de94
   type: component
   name: main_loop
   description: "\n    1. Invokes ingest_diff().\n    2. Fetches the highest-priority\
     \ unblocked task that triage authorizes\n       for implementation via core.get_next_item().\n\
     \    3. Sets task status to 'In Progress' via core.set_status().\n    4. Awaits\
-    \ execute_task_with_agent(task).\n    5. Marks status 'Completed' (or 'Blocked'\
-    \ on failure).\n\n    Returns the executed task's name, or None when nothing is\
-    \ authorized.\n    "
+    \ execute_task_with_agent(task).\n    5. Blocks the task as awaiting evidence\
+    \ (or 'Blocked' on failure). An\n       agent returning is not evidence; the next\
+    \ ingest completes the task\n       only if it has left the diff.\n\n    Returns\
+    \ the executed task's name, or None when nothing is authorized.\n    "
 - id: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   type: module
   name: reality_dag_generator.py
@@ -1244,6 +1343,16 @@ nodes:
   type: component
   name: iter_canonical_node_markers
   description: Return canonical UUIDs from actual Python comment tokens only.
+- id: 3337985c-d662-5f20-b465-e2cfe35cbb59
+  type: component
+  name: mapping_receipt_freshness
+  description: "Check whether one source file's mapping receipt still matches its\
+    \ source.\n\n    Returns ``None`` when the file carries no receipt. Otherwise\
+    \ the status is\n    ``fresh`` when the annotation-neutral source still hashes\
+    \ to the receipt's\n    ``source_sha256``, ``stale`` when the source changed since\
+    \ approval, and\n    ``invalid`` when the receipt cannot be validated at all.\
+    \ Read-only: a stale\n    receipt is refreshed only through ``dag-tool mapping\
+    \ receipt refresh`` with\n    a named approver.\n    "
 - id: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   type: module
   name: state.py
@@ -1326,7 +1435,7 @@ nodes:
   type: component
   name: get_package_templates_dir
   description: Return the templates bundled with the installed framework package.
-- id: 370f8b4f-0766-5ffa-a93f-948947910c79
+- id: 5a81e63d-85c7-4704-a0b1-e076367b2fd1
   type: component
   name: generate_document
   description: "\n    Generates a document from a Jinja2 template and writes it to\
@@ -1414,11 +1523,11 @@ nodes:
   type: module
   name: markdown_parser.py
   description: Module src.aio_agentic_sdlc.parsers.markdown_parser
-- id: a4114ac7-09b1-5a58-ae83-45acdaff1884
+- id: a937dc0f-c261-461a-975f-03950289be88
   type: component
   name: MarkdownAgentParser
   description: Class MarkdownAgentParser
-- id: ef8a8a73-e433-57d9-8065-f3b7b8627114
+- id: 9a5dd215-8c07-5658-bb63-4018707a06b3
   type: component
   name: parse
   description: Function parse
@@ -1518,6 +1627,54 @@ edges:
   target: 391a970e-235c-5c2e-9563-704be8eea2dc
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 61272897-55df-56f2-a1ce-be2651e85384
+  type: contains
+- source: 61272897-55df-56f2-a1ce-be2651e85384
+  target: 3a381c7b-8b68-536f-8b96-19a3fc8be380
+  type: contains
+- source: 61272897-55df-56f2-a1ce-be2651e85384
+  target: ec5f8ea2-38e9-51f7-a5ff-3f80bc43bf02
+  type: contains
+- source: 61272897-55df-56f2-a1ce-be2651e85384
+  target: 91841cba-d306-56a8-804d-bb40beef975b
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  type: contains
+- source: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  target: 9959961a-95ef-53b8-86f7-3fd804ce173b
+  type: contains
+- source: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  target: bcdcecde-40d9-509a-883b-1ef654133f2d
+  type: contains
+- source: bcdcecde-40d9-509a-883b-1ef654133f2d
+  target: ba2c444a-ac4d-52c4-b7f3-cf3cac81523d
+  type: contains
+- source: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  target: 26504515-f14f-598b-84c0-519805469e2e
+  type: contains
+- source: 26504515-f14f-598b-84c0-519805469e2e
+  target: 7231f8f2-d505-5a99-8fd9-b7adb19b3422
+  type: contains
+- source: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  target: 4106f39a-02d2-596f-9fd6-52aaa62100ad
+  type: contains
+- source: 4106f39a-02d2-596f-9fd6-52aaa62100ad
+  target: 7c916ba2-8011-588d-9221-59518c014f32
+  type: contains
+- source: 4106f39a-02d2-596f-9fd6-52aaa62100ad
+  target: d50a662e-6266-5ef2-951b-aff0f013f447
+  type: contains
+- source: 4106f39a-02d2-596f-9fd6-52aaa62100ad
+  target: 3900c3e0-b8b4-5c81-b4f7-fe6972d6ebd0
+  type: contains
+- source: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  target: b9c84b59-15af-5c77-959e-ab2cbc5480fa
+  type: contains
+- source: d1f05a2f-9120-599e-8dc1-fac029b2ed15
+  target: 8cfea047-cf9e-5796-9de3-764bd93d26ff
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 553c596a-6285-532c-81cf-5a561a3992a3
   type: contains
 - source: 553c596a-6285-532c-81cf-5a561a3992a3
@@ -1581,7 +1738,7 @@ edges:
   target: a4b1cc77-0b97-547f-9d3e-0925f72982ac
   type: contains
 - source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
-  target: 2e6bd533-369f-5cd8-90cd-89b90fe9d973
+  target: f24b7477-032b-4f93-abcf-9b1c70627900
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 1b601f4c-40b3-5895-a9cb-445be5577970
@@ -1710,6 +1867,9 @@ edges:
   target: f3611435-a151-5c50-bb99-18677d8441d6
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 56062394-4a0d-51ef-9c44-15a17bb3b25a
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: f491645f-4535-5738-a7f6-90fc849714a5
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -1729,6 +1889,9 @@ edges:
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 65e8c64a-7f28-515f-b34b-d6afa699f8ee
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 330f4f65-91f6-5678-8358-0ee4eae3d616
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 0ed46e46-0115-5f0f-91cc-5e79007a6add
@@ -2007,13 +2170,13 @@ edges:
   target: 75a405fa-34ce-5be3-b369-2c365fd70bbd
   type: contains
 - source: e63a391f-87b9-5327-b422-35e94f8b8ed5
-  target: 3fe91368-3385-568d-ab02-95b67c9d2604
+  target: 2131072d-9bb1-4236-9b9a-141ee087fa4b
   type: contains
-- source: 3fe91368-3385-568d-ab02-95b67c9d2604
-  target: 82eebb87-24f6-56b4-b655-23625918a84e
+- source: 2131072d-9bb1-4236-9b9a-141ee087fa4b
+  target: 06694c0d-397b-5589-8664-e8d60cf666ed
   type: contains
-- source: 3fe91368-3385-568d-ab02-95b67c9d2604
-  target: ded7d268-4821-592c-a144-5a9621e9425d
+- source: 2131072d-9bb1-4236-9b9a-141ee087fa4b
+  target: 8cec8d36-0bc9-5c35-9fcf-ef129729fdd5
   type: contains
 - source: e63a391f-87b9-5327-b422-35e94f8b8ed5
   target: a22d475d-86e1-515a-9bc6-bed573829115
@@ -2061,28 +2224,28 @@ edges:
   target: 194020aa-bb6b-5a4b-90d8-c8dcd6d98a7b
   type: contains
 - source: 03ab3d9a-beb1-5a32-b3f4-5efdddeee956
-  target: 4e7e0f73-3eae-5f42-866a-a1d999e70a85
+  target: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
   type: contains
-- source: 4e7e0f73-3eae-5f42-866a-a1d999e70a85
-  target: d9ff483d-1f84-5eec-9be6-5d7c286090ab
+- source: 7bcd1683-2a10-5cbc-ab91-440ea920eaf1
+  target: 089f958d-8d30-50ca-9aba-61fb839a70fe
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 251be45c-4b0c-5331-af40-3b635e667cfb
   type: contains
 - source: 251be45c-4b0c-5331-af40-3b635e667cfb
-  target: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
+  target: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
   type: contains
-- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
-  target: a83d9847-1c02-51ff-97e4-710e0f6720dc
+- source: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  target: dbb6d8cc-6b97-5289-a290-1f3641b6d0b9
   type: contains
-- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
-  target: 2ca51b52-848b-5f29-a2f1-f2384a3a04fd
+- source: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  target: c4862302-067f-5757-a168-b3081abb9219
   type: contains
-- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
-  target: 9e2449d0-40fd-5b0c-adca-8170145ab790
+- source: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  target: 5d4705b6-7b81-5b32-a4d0-48c4f92e4ec6
   type: contains
-- source: a70ce5eb-4ce7-58a7-ae41-db176a6bcde6
-  target: cd1f7638-14ae-52ae-85e7-13397158226d
+- source: f4658dd7-1ea1-5e1f-b851-2a376cc1649a
+  target: eabfa143-a6ab-5228-921d-eb79c6ba6d1b
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 214466a1-8303-573d-abd3-6c91afc5783e
@@ -2133,10 +2296,13 @@ edges:
   target: 8e61b3f7-4f23-5fc4-a720-035e2ab861f6
   type: contains
 - source: 6317643a-a8fc-5026-b373-9330004bc90d
+  target: 473a8479-c1dd-5576-81c0-d3e49e60f86a
+  type: contains
+- source: 6317643a-a8fc-5026-b373-9330004bc90d
   target: a2a30d01-4de7-5dee-bca7-ef3a5f806538
   type: contains
 - source: 6317643a-a8fc-5026-b373-9330004bc90d
-  target: a03577cc-ff8f-588e-ab72-553938656f7b
+  target: 15019926-c6be-5c98-b558-954c7657e5c6
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 905cfe1d-7c37-50cf-b768-9132c88169e7
@@ -2259,7 +2425,13 @@ edges:
   target: 654e7846-a5b4-5627-af8a-6045142b4851
   type: contains
 - source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: 0144e598-45fe-5c5b-99a7-baa8bfac9f6c
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
   target: f57d62b8-7a86-5f3f-9851-47345f57ce14
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: 174cedd7-b91a-52cb-a15f-2500f918900b
   type: contains
 - source: 654e7846-a5b4-5627-af8a-6045142b4851
   target: 54c1a005-787a-5953-a28a-212cac729c7d
@@ -2366,6 +2538,9 @@ edges:
 - source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
   target: 828c3a86-8c8c-59a9-b76b-194ea93baad6
   type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: 3337985c-d662-5f20-b465-e2cfe35cbb59
+  type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   type: contains
@@ -2424,7 +2599,7 @@ edges:
   target: d76c9ca8-4548-5c54-95cc-86bb437c3acb
   type: contains
 - source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
-  target: 370f8b4f-0766-5ffa-a93f-948947910c79
+  target: 5a81e63d-85c7-4704-a0b1-e076367b2fd1
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
@@ -2484,10 +2659,10 @@ edges:
   target: e3b72ae9-9e2d-5a12-9614-34f892a0e932
   type: contains
 - source: e3b72ae9-9e2d-5a12-9614-34f892a0e932
-  target: a4114ac7-09b1-5a58-ae83-45acdaff1884
+  target: a937dc0f-c261-461a-975f-03950289be88
   type: contains
-- source: a4114ac7-09b1-5a58-ae83-45acdaff1884
-  target: ef8a8a73-e433-57d9-8065-f3b7b8627114
+- source: a937dc0f-c261-461a-975f-03950289be88
+  target: 9a5dd215-8c07-5658-bb63-4018707a06b3
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 4271a927-f51e-512e-b272-45fa54fbb3d3
