@@ -175,7 +175,13 @@ async def test_main_loop(mock_core, mock_agent):
             mock_core.get_next_item.assert_called_once()
             mock_core.set_status.assert_any_call("t1", "In Progress")
             mock_exec.assert_called_once_with(mock_task)
-            mock_core.set_status.assert_any_call("t1", "Completed")
+            # Returning is not evidence: the task waits to leave the diff.
+            mock_core.add_blocker.assert_called_once_with(
+                "t1", orchestrator_loop.AWAITING_EVIDENCE
+            )
+            assert ("t1", "Completed") not in [
+                c.args for c in mock_core.set_status.call_args_list
+            ]
 
 
 @pytest.mark.asyncio
@@ -305,9 +311,67 @@ def test_ingest_diff_marks_authorization_and_keeps_execution_state(
 
     nodes = core.load_backlog()["nodes"]
     assert nodes["approved"]["implementation_authorized"] is True
-    assert nodes["approved"]["status"] == "Completed"
+    # Still in the diff, so it is still work: the backlog equals the diff.
+    assert nodes["approved"]["status"] == "New"
+    assert nodes["approved"]["resolution"].startswith("reopened")
     assert nodes["unapproved"]["implementation_authorized"] is False
     assert nodes["unapproved"]["status"] == "New"
+
+
+def test_ingest_diff_keeps_in_flight_state_while_in_the_diff(
+    tmp_path, monkeypatch, mock_dag_manager, mock_diffing_engine
+):
+    from aio_agentic_sdlc import core
+
+    monkeypatch.chdir(tmp_path)
+    mock_diffing_engine.return_value.calculate_diff.return_value = {
+        "nodes": {"approved": _diff_task(INTENT_ID, "approved work")},
+        "edges": [],
+    }
+    orchestrator_loop.ingest_diff()
+    core.add_blocker("approved", orchestrator_loop.AWAITING_EVIDENCE)
+    orchestrator_loop.ingest_diff()
+
+    item = core.load_backlog()["nodes"]["approved"]
+    assert item["status"] == "Blocked"
+    assert item["blockers"] == [orchestrator_loop.AWAITING_EVIDENCE]
+
+
+def test_tasks_that_leave_the_diff_leave_the_queue(
+    tmp_path, monkeypatch, mock_dag_manager, mock_diffing_engine
+):
+    from aio_agentic_sdlc import core
+
+    monkeypatch.chdir(tmp_path)
+    core.add_item("hand-added", 3, 2, "Feature", "not from the diff")
+    mock_diffing_engine.return_value.calculate_diff.return_value = {
+        "nodes": {
+            "done": _diff_task(INTENT_ID, "work an agent finished"),
+            "untouched": _diff_task(OTHER_ID, "work nobody started"),
+        },
+        "edges": [],
+    }
+    with patch(
+        "aio_agentic_sdlc.orchestrator_loop.authorized_subjects",
+        return_value={f"intent:{INTENT_ID}"},
+    ):
+        orchestrator_loop.ingest_diff()
+        core.add_blocker("done", orchestrator_loop.AWAITING_EVIDENCE)
+        mock_diffing_engine.return_value.calculate_diff.return_value = {
+            "nodes": {},
+            "edges": [],
+        }
+        orchestrator_loop.ingest_diff()
+
+    nodes = core.load_backlog()["nodes"]
+    for name in ("done", "untouched"):
+        assert nodes[name]["status"] == "Completed"
+        assert nodes[name]["resolution"] == "left the diff"
+        assert nodes[name]["blockers"] == []
+        assert nodes[name]["implementation_authorized"] is False
+    assert nodes["hand-added"]["status"] == "New"
+    assert "resolution" not in nodes["hand-added"]
+    assert core.get_next_item(where=orchestrator_loop._is_authorized)[0] is None
 
 
 @pytest.mark.asyncio
@@ -335,7 +399,8 @@ async def test_main_loop_executes_only_authorized_work(tmp_path, monkeypatch):
     mock_exec.assert_awaited_once()
     assert mock_exec.await_args.args[0]["name"] == "approved"
     nodes = core.load_backlog()["nodes"]
-    assert nodes["approved"]["status"] == "Completed"
+    assert nodes["approved"]["status"] == "Blocked"
+    assert nodes["approved"]["blockers"] == [orchestrator_loop.AWAITING_EVIDENCE]
     assert nodes["unapproved"]["status"] == "New"
 
 

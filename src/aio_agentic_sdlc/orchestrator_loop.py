@@ -18,8 +18,34 @@ from aio_agentic_sdlc.evidence import (
 from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE
 
 # Backlog-entry fields that belong to execution, not to the diff. Re-ingesting
-# the diff must not reset them, or a completed task would reopen on every run.
+# the diff must not reset them, or in-flight work would lose its state.
 EXECUTION_FIELDS = ("status", "blockers")
+
+# Actions the safe diff emits. A backlog item carrying one was cut from the
+# diff, so the diff alone decides whether it is still work (ROADMAP M4).
+DIFF_ACTIONS = frozenset(
+    {
+        "update_confirmed",
+        "verify_acceptance",
+        "review_mapping",
+        "resolve_ambiguous_mapping",
+        "investigate_intent",
+        "connect_confirmed",
+    }
+)
+
+# Set once an agent returns. Returning is not evidence: the task completes only
+# when a later ingest no longer finds it in the diff (ROADMAP M3).
+AWAITING_EVIDENCE = (
+    "Awaiting evidence: an agent finished this task, so it completes only once "
+    "it leaves the diff."
+)
+
+
+def is_diff_task(item):
+    """Return whether a backlog item was cut from the safe diff."""
+
+    return isinstance(item, dict) and item.get("action") in DIFF_ACTIONS
 
 
 def triage_subject_key(task):
@@ -82,7 +108,10 @@ def ingest_diff(decisions=None):
     using core.load_backlog and core.save_backlog, followed by core.prioritize_items.
 
     Each ingested task records whether drift triage authorizes its
-    implementation. Execution fields of tasks already in the backlog are kept.
+    implementation. The backlog equals the diff: a diff task that is no longer
+    in the diff completes, and a completed one that is back in the diff
+    reopens. Other execution state of tasks already in the backlog is kept,
+    and items not cut from the diff are never touched.
     """
     intention_dag = DAGManager.load(INTENTION_DAG_FILE)
     reality_dag = DAGManager.load(REALITY_DAG_FILE)
@@ -98,6 +127,7 @@ def ingest_diff(decisions=None):
     backlog = core.load_backlog() or {}
 
     existing_items = backlog.get("nodes", {})
+    current = set()
     for task_name, task in tasks.items() if isinstance(tasks, dict) else tasks:
         if isinstance(task, dict):
             task["id"] = task.get("id", task_name)
@@ -108,9 +138,24 @@ def ingest_diff(decisions=None):
                 for field in EXECUTION_FIELDS:
                     if field in prior:
                         task[field] = prior[field]
+            if task.get("status") == "Completed" and is_diff_task(task):
+                task["status"] = "New"
+                task["resolution"] = "reopened: the task is in the diff again"
             existing_items[task["name"]] = task
+            current.add(task["name"])
         elif hasattr(task, "id"):
             existing_items[getattr(task, "name", task.id)] = task.__dict__
+
+    for name, item in existing_items.items():
+        if name in current or not is_diff_task(item):
+            continue
+        if item.get("status") != "Completed":
+            item["status"] = "Completed"
+            item["resolution"] = "left the diff"
+        item["blockers"] = [
+            b for b in item.get("blockers", []) if b != AWAITING_EVIDENCE
+        ]
+        item["implementation_authorized"] = False
 
     backlog["nodes"] = existing_items
 
@@ -164,7 +209,9 @@ async def main_loop(decisions=None):
        for implementation via core.get_next_item().
     3. Sets task status to 'In Progress' via core.set_status().
     4. Awaits execute_task_with_agent(task).
-    5. Marks status 'Completed' (or 'Blocked' on failure).
+    5. Blocks the task as awaiting evidence (or 'Blocked' on failure). An
+       agent returning is not evidence; the next ingest completes the task
+       only if it has left the diff.
 
     Returns the executed task's name, or None when nothing is authorized.
     """
@@ -183,7 +230,7 @@ async def main_loop(decisions=None):
 
     try:
         await execute_task_with_agent(task)
-        core.set_status(task_name, "Completed")
+        core.add_blocker(task_name, AWAITING_EVIDENCE)
     except Exception as e:
         core.set_status(task_name, "Blocked")
         raise e

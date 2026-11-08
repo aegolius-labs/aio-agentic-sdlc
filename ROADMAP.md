@@ -103,8 +103,9 @@ Intention node: Explicit Evidence Model (`6b1b3459`).
 - [x] A confirmed node whose acceptance criteria lack their required evidence
   stays in the diff as a `verify_acceptance` task, which triage authorizes
   for approved intent as `acceptance_evidence_required`.
-- [ ] `apply` marks a task complete only on evidence, not because an agent
-  call returned.
+- [x] `apply` marks a task complete only on evidence, not because an agent
+  call returned. A finished agent call leaves the task blocked as awaiting
+  evidence until it leaves the diff.
 
 ## M4: The closed loop
 
@@ -113,8 +114,9 @@ Reference Demo (`cb02a996`).
 
 - [ ] Intake turns a stated want into a reviewable Intention node through the
   Intent IR tools.
-- [ ] The backlog equals the diff: tasks that leave the diff leave the
-  execution queue instead of accumulating.
+- [x] The backlog equals the diff: tasks that leave the diff leave the
+  execution queue instead of accumulating, and a completed task that
+  reappears in the diff reopens.
 - [ ] A fresh checkout reproduces one requirement through intent,
   implementation, tests, evidence and approval.
 - [ ] A versioned golden corpus measures intent translation.
