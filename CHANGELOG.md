@@ -2,7 +2,30 @@
 
 ## [Unreleased]
 
+## [0.45.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.45.0) (2026-11-08)
+
+### Added
+
+- `dag-tool demo` reproduces one requirement from an empty directory through
+  intent, approval, triage, `aio-sdlc apply`, source mapping, tests, evidence
+  and completion, and writes a plain-language `TRACEABILITY.md` (ROADMAP M4,
+  closed-loop reference demo). It asks the named approver at each of its four
+  gates unless `--yes`. CI runs it from the installed wheel.
+- `dag-tool intent decide` records a person's approval or rejection as one
+  appended revision, without hand-writing an Intent IR payload.
+- `dag-tool triage-decide` records one triage decision bound to the current
+  plan digest. It refuses to add to a stale decision file.
+- `dag-tool trace` explains one requirement end to end for a reader who does
+  not know the framework. Read-only.
+
 ### Changed
+
+- `dag-tool intent create-node` creates the Intention DAG when it does not
+  exist yet, so a fresh project needs no hand-written skeleton.
+- `aio-sdlc apply` gives the agent a work order with the requirement's name,
+  description, provenance and acceptance criteria, and the rule that approval
+  stays with people. It used to receive only the task's one-line summary,
+  which named the intent by GUID alone.
 
 - CI fails on a stale or invalid mapping receipt instead of only annotating
   it. The two stale receipts were refreshed, and the owner-approved mappings

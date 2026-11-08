@@ -175,11 +175,14 @@ def ingest_diff(decisions=None):
     core.prioritize_items()
 
 
-async def execute_task_with_agent(task):
-    """Run the task on the configured agent runtime as the sdlc_orchestrator.
+def work_order(task, intention_dag=None):
+    """Return the prompt an implementing agent receives for one task.
 
-    The runtime is chosen by configuration (see ``agent_runtime``), so the
-    loop has no dependency on any one vendor's SDK.
+    A diff task names its canonical intent only by GUID. The agent needs the
+    intent itself, so the work order carries the node's name, description,
+    provenance and acceptance criteria with their required evidence, plus the
+    rules that keep approval with people. Nothing here is new intent: it is
+    copied from the approved Intention node.
     """
 
     task_desc = (
@@ -187,10 +190,61 @@ async def execute_task_with_agent(task):
         if isinstance(task, dict)
         else getattr(task, "description", str(task))
     )
-    prompt = f"Execute this task: {task_desc}"
+    lines = [f"Execute this task: {task_desc}"]
+    node = None
+    canonical_id = task.get("canonical_intent_id") if isinstance(task, dict) else None
+    if canonical_id:
+        try:
+            dag = intention_dag or DAGManager.load(INTENTION_DAG_FILE)
+            node = next(
+                (
+                    n
+                    for n in dag.nodes.values()
+                    if str(UUID(n.id)) == str(UUID(str(canonical_id)))
+                ),
+                None,
+            )
+        except (OSError, ValueError):
+            node = None
+    if node is not None:
+        lines += ["", f"Requirement: {node.name} ({node.type.value})"]
+        if node.description:
+            lines.append(f"Description: {node.description}")
+        if node.intent is not None:
+            for source in node.intent.provenance:
+                lines.append(f"Stated as: {source.statement}")
+            for assumption in node.intent.assumptions:
+                lines.append(f"Assumption: {assumption}")
+            lines.append("Acceptance criteria:")
+            for criterion in node.intent.acceptance_criteria:
+                evidence = ", ".join(criterion.required_evidence)
+                lines.append(
+                    f"- {criterion.id}: {criterion.statement} "
+                    f"(required evidence: {evidence})"
+                )
+    lines += [
+        "",
+        "Rules:",
+        "- Change source code and tests only. Never edit files under "
+        ".aio-agentic-sdlc/ by hand.",
+        "- Do not approve intent, mappings, triage decisions or evidence: "
+        "those are human decisions recorded through dag-tool.",
+        "- The task is done only when it leaves the diff, once a person has "
+        "approved the source mapping and the required evidence is recorded.",
+    ]
+    return "\n".join(lines)
+
+
+async def execute_task_with_agent(task):
+    """Run the task on the configured agent runtime as the sdlc_orchestrator.
+
+    The runtime is chosen by configuration (see ``agent_runtime``), so the
+    loop has no dependency on any one vendor's SDK.
+    """
 
     await run_agent(
-        "You are the sdlc_orchestrator. Please execute the following task.", prompt
+        "You are the sdlc_orchestrator. Please execute the following task.",
+        work_order(task),
     )
 
 
@@ -221,6 +275,12 @@ async def main_loop(decisions=None):
     if not task_name:
         # Malformed task without a name, we cannot process or mark it blocked
         return None
+
+    # get_next_item returns a scheduling summary; the work order needs the
+    # full diff task, which carries its canonical intent GUID.
+    full_task = ((core.load_backlog() or {}).get("nodes") or {}).get(task_name)
+    if isinstance(full_task, dict):
+        task = {**full_task, **task}
 
     core.set_status(task_name, "In Progress")
 

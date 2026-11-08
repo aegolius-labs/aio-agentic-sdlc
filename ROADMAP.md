@@ -128,8 +128,10 @@ Reference Demo (`cb02a996`).
 - [x] The backlog equals the diff: tasks that leave the diff leave the
   execution queue instead of accumulating, and a completed task that
   reappears in the diff reopens.
-- [ ] A fresh checkout reproduces one requirement through intent,
-  implementation, tests, evidence and approval.
+- [x] A fresh checkout reproduces one requirement through intent,
+  implementation, tests, evidence and approval. `dag-tool demo`, with an
+  integration test, and CI runs it from the installed wheel. Its traceability
+  report still needs an outside reader's review (DEMO-AC2).
 - [ ] A versioned golden corpus measures intent translation.
 
 ## M5: Federation seams
