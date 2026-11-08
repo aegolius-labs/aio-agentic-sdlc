@@ -25,11 +25,15 @@ dependencies = [
     "click>=8.0.0",
     "tree-sitter>=0.25.2,<0.26",
     "tree-sitter-python>=0.25.0,<0.26",
-    "google-antigravity",
     "jinja2>=3.1.6",
 ]
 
 [project.optional-dependencies]
+# The Antigravity agent runtime for `aio-sdlc apply` and `plan`. Other hosts
+# use the "command" runtime and never install it; the MCP server never needs it.
+antigravity = [
+    "google-antigravity",
+]
 # Duplicate PRD detection only. It pulls in torch, which dominates install time
 # and would otherwise delay every MCP server start.
 semantic = [
@@ -49,6 +53,7 @@ dev = [
     "ruff>=0.14.0",
     "black>=25.9.0",
     "aio-agentic-sdlc[semantic]",
+    "aio-agentic-sdlc[antigravity]",
 ]
 
 [project.scripts]

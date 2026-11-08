@@ -388,9 +388,7 @@ def next_cmd(args):
 async def _run_architect_subagent(inbox_files):
     import os
 
-    from google.antigravity import Agent
-
-    from aio_agentic_sdlc.antigravity_compat import local_agent_config
+    from aio_agentic_sdlc.agent_runtime import run_agent
 
     prompt_path = os.path.join(
         ".agents", "agents", "sdlc_architect", "system_prompt.md"
@@ -401,15 +399,12 @@ async def _run_architect_subagent(inbox_files):
     except FileNotFoundError:
         system_instructions = "You are the Technical Architect."
 
-    config = local_agent_config(system_instructions)
-
     files_str = ", ".join(inbox_files)
     prompt = (
         f"Process the following PRDs from {INBOX_DIR}/: {files_str}. "
         f"Map them to {INTENTION_DAG_FILE}."
     )
-    async with Agent(config) as agent:
-        await agent.chat(prompt)
+    await run_agent(system_instructions, prompt)
 
 
 def plan_cmd(args):

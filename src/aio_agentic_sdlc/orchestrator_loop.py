@@ -2,10 +2,8 @@ import asyncio
 import os
 from uuid import UUID
 
-from google.antigravity import Agent
-
 from aio_agentic_sdlc import core
-from aio_agentic_sdlc.antigravity_compat import local_agent_config
+from aio_agentic_sdlc.agent_runtime import run_agent
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.drift_triage import DriftTriageEngine
@@ -178,14 +176,11 @@ def ingest_diff(decisions=None):
 
 
 async def execute_task_with_agent(task):
+    """Run the task on the configured agent runtime as the sdlc_orchestrator.
+
+    The runtime is chosen by configuration (see ``agent_runtime``), so the
+    loop has no dependency on any one vendor's SDK.
     """
-    Instantiates the Agent using LocalAgentConfig. Configures system_instructions
-    for the 'sdlc_orchestrator' role, applies CapabilitiesConfig, and streams
-    the chat response for the task provided.
-    """
-    config = local_agent_config(
-        "You are the sdlc_orchestrator. Please execute the following task."
-    )
 
     task_desc = (
         task.get("description", "")
@@ -194,8 +189,9 @@ async def execute_task_with_agent(task):
     )
     prompt = f"Execute this task: {task_desc}"
 
-    async with Agent(config) as agent:
-        await agent.chat(prompt)
+    await run_agent(
+        "You are the sdlc_orchestrator. Please execute the following task.", prompt
+    )
 
 
 def _is_authorized(item):
