@@ -137,8 +137,21 @@ canonical GUID, open or closed state, and observed Project `Status` and
   `github_observation`. It never changes a classification or whether approval
   is required, and it never edits the Intention DAG.
 
-`tests/fixtures/seam-a/observed-state.json` is byte-identical to the kit's copy
-and pins the contract on this side.
+The forward direction is `dag-tool export-abk`. It writes the work that drift
+triage authorizes into an ABK manifest and never calls GitHub:
+
+- One `Task` per authorized Intention node, keyed by canonical GUID, with item
+  id `SDLC-` plus the GUID's first 8 hex digits. Relationship tasks have no
+  single node and are not exported.
+- The base manifest supplies `github`, `workflow` and `scoring`. Items without
+  a `guid` pass through unchanged. GUID items are rewritten on each run except
+  their `status` and `sprint`, which are the team's execution state.
+- Work that leaves the diff stays with the first done status, because ABK
+  never closes an issue the manifest stops listing. It is dropped once
+  `--observed-state` reports its issue closed.
+
+`tests/fixtures/seam-a/observed-state.json` and `tests/fixtures/seam-a/work.json`
+are byte-identical to the kit's copies and pin both directions on this side.
 
 ### Seam B: QA evidence (layer 5 to layers 2-4)
 

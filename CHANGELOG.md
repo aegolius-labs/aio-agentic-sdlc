@@ -4,6 +4,15 @@
 
 ### Added
 
+- `dag-tool export-abk` projects the work drift triage authorizes into an
+  Agentic Backlog Kit manifest (Seam A forward, contract `seam-a-work` v1).
+  It writes one file and never calls GitHub; the kit's plan and apply flow
+  makes every GitHub write. See `doc/authority-model.md`.
+
+## [0.43.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.43.0) (2026-11-08)
+
+### Added
+
 - `aio-sdlc init --hierarchy simple|deep --validation strict|flex` chooses
   without prompting, and `--yes` never prompts.
 

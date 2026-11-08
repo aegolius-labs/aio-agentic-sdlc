@@ -330,3 +330,20 @@ preserves the canonical marker and replaces only its adjacent receipt. Evidence 
 the whole annotation-neutral file, so even an unrelated edit in that file intentionally makes the
 receipt stale. Only observed Python classes and functions are supported. Use these tools or their
 Python API equivalents—never insert, replace, or repair mapping markers and receipts manually.
+
+### Projecting work to GitHub (Seam A)
+
+`agentic-backlog-kit` shows the work on GitHub Issues and Projects. Export the
+work that drift triage authorizes into the kit's manifest, then plan and apply
+it with the kit as usual:
+
+```bash
+uv run dag-tool export-abk \
+  --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml \
+  --base-manifest backlog/manifest.json --output backlog/manifest.json
+```
+
+The export never calls GitHub. Pass `--observed-state` with an `abk observe`
+document so finished items drop out once their issues are closed. The contract
+is in `doc/authority-model.md`.
