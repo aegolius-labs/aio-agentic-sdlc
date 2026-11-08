@@ -11,9 +11,9 @@
     "missing_implementation": 9,
     "acceptance_evidence_required": 8,
     "obsolete_or_unapproved_intent": 17,
-    "framework_tooling_drift": 31,
+    "framework_tooling_drift": 32,
     "identity_review_required": 0,
-    "needs_classification": 1,
+    "needs_classification": 0,
     "actionable_implementation": 17
   },
   "limit": {
@@ -1565,50 +1565,6 @@
     {
       "subject": {
         "kind": "intent",
-        "type": "component",
-        "name": "Version Command",
-        "name_truncated": false
-      },
-      "classification": "needs_classification",
-      "reason": "Approved intent has no deterministic Reality match; explicit evidence is required to distinguish missing implementation from tooling drift.",
-      "decision_source": "pending",
-      "implementation_authorized": false,
-      "evidence": {
-        "approval_state": "approved",
-        "safe_action": "investigate_intent",
-        "acceptance_criteria": {
-          "items": [
-            {
-              "id": "LEGACY-989b390d-aa2a-4cdc-8dc5-593b76c4b08b-AC1",
-              "id_truncated": false,
-              "statement": "CLI and MCP entrypoint for safely reporting framework version before initialization.",
-              "statement_truncated": false,
-              "required_evidence": {
-                "items": [
-                  {
-                    "value": "reconciliation:intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
-                    "value_truncated": false
-                  }
-                ],
-                "total_items": 1,
-                "returned_items": 1,
-                "truncated": false
-              }
-            }
-          ],
-          "total_items": 1,
-          "returned_items": 1,
-          "truncated": false
-        }
-      },
-      "audit": {
-        "subject_key": "intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
-        "canonical_intent_id": "989b390d-aa2a-4cdc-8dc5-593b76c4b08b"
-      }
-    },
-    {
-      "subject": {
-        "kind": "intent",
         "type": "agent",
         "name": "SDLC Architect Agent",
         "name_truncated": false
@@ -2176,6 +2132,58 @@
         ],
         "decided_by": "Felix",
         "decided_at": "2026-11-08T19:08:23+00:00"
+      }
+    },
+    {
+      "subject": {
+        "kind": "intent",
+        "type": "component",
+        "name": "Version Command",
+        "name_truncated": false
+      },
+      "classification": "framework_tooling_drift",
+      "reason": "#158 added --version to aio-sdlc and dag-tool, and the MCP server reports its version on initialization, so the behavior exists. An argparse flag and a click option have no symbol to map, and cli.py already carries the CLI Entrypoint receipt. Felix chose this classification on the 2026-11-08 follow-up decision card.",
+      "decision_source": "explicit",
+      "implementation_authorized": false,
+      "evidence": {
+        "approval_state": "approved",
+        "safe_action": "investigate_intent",
+        "acceptance_criteria": {
+          "items": [
+            {
+              "id": "LEGACY-989b390d-aa2a-4cdc-8dc5-593b76c4b08b-AC1",
+              "id_truncated": false,
+              "statement": "CLI and MCP entrypoint for safely reporting framework version before initialization.",
+              "statement_truncated": false,
+              "required_evidence": {
+                "items": [
+                  {
+                    "value": "reconciliation:intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+                    "value_truncated": false
+                  }
+                ],
+                "total_items": 1,
+                "returned_items": 1,
+                "truncated": false
+              }
+            }
+          ],
+          "total_items": 1,
+          "returned_items": 1,
+          "truncated": false
+        }
+      },
+      "audit": {
+        "subject_key": "intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+        "canonical_intent_id": "989b390d-aa2a-4cdc-8dc5-593b76c4b08b"
+      },
+      "decision": {
+        "rationale": "#158 added --version to aio-sdlc and dag-tool, and the MCP server reports its version on initialization, so the behavior exists. An argparse flag and a click option have no symbol to map, and cli.py already carries the CLI Entrypoint receipt. Felix chose this classification on the 2026-11-08 follow-up decision card.",
+        "evidence": [
+          ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+        ],
+        "decided_by": "Felix",
+        "decided_at": "2026-11-08T19:57:28+00:00"
       }
     },
     {

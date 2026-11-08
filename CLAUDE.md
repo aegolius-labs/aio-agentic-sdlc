@@ -126,10 +126,10 @@ Stale quickly — re-measure rather than trusting these numbers.
 | Confirmed nodes | 18; 15 mapping receipts (19 files carry `# aio-sdlc-node:` markers) |
 | Completed dogfood cycles | 12, under `.aio-agentic-sdlc/changes/` |
 
-The owner's 2026-11-08 packet mapped or classified all but one of the 35 approved items
+The owner's 2026-11-08 packet mapped or classified all 35 approved items
 that were unconfirmed and unclassified (`.aio-agentic-sdlc/changes/mapping-triage-2026-11-08/`).
 Triage now authorizes 17 items. The remaining bottleneck is the **Reality observation gap**:
-agents, containers, directories and data files can't be observed or mapped, so 31 items
+agents, containers, directories and data files can't be observed or mapped, so 32 items
 sit as `framework_tooling_drift`. Triage decisions also bind to the whole-DAG digest
 and go stale on any DAG or evidence change.
 

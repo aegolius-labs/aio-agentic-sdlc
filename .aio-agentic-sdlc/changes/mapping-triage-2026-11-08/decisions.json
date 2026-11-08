@@ -173,6 +173,16 @@
       "decided_at": "2026-11-08T19:08:23+00:00"
     },
     {
+      "subject_key": "intent:989b390d-aa2a-4cdc-8dc5-593b76c4b08b",
+      "classification": "framework_tooling_drift",
+      "rationale": "#158 added --version to aio-sdlc and dag-tool, and the MCP server reports its version on initialization, so the behavior exists. An argparse flag and a click option have no symbol to map, and cli.py already carries the CLI Entrypoint receipt. Felix chose this classification on the 2026-11-08 follow-up decision card.",
+      "evidence": [
+        ".aio-agentic-sdlc/changes/mapping-triage-2026-11-08/README.md"
+      ],
+      "decided_by": "Felix",
+      "decided_at": "2026-11-08T19:57:28+00:00"
+    },
+    {
       "subject_key": "intent:a6cf0410-832b-4597-a505-8fd5eb90d367",
       "classification": "framework_tooling_drift",
       "rationale": "Directories and data files are never observed by the Reality generator. Felix approved the 2026-11-08 mapping and triage packet on its decision card (packet: sdlc-mapping-triage-review-2026-11-08).",

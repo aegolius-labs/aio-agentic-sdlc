@@ -1,6 +1,6 @@
 # Mapping and triage decisions, 2026-11-08
 
-Felix decided these on two decision cards on 2026-11-08:
+Felix decided these on three decision cards on 2026-11-08:
 
 1. At 19:08:23 UTC he approved a review packet. It proposed 8 mappings, 2
    receipt refreshes, 10 `missing_implementation` decisions and 17
@@ -24,9 +24,9 @@ ledger makes it stale. Re-derive it from this record when that happens.
 
 - **Version Command.** The packet proposed `missing_implementation` because
   `--version` did not exist. #158 has since added it to both CLIs, and the MCP
-  server already reports its version on initialization. Recording
-  "missing" would authorize work that is done, so the item is left
-  unclassified until Felix decides again.
+  server already reports its version on initialization, so recording
+  "missing" would have authorized work that is done. At 19:57:28 UTC Felix
+  chose `framework_tooling_drift` on a third card instead.
 - **Canonical GUID Extractor mapping.** It is only a partial match, because
   agent-frontmatter markers aren't read. It is classified
   `missing_implementation` instead.

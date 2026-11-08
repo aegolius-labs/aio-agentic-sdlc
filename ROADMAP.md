@@ -92,8 +92,7 @@ Goal: reconciliation resolves most nodes in both directions. As of
 
 - [x] Map every approved node that has an implementation, through the
   read-only review and approval flow. The owner's 2026-11-08 packet mapped 8
-  and classified the rest (`changes/mapping-triage-2026-11-08/`). Version
-  Command awaits a new decision now that `--version` exists.
+  and classified the rest (`changes/mapping-triage-2026-11-08/`).
 - [x] Refresh stale mapping receipts after source edits, and make the stale
   state visible in CI so it does not accumulate. `dag-tool mapping receipt
   check` reports every stale receipt, and CI fails on one.
@@ -101,7 +100,7 @@ Goal: reconciliation resolves most nodes in both directions. As of
   parser, or record them as a permanent observation limit (two items are
   `framework_tooling_drift` today).
 - [ ] Observe agents, containers, directories and data files, or record them
-  as a permanent observation limit. They account for most of the 31
+  as a permanent observation limit. They account for most of the 32
   `framework_tooling_drift` items.
 - [ ] Make triage decisions durable per subject, so an owner's decision isn't
   re-derived each time the whole-DAG digest changes.
