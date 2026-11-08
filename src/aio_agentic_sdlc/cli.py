@@ -492,7 +492,12 @@ def apply_cmd(args):
             )
         executed = asyncio.run(main_loop(decisions))
         if executed:
-            print(f"Apply completed: executed '{executed}'.")
+            print(
+                f"Apply executed '{executed}'. It is blocked as awaiting evidence "
+                "and completes once a later apply no longer finds it in the diff. "
+                "Regenerate Reality (dag-tool generate-reality) and record "
+                "acceptance evidence (dag-tool evidence record) first."
+            )
         else:
             print(
                 "Apply completed: no triage-authorized work. Approve intent and "
