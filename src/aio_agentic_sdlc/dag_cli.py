@@ -7,6 +7,7 @@ from typing import Any
 
 import click
 
+from aio_agentic_sdlc import __version__
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
 from aio_agentic_sdlc.dag_store import (
@@ -58,6 +59,7 @@ from aio_agentic_sdlc.workspace import (
 
 
 @click.group()
+@click.version_option(__version__, prog_name="dag-tool")
 def cli():
     """CLI tool for managing DAG state files safely."""
     pass
