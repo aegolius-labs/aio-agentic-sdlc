@@ -581,6 +581,85 @@ def mapping_receipt_review(project_path, intent_id, output_format):
         sys.exit(1)
 
 
+@mapping_receipt.command("check")
+@click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Absolute path to the project directory.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json", "github"], case_sensitive=False),
+    default="human",
+    show_default=True,
+    help="Render for people, as the machine report, or as GitHub annotations.",
+)
+@click.option(
+    "--warn-only",
+    is_flag=True,
+    help="Report stale or invalid receipts without failing.",
+)
+def mapping_receipt_check(project_path, output_format, warn_only):
+    """Report every mapping receipt whose source changed since approval.
+
+    Read-only. Exits 1 when any receipt is stale or invalid, unless
+    --warn-only. Refreshing a receipt still needs a named approver.
+    """
+
+    try:
+        engine = MappingEngine(project_path, Path(project_path) / INTENTION_DAG_FILE)
+        report = engine.check_receipts()
+    except Exception as error:
+        click.secho(
+            f"Error checking mapping receipts: {str(error)}",
+            err=True,
+            fg="red",
+        )
+        sys.exit(1)
+    problems = [r for r in report["receipts"] if r["status"] != "fresh"]
+    if output_format == "json":
+        click.echo(json.dumps(report, indent=2))
+    elif output_format == "github":
+        level = "warning" if warn_only else "error"
+        for receipt in problems:
+            click.echo(
+                f"::{level} file={receipt['source_path']},"
+                f"line={receipt.get('receipt_line', 1)},"
+                f"title={receipt['status'].capitalize()} mapping receipt::"
+                + _receipt_problem(receipt)
+            )
+        click.echo(_receipt_summary(report))
+    else:
+        click.echo(_receipt_summary(report))
+        for receipt in problems:
+            click.echo(
+                f"  {receipt['status'].upper()}  {receipt['source_path']}:"
+                f"{receipt.get('receipt_line', 1)}  {_receipt_problem(receipt)}"
+            )
+    if problems and not warn_only:
+        sys.exit(1)
+
+
+def _receipt_summary(report):
+    summary = report["summary"]
+    return (
+        f"Mapping receipts: {summary['fresh']} fresh, {summary['stale']} stale, "
+        f"{summary['invalid']} invalid."
+    )
+
+
+def _receipt_problem(receipt):
+    if receipt["status"] == "invalid":
+        return f"The receipt cannot be validated: {receipt['error']}."
+    return (
+        f"{receipt['symbol_name']} changed since its mapping receipt was approved. "
+        "Review it with `dag-tool mapping receipt review --intent-id "
+        f"{receipt['intent_id']}`, then refresh it with a named approver."
+    )
+
+
 @mapping_receipt.command("refresh")
 @click.option(
     "--project-path",

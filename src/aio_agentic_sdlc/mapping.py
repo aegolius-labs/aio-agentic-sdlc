@@ -39,6 +39,7 @@ from aio_agentic_sdlc.source_markers import (
     MappingReceiptAnnotation,
     SourceMarkerError,
     iter_canonical_node_markers,
+    mapping_receipt_freshness,
     parse_mapping_receipt_annotation,
 )
 from aio_agentic_sdlc.workspace import (
@@ -53,6 +54,7 @@ MAPPING_REVIEW_SCHEMA_VERSION = 3
 MAPPING_APPROVAL_SCHEMA_VERSION = 1
 MAPPING_RECEIPT_SCHEMA_VERSION = 2
 SUPPORTED_SYMBOL_KINDS = {"class", "function"}
+RECEIPT_STATUSES = ("fresh", "stale", "invalid")
 SELECTION_MODES = {"automatic_name_match", "explicit_observed_guid"}
 MAX_PUBLIC_API_ITEMS = 20
 MAX_RELATED_TESTS = 10
@@ -1374,6 +1376,27 @@ class MappingEngine:
                 "annotation": annotation,
             }
         return report
+
+    def check_receipts(self) -> dict[str, Any]:
+        """Report the freshness of every source mapping receipt. Read-only."""
+
+        receipts = []
+        for source_path in self._iter_python_files():
+            relative = source_path.relative_to(self.project_root).as_posix()
+            result = mapping_receipt_freshness(
+                self._source_snapshot(source_path).content, relative
+            )
+            if result is not None:
+                receipts.append(result)
+        summary = {status: 0 for status in RECEIPT_STATUSES}
+        for result in receipts:
+            summary[result["status"]] += 1
+        return {
+            "schema_version": 1,
+            "operation": "receipt_check",
+            "summary": summary,
+            "receipts": receipts,
+        }
 
     def _iter_python_files(self):
         for root, dirs, files in os.walk(self.project_root):

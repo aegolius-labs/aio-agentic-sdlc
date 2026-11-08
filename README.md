@@ -288,6 +288,14 @@ uv run dag-tool mapping approve --project-path /absolute/project --intent-id <gu
   --rationale "Why this exact source symbol is the intended identity boundary"
 ```
 
+Find stale receipts first. `check` is read-only, scans every Python source, and exits 1 when a
+receipt is stale or no longer validates (`--warn-only` reports without failing, and
+`--format github` emits pull request annotations):
+
+```bash
+uv run dag-tool mapping receipt check --project-path /absolute/project
+```
+
 Review and refresh a stale receipt for an already confirmed marker as another two-step decision:
 
 ```bash
