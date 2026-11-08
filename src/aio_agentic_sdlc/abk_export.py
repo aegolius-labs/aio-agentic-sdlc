@@ -17,6 +17,9 @@ The contract (``seam-a-work`` v1, fixture ``tests/fixtures/seam-a/work.json``):
 - A GUID item whose work has left the diff stays, with the first done status,
   because the kit never closes an issue the manifest stops listing. It is
   dropped only once observed state (``abk observe``) reports its issue closed.
+  The kit sets Status only when it first projects an item, so moving an
+  existing card to done takes the kit's reviewed ``--transition``;
+  :func:`newly_finished` names the items that need one.
 """
 
 from __future__ import annotations
@@ -210,3 +213,24 @@ def export_abk_manifest(
     manifest["schema_version"] = ABK_SCHEMA_VERSION
     manifest["items"] = copy.deepcopy(manual) + exported + finished
     return manifest
+
+
+def newly_finished(
+    base_manifest: dict[str, Any], manifest: dict[str, Any]
+) -> list[str]:
+    """Item ids this export moved to a done status that were not done before."""
+
+    _, done_statuses = _workflow(manifest)
+    before = {
+        item["id"]: item.get("status")
+        for item in base_manifest.get("items", [])
+        if item.get("guid")
+    }
+    return [
+        item["id"]
+        for item in manifest["items"]
+        if item.get("guid")
+        and item["id"] in before
+        and item["status"] in done_statuses
+        and before[item["id"]] not in done_statuses
+    ]

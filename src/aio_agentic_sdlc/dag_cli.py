@@ -8,7 +8,7 @@ from typing import Any
 import click
 
 from aio_agentic_sdlc import __version__
-from aio_agentic_sdlc.abk_export import export_abk_manifest
+from aio_agentic_sdlc.abk_export import export_abk_manifest, newly_finished
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
 from aio_agentic_sdlc.dag_store import (
@@ -1216,6 +1216,17 @@ def export_abk(intention, reality, base_manifest, output, observed_state, decisi
             f"Exported {len(exported)} GUID item(s) to {output}. Review and apply "
             "it with the backlog kit's plan and apply flow."
         )
+        finished = newly_finished(base, manifest)
+        if finished:
+            transitions = " ".join(
+                f"--transition {item_id}={next(i['status'] for i in manifest['items'] if i['id'] == item_id)}"
+                for item_id in finished
+            )
+            click.echo(
+                f"{len(finished)} item(s) left the diff. The kit keeps an existing "
+                "card's Status, so move them with its reviewed transition: "
+                f"sync-plan {transitions}"
+            )
     except Exception as e:
         click.secho(f"Error exporting the ABK manifest: {str(e)}", err=True, fg="red")
         sys.exit(1)

@@ -148,7 +148,9 @@ triage authorizes into an ABK manifest and never calls GitHub:
   their `status` and `sprint`, which are the team's execution state.
 - Work that leaves the diff stays with the first done status, because ABK
   never closes an issue the manifest stops listing. It is dropped once
-  `--observed-state` reports its issue closed.
+  `--observed-state` reports its issue closed. ABK sets Status only when it
+  first projects an item, so the export prints the `sync-plan --transition`
+  arguments that move those existing cards, for a person to review.
 
 `tests/fixtures/seam-a/observed-state.json` and `tests/fixtures/seam-a/work.json`
 are byte-identical to the kit's copies and pin both directions on this side.

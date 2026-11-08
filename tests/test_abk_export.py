@@ -18,6 +18,7 @@ from aio_agentic_sdlc.abk_export import (
     CONTRACT_VERSION,
     AbkExportError,
     export_abk_manifest,
+    newly_finished,
 )
 from aio_agentic_sdlc.dag_cli import cli
 from aio_agentic_sdlc.evidence import EvidenceEvaluator, EvidenceLedger
@@ -94,6 +95,8 @@ def test_finished_work_stays_done_until_its_issue_is_observed_closed():
     )
     item = next(item for item in kept["items"] if item.get("guid"))
     assert item["status"] == "Done"
+    assert newly_finished(fixture["manifest"], kept) == [item["id"]]
+    assert newly_finished(kept, kept) == []
 
     observed = {"items": [{"guid": GUID, "state": "closed"}]}
     dropped = export_abk_manifest(
