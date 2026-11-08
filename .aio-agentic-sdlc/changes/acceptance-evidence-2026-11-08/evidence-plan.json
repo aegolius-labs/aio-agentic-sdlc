@@ -1,0 +1,849 @@
+[
+  {
+    "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+    "criterion_id": "INTENT-IR-AC1",
+    "reference": "test:intent-ir-schema-validation",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_ir.py::test_intent_ir_round_trips_through_dag_yaml",
+      "tests/test_intent_ir.py::test_intent_ir_rejects_incomplete_or_invalid_core_fields",
+      "tests/test_intent_ir.py::test_intent_ir_rejects_non_increasing_revision_history",
+      "tests/test_intent_ir.py::test_approved_intent_requires_approval_audit_fields"
+    ],
+    "summary": "The Intent IR schema round-trips and rejects incomplete fields, non-increasing revisions and approvals without audit fields."
+  },
+  {
+    "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+    "criterion_id": "INTENT-IR-AC1",
+    "reference": "adr:0002-intent-ir-v1",
+    "level": "structural",
+    "locators": [
+      "doc/adr/0002-intent-ir-v1.md"
+    ],
+    "summary": "ADR 0002 defines Intent IR v1."
+  },
+  {
+    "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+    "criterion_id": "INTENT-IR-AC2",
+    "reference": "test:intent-ir-protected-mutation",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_mutation.py::test_update_intent_file_rejects_stale_writer",
+      "tests/test_intent_mutation.py::test_update_intent_file_rejects_history_rewrite",
+      "tests/test_intent_mutation.py::test_update_intent_file_preserves_original_on_replace_failure",
+      "tests/test_intent_mutation.py::test_mcp_set_intent_rejects_invalid_json_without_mutation"
+    ],
+    "summary": "Intent IR writes reject stale writers and history rewrites, and leave the file intact on failure."
+  },
+  {
+    "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+    "criterion_id": "INTENT-IR-AC2",
+    "reference": "cli:dag-tool-intent",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/dag_cli.py::intent"
+    ],
+    "summary": "dag-tool intent create-node, set and decide plus validate-intent and intent-summary."
+  },
+  {
+    "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+    "criterion_id": "INTENT-IR-AC2",
+    "reference": "mcp:create-set-validate-review-intent",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/mcp_server.py::create_intent_node"
+    ],
+    "summary": "MCP tools create_intent_node, set_intent, validate_intent and review_intent."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC1",
+    "reference": "test:reconciliation-classification",
+    "level": "tested",
+    "locators": [
+      "tests/test_reconciliation.py::test_reconciliation_classifies_identity_without_inventing_mappings",
+      "tests/test_reconciliation.py::test_one_reality_candidate_cannot_be_proposed_for_multiple_intents"
+    ],
+    "summary": "Reconciliation classifies identity without inventing mappings."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC1",
+    "reference": "cli:dag-tool-reconcile",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/dag_cli.py::reconcile"
+    ],
+    "summary": "dag-tool reconcile renders the evidence report."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC1",
+    "reference": "mcp:reconcile-dags",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/mcp_server.py::reconcile_dags"
+    ],
+    "summary": "MCP tool reconcile_dags."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC2",
+    "reference": "test:evidence-gated-diff",
+    "level": "tested",
+    "locators": [
+      "tests/test_reconciliation.py::test_safe_diff_requests_review_and_never_infers_creation_or_deletion",
+      "tests/test_reconciliation.py::test_safe_diff_does_not_treat_missing_observations_as_drift"
+    ],
+    "summary": "The safe diff asks for review and never infers creation or deletion."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC2",
+    "reference": "test:unmatched-reality-is-not-deletion",
+    "level": "tested",
+    "locators": [
+      "tests/test_reconciliation.py::test_safe_diff_requests_review_and_never_infers_creation_or_deletion"
+    ],
+    "summary": "Unmatched Reality never produces a deletion task."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC3",
+    "reference": "test:bounded-reconciliation-plan",
+    "level": "tested",
+    "locators": [
+      "tests/test_reconciliation.py::test_reconciliation_output_is_deterministic_and_bounded_without_hiding_totals",
+      "tests/test_reconciliation.py::test_safe_diff_caps_review_work_and_preserves_complete_counts"
+    ],
+    "summary": "Reconciliation output is bounded and keeps complete totals."
+  },
+  {
+    "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+    "criterion_id": "RECONCILE-AC3",
+    "reference": "report:self-dogfood-reconciliation",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/evidence-gated-reconciliation/self-dogfood-report.json"
+    ],
+    "summary": "Self-dogfood reconciliation report of this repository."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC1",
+    "reference": "test:mapping-review-source-binding",
+    "level": "tested",
+    "locators": [
+      "tests/test_mapping.py::test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation",
+      "tests/test_mapping.py::test_mapping_digest_binds_the_reviewed_intent_semantics"
+    ],
+    "summary": "Mapping review binds a fresh candidate to exact source without mutation."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC1",
+    "reference": "cli:dag-tool-mapping-review",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/dag_cli.py::mapping_review"
+    ],
+    "summary": "dag-tool mapping review."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC1",
+    "reference": "mcp:review-mapping",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/mcp_server.py::review_mapping"
+    ],
+    "summary": "MCP tool review_mapping."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC2",
+    "reference": "test:mapping-approval-fail-closed",
+    "level": "tested",
+    "locators": [
+      "tests/test_mapping.py::test_mapping_approval_rejects_non_candidates_without_mutation",
+      "tests/test_mapping.py::test_mapping_approval_rejects_candidate_or_digest_mismatch",
+      "tests/test_mapping.py::test_mapping_approval_requires_nonempty_audit_fields_and_timezone"
+    ],
+    "summary": "Mapping approval fails closed on non-candidates, mismatches and missing audit fields."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC2",
+    "reference": "test:mapping-approval-stale-evidence",
+    "level": "tested",
+    "locators": [
+      "tests/test_mapping.py::test_mapping_approval_rejects_stale_evidence_without_rewriting_source"
+    ],
+    "summary": "Stale evidence is rejected without rewriting source."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC2",
+    "reference": "test:mapping-approval-path-containment",
+    "level": "tested",
+    "locators": [
+      "tests/test_mapping.py::test_mapping_review_rejects_source_symlink_that_escapes_project"
+    ],
+    "summary": "A source symlink escaping the project is rejected."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC3",
+    "reference": "test:atomic-approved-source-marker",
+    "level": "tested",
+    "locators": [
+      "tests/test_mapping.py::test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol",
+      "tests/test_mapping.py::test_mapping_marker_precedes_decorators_and_preserves_crlf"
+    ],
+    "summary": "Approval atomically marks and confirms the exact symbol."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC3",
+    "reference": "test:mapping-verification-rollback",
+    "level": "tested",
+    "locators": [
+      "tests/test_mapping.py::test_mapping_approval_rolls_back_original_bytes_when_verification_fails"
+    ],
+    "summary": "Failed verification rolls back the original bytes."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC3",
+    "reference": "report:self-dogfood-approved-mapping",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/approval-gated-source-mapping/self-dogfood-approval.json"
+    ],
+    "summary": "Self-dogfood mapping approval record."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC4",
+    "reference": "test:mapping-cli-mcp-parity",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_server.py::test_mcp_mapping_review_and_approval_use_source_bound_evidence",
+      "tests/test_source_identity_maintenance.py::test_explicit_review_cli_and_mcp_json_match_python"
+    ],
+    "summary": "CLI and MCP mapping review and approval use the same source-bound evidence."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC4",
+    "reference": "validation:manage-sdlc-skill",
+    "level": "structural",
+    "locators": [
+      "plugins/aio-agentic-sdlc/skills/manage-sdlc/SKILL.md"
+    ],
+    "summary": "The shared manage-sdlc skill, checked by the host parity and Codex plugin tests."
+  },
+  {
+    "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+    "criterion_id": "MAPPING-AC4",
+    "reference": "validation:codex-plugin",
+    "level": "structural",
+    "locators": [
+      "tests/test_codex_plugin.py::test_codex_skill_routes_visual_review_before_mapping_approval"
+    ],
+    "summary": "The Codex plugin routes visual review before mapping approval."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC1",
+    "reference": "test:legacy-intent-inventory",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_migration.py::test_inventory_is_bounded_and_reports_complete_coverage"
+    ],
+    "summary": "Inventory is bounded and reports complete coverage."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC1",
+    "reference": "report:intent-ir-coverage",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/legacy-intent-ir-migration/coverage-after.json"
+    ],
+    "summary": "Coverage after the migration."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC2",
+    "reference": "test:legacy-intent-compilation",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_migration.py::test_plan_is_deterministic_and_keeps_uncertain_intent_review_required"
+    ],
+    "summary": "The migration plan compiles deterministically."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC2",
+    "reference": "test:uncertain-intent-review-gate",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_migration.py::test_plan_is_deterministic_and_keeps_uncertain_intent_review_required"
+    ],
+    "summary": "Uncertain intent stays review_required."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC2",
+    "reference": "report:migration-provenance",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/legacy-intent-ir-migration/plan.json"
+    ],
+    "summary": "The migration plan records provenance for every node."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC3",
+    "reference": "test:atomic-intent-migration",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_migration.py::test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph",
+      "tests/test_intent_migration.py::test_apply_preserves_canonical_dag_when_atomic_replace_fails"
+    ],
+    "summary": "Migration applies atomically."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC3",
+    "reference": "test:migration-graph-preservation",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_migration.py::test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph"
+    ],
+    "summary": "Migration preserves the graph."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC3",
+    "reference": "test:migration-stale-writer",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_migration.py::test_apply_rejects_stale_source_without_mutation"
+    ],
+    "summary": "A stale source is rejected without mutation."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC4",
+    "reference": "validation:strict-intent-ir",
+    "level": "structural",
+    "locators": [
+      "tests/test_intent_migration.py::test_cli_inventory_plan_and_apply_complete_strict_migration"
+    ],
+    "summary": "Strict validate-intent passes after migration."
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "criterion_id": "INTENT-MIGRATION-AC4",
+    "reference": "test:intent-summary-complete-coverage",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_ir.py::test_intent_summary_is_reviewable_without_raw_yaml",
+      "tests/test_intent_ir.py::test_intent_cli_validates_and_summarizes"
+    ],
+    "summary": "intent-summary renders every Intent IR field for review."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC1",
+    "reference": "test:dag-visualization-determinism",
+    "level": "tested",
+    "locators": [
+      "tests/test_dag_visualization.py::test_reports_are_deterministic_across_input_order_guid_case_and_views"
+    ],
+    "summary": "Visualization is deterministic across input order, GUID case and views."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC1",
+    "reference": "cli:dag-tool-visualize",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/dag_cli.py::visualize"
+    ],
+    "summary": "dag-tool visualize."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC1",
+    "reference": "mcp:visualize-dag",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/mcp_server.py::visualize_dag"
+    ],
+    "summary": "MCP tool visualize_dag."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC2",
+    "reference": "test:dag-comparison-evidence",
+    "level": "tested",
+    "locators": [
+      "tests/test_dag_visualization.py::test_comparison_has_all_classifications_relations_and_exact_source_evidence"
+    ],
+    "summary": "Comparison carries every classification and exact source evidence."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC2",
+    "reference": "report:self-dogfood-dag-comparison",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/dag-visualization-comparison/self-dogfood-report.json"
+    ],
+    "summary": "Self-dogfood comparison report."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC3",
+    "reference": "test:visualization-label-escaping",
+    "level": "tested",
+    "locators": [
+      "tests/test_dag_visualization.py::test_mermaid_uses_synthetic_ids_and_escapes_bounded_malicious_labels"
+    ],
+    "summary": "Mermaid output escapes malicious labels."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC3",
+    "reference": "test:visualization-bounds",
+    "level": "tested",
+    "locators": [
+      "tests/test_dag_visualization.py::test_all_collections_are_bounded_while_totals_remain_complete"
+    ],
+    "summary": "All collections are bounded with complete totals."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC3",
+    "reference": "test:visualization-read-only",
+    "level": "tested",
+    "locators": [
+      "tests/test_dag_visualization.py::test_invalid_dags_arguments_and_read_only_postcondition"
+    ],
+    "summary": "Visualization never mutates state."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC4",
+    "reference": "validation:manage-sdlc-skill",
+    "level": "structural",
+    "locators": [
+      "plugins/aio-agentic-sdlc/skills/manage-sdlc/SKILL.md"
+    ],
+    "summary": "The shared manage-sdlc skill routes visual review."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC4",
+    "reference": "validation:codex-plugin",
+    "level": "structural",
+    "locators": [
+      "tests/test_codex_plugin.py::test_codex_skill_routes_visual_review_before_mapping_approval"
+    ],
+    "summary": "The Codex plugin routes visual review."
+  },
+  {
+    "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+    "criterion_id": "DAG-VIS-AC4",
+    "reference": "doc:dag-visualization-workflow",
+    "level": "structural",
+    "locators": [
+      "doc/dag-visualization.md"
+    ],
+    "summary": "The visualization workflow document."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC1",
+    "reference": "dependency:pyproject-mcp-v2-bound",
+    "level": "structural",
+    "locators": [
+      "pyproject.toml"
+    ],
+    "summary": "pyproject bounds mcp>=2.0.0,<3."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC1",
+    "reference": "dependency:uv-lock-mcp-v2",
+    "level": "structural",
+    "locators": [
+      "uv.lock"
+    ],
+    "summary": "uv.lock pins an mcp 2.x release."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC1",
+    "reference": "build:frozen-uv-sync",
+    "level": "structural",
+    "locators": [
+      ".github/workflows/test.yml"
+    ],
+    "summary": "CI runs uv sync --frozen on every platform."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC2",
+    "reference": "test:mcp-v2-public-surface",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_client_discovers_the_complete_public_surface"
+    ],
+    "summary": "A v2 client discovers the complete public surface."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC2",
+    "reference": "test:mcp-v2-stdio-smoke",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_real_stdio_entrypoint_serves_the_preserved_surface"
+    ],
+    "summary": "The real stdio entry point serves the surface."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC2",
+    "reference": "contract:codex-plugin-mcp-launch",
+    "level": "structural",
+    "locators": [
+      "tests/test_codex_plugin.py::test_codex_plugin_mcp_uses_the_portable_uv_launcher"
+    ],
+    "summary": "The Codex plugin launches the MCP server through the portable uv launcher."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC3",
+    "reference": "test:mcp-v2-client-auto",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_client_exercises_every_published_tool[auto]"
+    ],
+    "summary": "Every published tool is exercised in auto mode (needs the semantic extra; green in CI)."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC3",
+    "reference": "test:mcp-v2-client-legacy",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_client_exercises_every_published_tool[legacy]"
+    ],
+    "summary": "Every published tool is exercised in legacy mode (needs the semantic extra; green in CI)."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC3",
+    "reference": "test:mcp-v2-client-schema-errors",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_schema_errors_fail_closed_without_creating_state"
+    ],
+    "summary": "Schema errors fail closed without creating state."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC4",
+    "reference": "test:mcp-v2-concurrent-state",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_backlog_mutations_do_not_lose_updates",
+      "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_backlog_stress_preserves_every_transaction"
+    ],
+    "summary": "Concurrent backlog mutations lose no updates."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC4",
+    "reference": "test:mcp-v2-concurrent-mapping",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_mapping_approvals_commit_one_exact_receipt",
+      "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_mapping_receipt_refreshes_commit_one_transition"
+    ],
+    "summary": "Concurrent mapping approvals commit one exact receipt."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC4",
+    "reference": "test:mcp-v2-cwd-isolation",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_mapping_approvals_commit_one_exact_receipt",
+      "tests/test_mcp_v2_contract.py::test_v2_client_exercises_every_published_tool[auto]"
+    ],
+    "summary": "Tool calls leave the server's working directory unchanged."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC5",
+    "reference": "test:mcp-v2-schema-enforcement",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_schema_errors_fail_closed_without_creating_state"
+    ],
+    "summary": "Argument schemas are enforced."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC5",
+    "reference": "test:mcp-v2-uri-path-safety",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_unknown_resource_uri_is_a_protocol_error",
+      "tests/test_mcp_v2_contract.py::test_v2_artifact_handlers_reject_unsafe_paths_before_execution"
+    ],
+    "summary": "Unknown URIs and unsafe paths are rejected."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC5",
+    "reference": "test:mcp-v2-error-semantics",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_handler_failures_are_error_results_without_internal_details"
+    ],
+    "summary": "Handler failures become error results without internals."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC6",
+    "reference": "test:full-warning-strict",
+    "level": "tested",
+    "locators": [
+      ".github/workflows/test.yml"
+    ],
+    "summary": "CI runs the whole suite with pytest -W error on Linux, Windows and macOS."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC6",
+    "reference": "validation:plugin-and-skill",
+    "level": "structural",
+    "locators": [
+      "tests/test_host_manifest_parity.py"
+    ],
+    "summary": "Host manifest parity and shared skill validation."
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "criterion_id": "MCP-V2-AC6",
+    "reference": "report:mcp-v2-self-dogfood",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/mcp-sdk-v2/reconciliation.json"
+    ],
+    "summary": "Self-dogfood reconciliation for the MCP v2 change."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC1",
+    "reference": "test:explicit-candidate-source-binding",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_explicit_observed_guid_review_binds_differently_named_symbol",
+      "tests/test_source_identity_maintenance.py::test_explicit_observed_guid_approval_replays_selection_and_marks_exact_symbol"
+    ],
+    "summary": "An explicit observed GUID binds a differently named symbol."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC1",
+    "reference": "cli:mapping-review-explicit-candidate",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/dag_cli.py::mapping_review"
+    ],
+    "summary": "dag-tool mapping review --candidate-reality-id."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC1",
+    "reference": "mcp:review-mapping-explicit-candidate",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/mcp_server.py::review_mapping"
+    ],
+    "summary": "MCP review_mapping with an explicit candidate."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC2",
+    "reference": "test:confirmed-receipt-review",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_confirmed_receipt_review_is_deterministic_and_read_only"
+    ],
+    "summary": "Receipt review is deterministic and read-only."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC2",
+    "reference": "cli:mapping-review-receipt-refresh",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/dag_cli.py::mapping_receipt_refresh"
+    ],
+    "summary": "dag-tool mapping receipt review and refresh."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC2",
+    "reference": "mcp:review-mapping-receipt-refresh",
+    "level": "structural",
+    "locators": [
+      "src/aio_agentic_sdlc/mcp_server.py::refresh_mapping_receipt"
+    ],
+    "summary": "MCP review_mapping_receipt and refresh_mapping_receipt."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC3",
+    "reference": "test:identity-maintenance-stale-evidence",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_receipt_refresh_rejects_stale_digest_without_mutation"
+    ],
+    "summary": "A stale digest is rejected without mutation."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC3",
+    "reference": "test:identity-maintenance-atomic-rollback",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_receipt_refresh_rolls_back_exact_bytes_when_postcondition_fails"
+    ],
+    "summary": "Refresh rolls back exact bytes on a failed postcondition."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC3",
+    "reference": "test:identity-maintenance-concurrency",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_concurrent_receipt_refresh_has_one_winner_and_no_corruption"
+    ],
+    "summary": "Concurrent refreshes have one winner."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC4",
+    "reference": "test:identity-maintenance-cli-mcp-parity",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_receipt_review_cli_and_mcp_json_match_python",
+      "tests/test_source_identity_maintenance.py::test_receipt_refresh_cli_and_mcp_json_match_python"
+    ],
+    "summary": "CLI and MCP receipt review and refresh match the Python API."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC4",
+    "reference": "validation:manage-sdlc-skill",
+    "level": "structural",
+    "locators": [
+      "plugins/aio-agentic-sdlc/skills/manage-sdlc/SKILL.md"
+    ],
+    "summary": "The shared manage-sdlc skill."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC4",
+    "reference": "validation:codex-plugin",
+    "level": "structural",
+    "locators": [
+      "tests/test_codex_plugin.py::test_codex_skill_routes_visual_review_before_mapping_approval"
+    ],
+    "summary": "The Codex plugin skill routing."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC5",
+    "reference": "test:identity-maintenance-adversarial",
+    "level": "tested",
+    "locators": [
+      "tests/test_source_identity_maintenance.py::test_receipt_review_rejects_symlinked_source_without_external_read_or_write",
+      "tests/test_source_identity_maintenance.py::test_receipt_review_rejects_hardlinked_source_without_mutation",
+      "tests/test_source_identity_maintenance.py::test_receipt_refresh_rejects_source_leaf_swap_before_transition"
+    ],
+    "summary": "Symlinked, hardlinked and swapped sources are rejected."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC5",
+    "reference": "report:self-dogfood-identity-maintenance",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/source-identity-maintenance/post-approval-triage.json"
+    ],
+    "summary": "Self-dogfood triage after the identity maintenance approval."
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "criterion_id": "IDENTITY-MAINT-AC5",
+    "reference": "validation:fresh-reality-reconciliation",
+    "level": "structural",
+    "locators": [
+      ".aio-agentic-sdlc/changes/source-identity-maintenance/reconciliation.json"
+    ],
+    "summary": "Reconciliation against freshly generated Reality."
+  },
+  {
+    "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+    "criterion_id": "INTENT-CONSISTENCY-AC1",
+    "reference": "test:intent-consistency-checks",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_consistency.py::test_reports_duplicate_and_overlapping_intent",
+      "tests/test_intent_consistency.py::test_reports_inverted_and_ambiguous_hierarchy",
+      "tests/test_intent_consistency.py::test_reports_approval_contradictions",
+      "tests/test_intent_consistency.py::test_reports_open_ambiguity_and_restated_criteria"
+    ],
+    "summary": "Each consistency check reports its contradiction."
+  },
+  {
+    "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+    "criterion_id": "INTENT-CONSISTENCY-AC1",
+    "reference": "test:intent-consistency-mcp-contract",
+    "level": "tested",
+    "locators": [
+      "tests/test_mcp_v2_contract.py::test_v2_client_discovers_the_complete_public_surface"
+    ],
+    "summary": "check_intent_consistency is part of the v2 public surface."
+  },
+  {
+    "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+    "criterion_id": "INTENT-CONSISTENCY-AC2",
+    "reference": "test:intent-consistency-read-only",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_consistency.py::test_cli_is_read_only_and_strict_fails_only_on_errors"
+    ],
+    "summary": "The check is read-only."
+  },
+  {
+    "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+    "criterion_id": "INTENT-CONSISTENCY-AC2",
+    "reference": "test:intent-consistency-strict-exit",
+    "level": "tested",
+    "locators": [
+      "tests/test_intent_consistency.py::test_cli_is_read_only_and_strict_fails_only_on_errors"
+    ],
+    "summary": "--strict fails only on errors."
+  }
+]
