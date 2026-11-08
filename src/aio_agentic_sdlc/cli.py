@@ -5,6 +5,7 @@ import json
 import os
 import sys
 
+from . import __version__
 from .config import save_config
 from .core import (
     VALID_STATUSES,
@@ -664,6 +665,12 @@ def migrate_ids_cmd(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Deterministic backlog manager.")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show the framework version and exit (works before init)",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     p_init = subparsers.add_parser(
