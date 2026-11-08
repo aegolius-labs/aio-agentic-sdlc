@@ -63,6 +63,8 @@ source = "vcs"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# pytest-asyncio warns (an error under -W error) when this is unset.
+asyncio_default_fixture_loop_scope = "function"
 filterwarnings = [
   "error:coroutine .* was never awaited:RuntimeWarning",
   "error::pytest.PytestUnraisableExceptionWarning",
