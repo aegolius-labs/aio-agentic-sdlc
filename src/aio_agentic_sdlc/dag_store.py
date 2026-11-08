@@ -10,6 +10,7 @@ from typing import Iterator, TypeVar
 from filelock import FileLock
 
 from .dag_manager import DAGManager
+from .dag_models import Metadata
 
 T = TypeVar("T")
 
@@ -88,12 +89,22 @@ def dag_file_lock(filepath: str | Path) -> Iterator[Path]:
 def mutate_dag_file(
     filepath: str | Path,
     mutation: Callable[[DAGManager], T],
+    *,
+    create_with: Metadata | None = None,
 ) -> T:
-    """Load, mutate, validate through the callback, and atomically save under one lock."""
+    """Load, mutate, validate through the callback, and atomically save under one lock.
+
+    With ``create_with``, a DAG file that does not exist yet starts empty with
+    that metadata, so the first canonical node creates the file under the same
+    lock instead of requiring a hand-written skeleton.
+    """
 
     with dag_file_lock(filepath) as dag_path:
         guarded_file_path(dag_path)
-        manager = DAGManager.load(str(dag_path))
+        if create_with is not None and not os.path.lexists(dag_path):
+            manager = DAGManager(create_with, [], [])
+        else:
+            manager = DAGManager.load(str(dag_path))
         result = mutation(manager)
         guarded_file_path(dag_path)
         manager.save(str(dag_path))

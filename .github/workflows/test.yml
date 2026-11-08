@@ -93,3 +93,9 @@ jobs:
           test -f .aio-agentic-sdlc/config.json
           "$bin/aio-sdlc" status --help > /dev/null
           "$bin/python" -c "import aio_agentic_sdlc.mcp_server"
+
+      - name: Close the loop from the installed wheel
+        run: |
+          "$RUNNER_TEMP/clean/bin/dag-tool" demo --directory "$RUNNER_TEMP/demo" \
+            --approver "CI clean install" --yes
+          grep -q "Status: done" "$RUNNER_TEMP/demo/TRACEABILITY.md"

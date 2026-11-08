@@ -165,6 +165,46 @@ uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc agb init
 uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc agb export
 ```
 
+## See the whole loop in one command
+
+`dag-tool demo` builds a throwaway project and takes one requirement through
+the full loop with the public commands: Intake records a want as intent, you
+approve it, triage asks whether the implementation is missing and you decide,
+`aio-sdlc apply` hands the authorized task to an agent, you approve which code
+implements it, the tests run and their result is recorded as evidence, you
+accept the result, and the task completes because it left the diff.
+
+```bash
+uv run dag-tool demo --directory ./loop-demo --approver "Your Name"
+```
+
+It stops at each of the four approval gates and asks you, and records your
+name on each approval. It ends by writing `TRACEABILITY.md`, a plain-language
+report of the requirement from the stated want to its evidence. The agent is
+a scripted stand-in by default, so the demo needs no model access; pass
+`--agent-command "claude -p"` to have a real agent do the implementation.
+`--yes` approves every gate without asking, for unattended runs only.
+
+The same commands work on your own project:
+
+```bash
+uv run dag-tool intent decide --file .aio-agentic-sdlc/intention-dag.yaml --node-id <guid> \
+  --state approved --decided-by "Your Name" --decided-at 2026-11-08T12:00:00Z \
+  --rationale "Says what we want." --expected-revision 1
+uv run dag-tool triage-decide --intention .aio-agentic-sdlc/intention-dag.yaml \
+  --reality .aio-agentic-sdlc/reality-dag.yaml --decisions decisions.json \
+  --subject-key intent:<guid> --classification missing_implementation \
+  --rationale "Nothing implements it yet." --evidence src/ \
+  --decided-by "Your Name" --decided-at 2026-11-08T12:05:00Z
+uv run dag-tool trace --intent-id <guid>
+```
+
+`triage-decide` adds to a decision file only while its plan digest is current
+and refuses a stale one, so an old decision is never re-bound to a new state.
+Generate Reality from the project root (`dag-tool generate-reality --dir .
+--system "<Intention DAG name>"`): mapping review observes the same root, so
+the Reality GUIDs then agree.
+
 ## Spec-Driven Development (SDD)
 
 `aio-agentic-sdlc` utilizes its own Spec-Driven Development (SDD) framework to bridge the gap between high-level architectural planning and deterministic code execution.

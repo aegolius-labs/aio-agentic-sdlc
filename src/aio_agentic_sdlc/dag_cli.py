@@ -10,7 +10,7 @@ import click
 from aio_agentic_sdlc import __version__
 from aio_agentic_sdlc.abk_export import export_abk_manifest, newly_finished
 from aio_agentic_sdlc.dag_manager import DAGManager
-from aio_agentic_sdlc.dag_models import Edge, EdgeType, Node, NodeType
+from aio_agentic_sdlc.dag_models import Edge, EdgeType, Metadata, Node, NodeType
 from aio_agentic_sdlc.dag_store import (
     dag_file_lock,
     guarded_dag_path,
@@ -20,7 +20,9 @@ from aio_agentic_sdlc.dag_store import (
 from aio_agentic_sdlc.dag_visualization import DAGVisualizationEngine, render_dag
 from aio_agentic_sdlc.diffing_engine import DiffingEngine, DiffPolicy
 from aio_agentic_sdlc.drift_triage import (
+    DriftClassification,
     DriftTriageEngine,
+    TriageDecision,
     TriageDecisionSet,
     render_drift_triage,
 )
@@ -36,9 +38,13 @@ from aio_agentic_sdlc.intent_consistency import (
     IntentConsistencyChecker,
     render_intent_consistency,
 )
-from aio_agentic_sdlc.intent_ir import IntentIR
+from aio_agentic_sdlc.intent_ir import ApprovalState, IntentIR
 from aio_agentic_sdlc.intent_migration import LegacyIntentMigrator
-from aio_agentic_sdlc.intent_store import create_intent_node_file, update_intent_file
+from aio_agentic_sdlc.intent_store import (
+    create_intent_node_file,
+    decide_intent_file,
+    update_intent_file,
+)
 from aio_agentic_sdlc.mapping import (
     MappingApproval,
     MappingEngine,
@@ -52,10 +58,12 @@ from aio_agentic_sdlc.reconciliation import (
     validate_reconciliation_report_output,
     write_reconciliation_report,
 )
+from aio_agentic_sdlc.traceability import build_trace, render_trace_markdown
 from aio_agentic_sdlc.workspace import (
     BACKLOG_FILE,
     INTENTION_DAG_FILE,
     REALITY_DAG_FILE,
+    WORKSPACE_DIR,
 )
 
 
@@ -181,8 +189,15 @@ def intent():
 @click.option(
     "--file",
     required=True,
-    type=click.Path(exists=True),
-    help="Path to the Intention DAG yaml file.",
+    type=click.Path(dir_okay=False),
+    help="Path to the Intention DAG yaml file. Created when it does not exist yet.",
+)
+@click.option(
+    "--dag-name",
+    help=(
+        "Name of a newly created Intention DAG. Defaults to the project "
+        "directory's name. Ignored when the DAG exists."
+    ),
 )
 @click.option("--node-id", required=True, help="Canonical node GUID.")
 @click.option(
@@ -198,10 +213,24 @@ def intent():
     help="JSON file containing the initial Intent IR v1 payload.",
 )
 def intent_create_node(
-    file, node_id, node_type, name, domain, description, payload_file
+    file, dag_name, node_id, node_type, name, domain, description, payload_file
 ):
     """Atomically create one canonical node with its initial Intent IR."""
     try:
+        create_with = None
+        if not os.path.lexists(file):
+            dag_path = Path(os.path.abspath(file))
+            if not dag_path.parent.is_dir():
+                raise click.ClickException(
+                    f"Directory does not exist: {dag_path.parent}. "
+                    "Run `aio-sdlc init` first."
+                )
+            default_name = (
+                dag_path.parent.parent.name
+                if dag_path.parent.name == WORKSPACE_DIR
+                else dag_path.stem
+            )
+            create_with = Metadata(name=dag_name or default_name, version="1.0.0")
         with open(payload_file, "r", encoding="utf-8") as payload:
             intent_ir = IntentIR.model_validate(json.load(payload))
         node = Node(
@@ -212,7 +241,9 @@ def intent_create_node(
             description=description,
             intent=intent_ir,
         )
-        revision = create_intent_node_file(file, node)
+        revision = create_intent_node_file(file, node, create_with=create_with)
+        if create_with is not None:
+            click.echo(f"Created Intention DAG '{create_with.name}' at {file}.")
         click.echo(f"Node '{node_id}' created with Intent IR revision {revision}.")
     except Exception as e:
         click.secho(f"Error creating intent node: {str(e)}", err=True, fg="red")
@@ -256,6 +287,69 @@ def intent_set(file, node_id, payload_file, expected_revision):
     except Exception as e:
         click.secho(f"Error setting Intent IR: {str(e)}", err=True, fg="red")
         sys.exit(1)
+
+
+@intent.command("decide")
+@click.option(
+    "--file",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help="Path to the Intention DAG yaml file.",
+)
+@click.option("--node-id", required=True, help="Node whose intent is decided.")
+@click.option(
+    "--state",
+    required=True,
+    type=click.Choice([ApprovalState.APPROVED.value, ApprovalState.REJECTED.value]),
+    help="The person's decision.",
+)
+@click.option("--decided-by", required=True, help="The person deciding.")
+@click.option("--decided-at", required=True, help="Timezone-aware ISO-8601 timestamp.")
+@click.option("--rationale", required=True, help="Why the person decided this.")
+@click.option(
+    "--expected-revision",
+    required=True,
+    type=click.IntRange(min=1),
+    help="The intent's current revision, from `dag-tool intent-summary`.",
+)
+def intent_decide(
+    file, node_id, state, decided_by, decided_at, rationale, expected_revision
+):
+    """Record a person's approval or rejection of one node's intent.
+
+    Appends exactly one revision and leaves the intent's content unchanged.
+    The decision is the person's: record it only after they made it.
+    """
+    try:
+        revision = decide_intent_file(
+            file,
+            node_id,
+            state=ApprovalState(state),
+            decided_by=decided_by,
+            decided_at=_parse_aware_timestamp(decided_at, "--decided-at"),
+            rationale=rationale,
+            expected_revision=expected_revision,
+            generator_version=f"aio-agentic-sdlc/{__version__}",
+        )
+        click.echo(
+            f"Intent for node '{node_id}' {state} by {decided_by} at revision "
+            f"{revision}."
+        )
+    except Exception as e:
+        click.secho(f"Error deciding intent: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+def _parse_aware_timestamp(value, option):
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise click.BadParameter(
+            "must be an ISO-8601 timestamp", param_hint=option
+        ) from error
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise click.BadParameter("must be timezone-aware", param_hint=option)
+    return parsed
 
 
 def _intent_migration_protected_paths(
@@ -1139,6 +1233,264 @@ def triage(intention, reality, decisions, max_items, output_format, output, acce
         click.secho(
             f"Error triaging reconciliation drift: {str(e)}", err=True, fg="red"
         )
+        sys.exit(1)
+
+
+@cli.command("triage-decide")
+@click.option(
+    "--intention",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the canonical Intention DAG yaml file.",
+)
+@click.option(
+    "--reality",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to the generated Reality DAG yaml file.",
+)
+@click.option(
+    "--decisions",
+    required=True,
+    type=click.Path(dir_okay=False),
+    help=(
+        "Decision file to create, or to add to when it is bound to the current "
+        "plan digest."
+    ),
+)
+@click.option(
+    "--subject-key",
+    required=True,
+    help="The triage item's subject key, for example intent:<GUID>.",
+)
+@click.option(
+    "--classification",
+    required=True,
+    type=click.Choice([c.value for c in DriftClassification]),
+)
+@click.option("--rationale", required=True, help="Why the person decided this.")
+@click.option(
+    "--evidence",
+    "evidence_refs",
+    required=True,
+    multiple=True,
+    help="What the decision rests on: a path, test or URL. Repeatable.",
+)
+@click.option("--decided-by", required=True, help="The person deciding.")
+@click.option("--decided-at", required=True, help="Timezone-aware ISO-8601 timestamp.")
+@click.option(
+    "--acceptance/--no-acceptance",
+    default=True,
+    show_default=True,
+    help="Bind to the digest that includes the evidence ledger, as triage does.",
+)
+def triage_decide(
+    intention,
+    reality,
+    decisions,
+    subject_key,
+    classification,
+    rationale,
+    evidence_refs,
+    decided_by,
+    decided_at,
+    acceptance,
+):
+    """Record one person's triage decision, bound to the current plan digest.
+
+    An existing decision file is added to only while its plan digest is
+    current. A stale file is refused, never silently re-bound: its decisions
+    were made against a different state and must be re-derived.
+    """
+    try:
+        intent_manager = DAGManager.load(intention)
+        reality_manager = DAGManager.load(reality)
+        engine = DriftTriageEngine(
+            intent_manager,
+            reality_manager,
+            evidence=_acceptance_evaluator(intention) if acceptance else None,
+        )
+        digest = engine.source_identity()["plan_digest"]
+        decision_path = guarded_file_path(decisions, create_parent=True)
+        existing = []
+        if decision_path.exists():
+            current = TriageDecisionSet.model_validate_json(
+                decision_path.read_text(encoding="utf-8")
+            )
+            if current.plan_digest != digest:
+                raise click.ClickException(
+                    "the decision file is bound to an older plan digest; its "
+                    "decisions must be re-derived against the current state, "
+                    "so write this decision to a new file"
+                )
+            existing = [d for d in current.decisions if d.subject_key != subject_key]
+        decision = TriageDecision(
+            subject_key=subject_key,
+            classification=DriftClassification(classification),
+            rationale=rationale,
+            evidence=list(evidence_refs),
+            decided_by=decided_by,
+            decided_at=_parse_aware_timestamp(decided_at, "--decided-at"),
+        )
+        decision_set = TriageDecisionSet(
+            plan_digest=digest,
+            decisions=sorted([*existing, decision], key=lambda d: d.subject_key),
+        )
+        report = engine.analyze(
+            decisions=decision_set,
+            max_items=max(1, len(intent_manager.nodes) + len(intent_manager.edges)),
+        )
+        item = next(
+            i for i in report["items"] if i["audit"].get("subject_key") == subject_key
+        )
+        _write_json_atomically(decision_path, decision_set.model_dump(mode="json"))
+        authorized = "yes" if item["implementation_authorized"] else "no"
+        click.echo(
+            f"Recorded {classification} for {subject_key} by {decided_by} in "
+            f"{decisions}. Implementation authorized: {authorized}."
+        )
+    except click.ClickException as e:
+        click.secho(f"Error recording triage decision: {e.message}", err=True, fg="red")
+        sys.exit(1)
+    except Exception as e:
+        click.secho(f"Error recording triage decision: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+def _write_json_atomically(path, payload):
+    import tempfile
+
+    target = Path(path)
+    fd, temporary = tempfile.mkstemp(
+        dir=target.parent, prefix=f".{target.name}.", suffix=".tmp"
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(payload, handle, indent=2)
+            handle.write("\n")
+        os.replace(temporary, target)
+    except BaseException:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+        raise
+
+
+@cli.command("trace")
+@click.option(
+    "--project-path",
+    default=".",
+    show_default=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Project containing the framework workspace.",
+)
+@click.option("--intent-id", required=True, help="Canonical Intention node GUID.")
+@click.option(
+    "--decisions",
+    type=click.Path(exists=True, dir_okay=False),
+    help="Digest-bound triage decisions, to show who authorized the work.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["markdown", "json"], case_sensitive=False),
+    default="markdown",
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(dir_okay=False),
+    help="Write the report to this file instead of printing it.",
+)
+def trace(project_path, intent_id, decisions, output_format, output):
+    """Explain one requirement end to end in plain language. Read-only.
+
+    From the stated want through approval, authorized work, the implementing
+    symbol and the evidence for each acceptance criterion, to whether it is
+    done.
+    """
+    try:
+        decision_set = None
+        if decisions:
+            decision_set = TriageDecisionSet.model_validate_json(
+                guarded_file_path(decisions).read_text(encoding="utf-8")
+            )
+        result = build_trace(project_path, intent_id, decisions=decision_set)
+        text = (
+            json.dumps(result, indent=2) + "\n"
+            if output_format == "json"
+            else render_trace_markdown(result)
+        )
+        if output:
+            target = guarded_file_path(output, create_parent=True)
+            target.write_text(text, encoding="utf-8")
+            click.echo(f"Traceability report saved to {output}.")
+        else:
+            click.echo(text, nl=False)
+    except Exception as e:
+        click.secho(f"Error building the trace: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.command("demo")
+@click.option(
+    "--directory",
+    required=True,
+    type=click.Path(file_okay=False),
+    help="An empty or new directory for the throwaway demo project.",
+)
+@click.option(
+    "--approver",
+    required=True,
+    help="Your name. It is recorded on every approval you give at a gate.",
+)
+@click.option(
+    "--yes",
+    is_flag=True,
+    help="Approve every gate without asking. Only for unattended runs such as CI.",
+)
+@click.option(
+    "--agent-command",
+    help=(
+        "Run a real agent CLI instead of the scripted one, for example "
+        '"claude -p". The work order arrives on its stdin.'
+    ),
+)
+def demo(directory, approver, yes, agent_command):
+    """Take one requirement through the whole loop in a throwaway project.
+
+    Intent, approval, authorized work, implementation by an agent, source
+    mapping, tests, evidence and completion, using only public commands. It
+    stops at each approval gate and asks you, unless --yes.
+    """
+    import shlex
+
+    from aio_agentic_sdlc.closed_loop_demo import ClosedLoopDemo, DemoError
+
+    if not yes and not sys.stdin.isatty():
+        click.secho(
+            "The demo asks for approval at each gate. Run it in a terminal, or "
+            "pass --yes for an unattended run.",
+            err=True,
+            fg="red",
+        )
+        sys.exit(2)
+
+    def confirm(question):
+        if yes:
+            click.echo(f"  {question} yes (--yes)")
+            return True
+        return click.confirm(f"  {question}", default=False)
+
+    try:
+        ClosedLoopDemo(
+            directory,
+            approver=approver,
+            confirm=confirm,
+            agent_command=shlex.split(agent_command) if agent_command else None,
+            echo=click.echo,
+        ).run()
+    except DemoError as e:
+        click.secho(f"The loop did not close: {e}", err=True, fg="red")
         sys.exit(1)
 
 
