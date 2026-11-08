@@ -4,6 +4,16 @@
 
 ### Added
 
+- `dag-tool mapping receipt check` reports every `# aio-sdlc-mapping-approval:`
+  receipt whose source changed since approval, or that no longer validates.
+  It is read-only and exits 1 on a stale or invalid receipt unless
+  `--warn-only`. `--format github` emits pull request annotations, and CI now
+  runs it on every pull request.
+
+## [0.41.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.41.0) (2026-11-08)
+
+### Added
+
 - `aio-sdlc --version` (and its `aio-agentic-sdlc` and `agb` aliases) and
   `dag-tool --version` print the installed framework version. Both work
   before `init` and touch no files. The MCP server already reports the same

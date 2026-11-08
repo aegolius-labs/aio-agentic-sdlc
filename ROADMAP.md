@@ -93,7 +93,11 @@ Goal: reconciliation resolves most nodes in both directions. As of
 - [ ] Map every approved node that has an implementation, through the
   read-only review and approval flow.
 - [ ] Refresh stale mapping receipts after source edits, and make the stale
-  state visible in CI so it does not accumulate.
+  state visible in CI so it does not accumulate. `dag-tool mapping receipt
+  check` now reports every stale receipt, and CI annotates them on each pull
+  request. Two receipts (`diffing_engine.py`, `mcp_server.py`) await a named
+  approver's refresh; after that, CI drops `--warn-only` so a new stale
+  receipt fails the build.
 - [ ] Emit `depends_on` relationships for component endpoints in the Reality
   parser, or record them as a permanent observation limit (two items are
   `framework_tooling_drift` today).

@@ -345,3 +345,59 @@ def iter_canonical_node_markers(content: str):
         raise SourceMarkerError(
             "mapping source cannot be tokenized for canonical markers"
         ) from error
+
+
+def mapping_receipt_freshness(
+    content: bytes, source_path: str
+) -> dict[str, Any] | None:
+    """Check whether one source file's mapping receipt still matches its source.
+
+    Returns ``None`` when the file carries no receipt. Otherwise the status is
+    ``fresh`` when the annotation-neutral source still hashes to the receipt's
+    ``source_sha256``, ``stale`` when the source changed since approval, and
+    ``invalid`` when the receipt cannot be validated at all. Read-only: a stale
+    receipt is refreshed only through ``dag-tool mapping receipt refresh`` with
+    a named approver.
+    """
+
+    if MAPPING_APPROVAL_PREFIX.encode("utf-8") not in content:
+        return None
+    report: dict[str, Any] = {"source_path": source_path}
+    try:
+        indexes = _receipt_comment_line_indexes(content)
+        if not indexes:
+            return None
+        report["receipt_line"] = indexes[0] + 1
+        lines = content.splitlines(keepends=True)
+        match = MAPPING_APPROVAL_PATTERN.fullmatch(lines[indexes[0]])
+        if match is None:
+            raise SourceMarkerError("mapping approval receipt comment is malformed")
+        try:
+            claimed = json.loads(match.group("payload").decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise SourceMarkerError(
+                "mapping approval receipt JSON is malformed"
+            ) from error
+        if not isinstance(claimed, dict):
+            raise SourceMarkerError("mapping approval receipt must be a JSON object")
+        annotation = parse_mapping_receipt_annotation(
+            content,
+            intent_id=claimed.get("intent_id"),
+            source_path=source_path,
+            symbol_kind=claimed.get("symbol_kind"),
+            symbol_name=claimed.get("symbol_name"),
+            marker_line=indexes[0] + 2,
+        )
+    except SourceMarkerError as error:
+        return {**report, "status": "invalid", "error": str(error)}
+    receipt = annotation.receipt
+    current = hashlib.sha256(annotation.annotation_neutral_bytes).hexdigest()
+    return {
+        **report,
+        "status": "fresh" if current == receipt["source_sha256"] else "stale",
+        "intent_id": receipt["intent_id"],
+        "symbol_kind": receipt["symbol_kind"],
+        "symbol_name": receipt["symbol_name"],
+        "receipt_source_sha256": receipt["source_sha256"],
+        "current_source_sha256": current,
+    }
