@@ -128,23 +128,34 @@ def _inject_platform_rules(platforms_str):
             )
 
 
+HIERARCHY_CHOICES = {"simple": "1", "deep": "2"}
+
+
 def init_cmd(args):
     migration = migrate_legacy_workspace(".")
     if migration["changed"]:
         print("Migrated legacy framework paths into .aio-agentic-sdlc/.")
     print("\n--- Agentic-Backlog Initialization ---")
-    print("1. Simple Hierarchy: Epic -> Feature -> Task/Bug")
-    print(
-        "2. Deep Hierarchy: Initiative -> Theme -> Epic -> Feature -> User Story/Tech Story/Bug -> Task -> SubTask"
-    )
-    print("3. Custom Hierarchy: Define your own")
-    try:
-        choice = (
-            input("Select your Semantic Roadmap Graph schema (1/2/3) [1]: ").strip()
-            or "1"
-        )
-    except (EOFError, OSError, IOError):
+    requested_hierarchy = getattr(args, "hierarchy", None)
+    requested_validation = getattr(args, "validation", None)
+    interactive = not getattr(args, "yes", False) and sys.stdin.isatty()
+    if requested_hierarchy:
+        choice = HIERARCHY_CHOICES[requested_hierarchy]
+    elif not interactive:
         choice = "1"
+    else:
+        print("1. Simple Hierarchy: Epic -> Feature -> Task/Bug")
+        print(
+            "2. Deep Hierarchy: Initiative -> Theme -> Epic -> Feature -> User Story/Tech Story/Bug -> Task -> SubTask"
+        )
+        print("3. Custom Hierarchy: Define your own")
+        try:
+            choice = (
+                input("Select your Semantic Roadmap Graph schema (1/2/3) [1]: ").strip()
+                or "1"
+            )
+        except (EOFError, OSError, IOError):
+            choice = "1"
 
     hierarchy = {}
     if choice == "1":
@@ -174,16 +185,25 @@ def init_cmd(args):
             hierarchy[str(level)] = [t.strip() for t in types_input.split(",")]
             level += 1
 
-    try:
-        val_choice = (
-            input(
-                "Select Validation Mode: 1. Strict (direct parent only), 2. Flex (any higher level parent) [2]: "
-            ).strip()
-            or "2"
-        )
-    except (EOFError, OSError, IOError):
+    if requested_validation:
+        val_choice = "1" if requested_validation == "strict" else "2"
+    elif not interactive:
         val_choice = "2"
+    else:
+        try:
+            val_choice = (
+                input(
+                    "Select Validation Mode: 1. Strict (direct parent only), 2. Flex (any higher level parent) [2]: "
+                ).strip()
+                or "2"
+            )
+        except (EOFError, OSError, IOError):
+            val_choice = "2"
     validation_mode = "strict" if val_choice == "1" else "flex"
+    print(
+        f"Hierarchy: {' -> '.join('/'.join(types) for types in hierarchy.values())}; "
+        f"validation: {validation_mode}."
+    )
 
     config = {
         "core": {"validation_mode": validation_mode, "mode": "local"},
@@ -680,6 +700,23 @@ def main():
         "--empty",
         action="store_true",
         help="Skip auto-detecting frameworks for seed items",
+    )
+    p_init.add_argument(
+        "--hierarchy",
+        choices=sorted(HIERARCHY_CHOICES),
+        help="Use the simple or deep hierarchy without prompting",
+    )
+    p_init.add_argument(
+        "--validation",
+        choices=["strict", "flex"],
+        help="Use this validation mode without prompting",
+    )
+    p_init.add_argument(
+        "--yes",
+        "-y",
+        action="store_true",
+        help="Never prompt; use defaults for anything not given (simple, flex). "
+        "Prompts are also skipped when stdin is not a terminal.",
     )
     p_init.add_argument(
         "--platforms",

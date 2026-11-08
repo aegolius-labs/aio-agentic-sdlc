@@ -4,6 +4,21 @@
 
 ### Added
 
+- `aio-sdlc init --hierarchy simple|deep --validation strict|flex` chooses
+  without prompting, and `--yes` never prompts.
+
+### Fixed
+
+- `init` no longer waits for input when stdin is not a terminal. An agent
+  harness that holds stdin open as a pipe used to hang on the hierarchy
+  prompt; it now gets the defaults (simple hierarchy, flex validation).
+- CI installs the built wheel alone, without dev dependencies, and runs both
+  entry points, `init` and the MCP server import in an empty project.
+
+## [0.42.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.42.0) (2026-11-08)
+
+### Added
+
 - `dag-tool mapping receipt check` reports every `# aio-sdlc-mapping-approval:`
   receipt whose source changed since approval, or that no longer validates.
   It is read-only and exits 1 on a stale or invalid receipt unless
