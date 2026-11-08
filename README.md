@@ -103,6 +103,15 @@ agb migrate-state --retire-legacy
 
 *(Note: `aio-agentic-sdlc` can also be used if you prefer the full name)*
 
+`init` asks for a hierarchy and a validation mode only when it runs in a
+terminal. An agent or script gets the defaults (simple hierarchy, flex
+validation) without a prompt, or can choose them explicitly:
+
+```bash
+agb init --hierarchy deep --validation strict
+agb init --yes   # never prompt, even in a terminal
+```
+
 ### Choosing an Agent Runtime
 
 `aio-sdlc apply` and the PRD step of `aio-sdlc plan` hand work to an agent.

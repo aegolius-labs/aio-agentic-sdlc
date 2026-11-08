@@ -58,3 +58,38 @@ jobs:
         # Warn-only while receipts already known to be stale await a named
         # approver's refresh. Drop --warn-only to make a stale receipt fail CI.
         run: uv run --no-sync dag-tool mapping receipt check --project-path . --format github --warn-only
+
+  clean-install:
+    name: Clean install (wheel, no dev dependencies)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Build the wheel and install it alone
+        run: |
+          uv build --wheel --out-dir "$RUNNER_TEMP/dist"
+          uv venv "$RUNNER_TEMP/clean"
+          VIRTUAL_ENV="$RUNNER_TEMP/clean" uv pip install "$RUNNER_TEMP"/dist/*.whl
+
+      - name: Run the installed entry points in an empty project
+        run: |
+          bin="$RUNNER_TEMP/clean/bin"
+          project="$RUNNER_TEMP/project"
+          mkdir "$project"
+          cd "$project"
+          "$bin/aio-sdlc" --version
+          "$bin/dag-tool" --version
+          "$bin/aio-sdlc" init --empty < /dev/null
+          test -f .aio-agentic-sdlc/config.json
+          "$bin/aio-sdlc" status --help > /dev/null
+          "$bin/python" -c "import aio_agentic_sdlc.mcp_server"
