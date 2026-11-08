@@ -40,6 +40,826 @@
       "summary": "dag-tool reconcile --evidence run on this repository: each intent record grades its criteria, cites supporting records and lists the unverified ones.",
       "recorded_by": "claude-code-project-thread",
       "recorded_at": "2026-11-05T19:35:00Z"
+    },
+    {
+      "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+      "criterion_id": "INTENT-IR-AC1",
+      "reference": "test:intent-ir-schema-validation",
+      "level": "tested",
+      "locator": "tests/test_intent_ir.py::test_intent_ir_round_trips_through_dag_yaml",
+      "summary": "The Intent IR schema round-trips and rejects incomplete fields, non-increasing revisions and approvals without audit fields. Also: test_intent_ir_rejects_incomplete_or_invalid_core_fields, test_intent_ir_rejects_non_increasing_revision_history, test_approved_intent_requires_approval_audit_fields.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+      "criterion_id": "INTENT-IR-AC1",
+      "reference": "adr:0002-intent-ir-v1",
+      "level": "structural",
+      "locator": "doc/adr/0002-intent-ir-v1.md",
+      "summary": "ADR 0002 defines Intent IR v1.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+      "criterion_id": "INTENT-IR-AC2",
+      "reference": "test:intent-ir-protected-mutation",
+      "level": "tested",
+      "locator": "tests/test_intent_mutation.py::test_update_intent_file_rejects_stale_writer",
+      "summary": "Intent IR writes reject stale writers and history rewrites, and leave the file intact on failure. Also: test_update_intent_file_rejects_history_rewrite, test_update_intent_file_preserves_original_on_replace_failure, test_mcp_set_intent_rejects_invalid_json_without_mutation.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+      "criterion_id": "INTENT-IR-AC2",
+      "reference": "cli:dag-tool-intent",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/dag_cli.py::intent",
+      "summary": "dag-tool intent create-node, set and decide plus validate-intent and intent-summary.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+      "criterion_id": "INTENT-IR-AC2",
+      "reference": "mcp:create-set-validate-review-intent",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/mcp_server.py::create_intent_node",
+      "summary": "MCP tools create_intent_node, set_intent, validate_intent and review_intent.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC1",
+      "reference": "test:reconciliation-classification",
+      "level": "tested",
+      "locator": "tests/test_reconciliation.py::test_reconciliation_classifies_identity_without_inventing_mappings",
+      "summary": "Reconciliation classifies identity without inventing mappings. Also: test_one_reality_candidate_cannot_be_proposed_for_multiple_intents.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC1",
+      "reference": "cli:dag-tool-reconcile",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/dag_cli.py::reconcile",
+      "summary": "dag-tool reconcile renders the evidence report.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC1",
+      "reference": "mcp:reconcile-dags",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/mcp_server.py::reconcile_dags",
+      "summary": "MCP tool reconcile_dags.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC2",
+      "reference": "test:evidence-gated-diff",
+      "level": "tested",
+      "locator": "tests/test_reconciliation.py::test_safe_diff_requests_review_and_never_infers_creation_or_deletion",
+      "summary": "The safe diff asks for review and never infers creation or deletion. Also: test_safe_diff_does_not_treat_missing_observations_as_drift.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC2",
+      "reference": "test:unmatched-reality-is-not-deletion",
+      "level": "tested",
+      "locator": "tests/test_reconciliation.py::test_safe_diff_requests_review_and_never_infers_creation_or_deletion",
+      "summary": "Unmatched Reality never produces a deletion task.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC3",
+      "reference": "test:bounded-reconciliation-plan",
+      "level": "tested",
+      "locator": "tests/test_reconciliation.py::test_reconciliation_output_is_deterministic_and_bounded_without_hiding_totals",
+      "summary": "Reconciliation output is bounded and keeps complete totals. Also: test_safe_diff_caps_review_work_and_preserves_complete_counts.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "9015c8a3-fd14-5598-916d-d03fcf41e415",
+      "criterion_id": "RECONCILE-AC3",
+      "reference": "report:self-dogfood-reconciliation",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/evidence-gated-reconciliation/self-dogfood-report.json",
+      "summary": "Self-dogfood reconciliation report of this repository.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC1",
+      "reference": "test:mapping-review-source-binding",
+      "level": "tested",
+      "locator": "tests/test_mapping.py::test_mapping_review_binds_fresh_candidate_to_exact_source_without_mutation",
+      "summary": "Mapping review binds a fresh candidate to exact source without mutation. Also: test_mapping_digest_binds_the_reviewed_intent_semantics.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC1",
+      "reference": "cli:dag-tool-mapping-review",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/dag_cli.py::mapping_review",
+      "summary": "dag-tool mapping review.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC1",
+      "reference": "mcp:review-mapping",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/mcp_server.py::review_mapping",
+      "summary": "MCP tool review_mapping.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC2",
+      "reference": "test:mapping-approval-fail-closed",
+      "level": "tested",
+      "locator": "tests/test_mapping.py::test_mapping_approval_rejects_non_candidates_without_mutation",
+      "summary": "Mapping approval fails closed on non-candidates, mismatches and missing audit fields. Also: test_mapping_approval_rejects_candidate_or_digest_mismatch, test_mapping_approval_requires_nonempty_audit_fields_and_timezone.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC2",
+      "reference": "test:mapping-approval-stale-evidence",
+      "level": "tested",
+      "locator": "tests/test_mapping.py::test_mapping_approval_rejects_stale_evidence_without_rewriting_source",
+      "summary": "Stale evidence is rejected without rewriting source.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC2",
+      "reference": "test:mapping-approval-path-containment",
+      "level": "tested",
+      "locator": "tests/test_mapping.py::test_mapping_review_rejects_source_symlink_that_escapes_project",
+      "summary": "A source symlink escaping the project is rejected.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC3",
+      "reference": "test:atomic-approved-source-marker",
+      "level": "tested",
+      "locator": "tests/test_mapping.py::test_mapping_approval_atomically_marks_and_confirms_exact_python_symbol",
+      "summary": "Approval atomically marks and confirms the exact symbol. Also: test_mapping_marker_precedes_decorators_and_preserves_crlf.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC3",
+      "reference": "test:mapping-verification-rollback",
+      "level": "tested",
+      "locator": "tests/test_mapping.py::test_mapping_approval_rolls_back_original_bytes_when_verification_fails",
+      "summary": "Failed verification rolls back the original bytes.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC3",
+      "reference": "report:self-dogfood-approved-mapping",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/approval-gated-source-mapping/self-dogfood-approval.json",
+      "summary": "Self-dogfood mapping approval record.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC4",
+      "reference": "test:mapping-cli-mcp-parity",
+      "level": "tested",
+      "locator": "tests/test_mcp_server.py::test_mcp_mapping_review_and_approval_use_source_bound_evidence",
+      "summary": "CLI and MCP mapping review and approval use the same source-bound evidence. Also: test_explicit_review_cli_and_mcp_json_match_python.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC4",
+      "reference": "validation:manage-sdlc-skill",
+      "level": "structural",
+      "locator": "plugins/aio-agentic-sdlc/skills/manage-sdlc/SKILL.md",
+      "summary": "The shared manage-sdlc skill, checked by the host parity and Codex plugin tests.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "6317643a-a8fc-5026-b373-9330004bc90d",
+      "criterion_id": "MAPPING-AC4",
+      "reference": "validation:codex-plugin",
+      "level": "structural",
+      "locator": "tests/test_codex_plugin.py::test_codex_skill_routes_visual_review_before_mapping_approval",
+      "summary": "The Codex plugin routes visual review before mapping approval.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC1",
+      "reference": "test:legacy-intent-inventory",
+      "level": "tested",
+      "locator": "tests/test_intent_migration.py::test_inventory_is_bounded_and_reports_complete_coverage",
+      "summary": "Inventory is bounded and reports complete coverage.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC1",
+      "reference": "report:intent-ir-coverage",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/legacy-intent-ir-migration/coverage-after.json",
+      "summary": "Coverage after the migration.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC2",
+      "reference": "test:legacy-intent-compilation",
+      "level": "tested",
+      "locator": "tests/test_intent_migration.py::test_plan_is_deterministic_and_keeps_uncertain_intent_review_required",
+      "summary": "The migration plan compiles deterministically.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC2",
+      "reference": "test:uncertain-intent-review-gate",
+      "level": "tested",
+      "locator": "tests/test_intent_migration.py::test_plan_is_deterministic_and_keeps_uncertain_intent_review_required",
+      "summary": "Uncertain intent stays review_required.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC2",
+      "reference": "report:migration-provenance",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/legacy-intent-ir-migration/plan.json",
+      "summary": "The migration plan records provenance for every node.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC3",
+      "reference": "test:atomic-intent-migration",
+      "level": "tested",
+      "locator": "tests/test_intent_migration.py::test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph",
+      "summary": "Migration applies atomically. Also: test_apply_preserves_canonical_dag_when_atomic_replace_fails.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC3",
+      "reference": "test:migration-graph-preservation",
+      "level": "tested",
+      "locator": "tests/test_intent_migration.py::test_apply_migrates_all_legacy_nodes_atomically_and_preserves_graph",
+      "summary": "Migration preserves the graph.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC3",
+      "reference": "test:migration-stale-writer",
+      "level": "tested",
+      "locator": "tests/test_intent_migration.py::test_apply_rejects_stale_source_without_mutation",
+      "summary": "A stale source is rejected without mutation.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC4",
+      "reference": "validation:strict-intent-ir",
+      "level": "structural",
+      "locator": "tests/test_intent_migration.py::test_cli_inventory_plan_and_apply_complete_strict_migration",
+      "summary": "Strict validate-intent passes after migration.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+      "criterion_id": "INTENT-MIGRATION-AC4",
+      "reference": "test:intent-summary-complete-coverage",
+      "level": "tested",
+      "locator": "tests/test_intent_ir.py::test_intent_summary_is_reviewable_without_raw_yaml",
+      "summary": "intent-summary renders every Intent IR field for review. Also: test_intent_cli_validates_and_summarizes.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC1",
+      "reference": "test:dag-visualization-determinism",
+      "level": "tested",
+      "locator": "tests/test_dag_visualization.py::test_reports_are_deterministic_across_input_order_guid_case_and_views",
+      "summary": "Visualization is deterministic across input order, GUID case and views.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC1",
+      "reference": "cli:dag-tool-visualize",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/dag_cli.py::visualize",
+      "summary": "dag-tool visualize.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC1",
+      "reference": "mcp:visualize-dag",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/mcp_server.py::visualize_dag",
+      "summary": "MCP tool visualize_dag.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC2",
+      "reference": "test:dag-comparison-evidence",
+      "level": "tested",
+      "locator": "tests/test_dag_visualization.py::test_comparison_has_all_classifications_relations_and_exact_source_evidence",
+      "summary": "Comparison carries every classification and exact source evidence.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC2",
+      "reference": "report:self-dogfood-dag-comparison",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/dag-visualization-comparison/self-dogfood-report.json",
+      "summary": "Self-dogfood comparison report.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC3",
+      "reference": "test:visualization-label-escaping",
+      "level": "tested",
+      "locator": "tests/test_dag_visualization.py::test_mermaid_uses_synthetic_ids_and_escapes_bounded_malicious_labels",
+      "summary": "Mermaid output escapes malicious labels.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC3",
+      "reference": "test:visualization-bounds",
+      "level": "tested",
+      "locator": "tests/test_dag_visualization.py::test_all_collections_are_bounded_while_totals_remain_complete",
+      "summary": "All collections are bounded with complete totals.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC3",
+      "reference": "test:visualization-read-only",
+      "level": "tested",
+      "locator": "tests/test_dag_visualization.py::test_invalid_dags_arguments_and_read_only_postcondition",
+      "summary": "Visualization never mutates state.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC4",
+      "reference": "validation:manage-sdlc-skill",
+      "level": "structural",
+      "locator": "plugins/aio-agentic-sdlc/skills/manage-sdlc/SKILL.md",
+      "summary": "The shared manage-sdlc skill routes visual review.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC4",
+      "reference": "validation:codex-plugin",
+      "level": "structural",
+      "locator": "tests/test_codex_plugin.py::test_codex_skill_routes_visual_review_before_mapping_approval",
+      "summary": "The Codex plugin routes visual review.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58",
+      "criterion_id": "DAG-VIS-AC4",
+      "reference": "doc:dag-visualization-workflow",
+      "level": "structural",
+      "locator": "doc/dag-visualization.md",
+      "summary": "The visualization workflow document.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC1",
+      "reference": "dependency:pyproject-mcp-v2-bound",
+      "level": "structural",
+      "locator": "pyproject.toml",
+      "summary": "pyproject bounds mcp>=2.0.0,<3.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC1",
+      "reference": "dependency:uv-lock-mcp-v2",
+      "level": "structural",
+      "locator": "uv.lock",
+      "summary": "uv.lock pins an mcp 2.x release.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC1",
+      "reference": "build:frozen-uv-sync",
+      "level": "structural",
+      "locator": ".github/workflows/test.yml",
+      "summary": "CI runs uv sync --frozen on every platform.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC2",
+      "reference": "test:mcp-v2-public-surface",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_client_discovers_the_complete_public_surface",
+      "summary": "A v2 client discovers the complete public surface.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC2",
+      "reference": "test:mcp-v2-stdio-smoke",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_real_stdio_entrypoint_serves_the_preserved_surface",
+      "summary": "The real stdio entry point serves the surface.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC2",
+      "reference": "contract:codex-plugin-mcp-launch",
+      "level": "structural",
+      "locator": "tests/test_codex_plugin.py::test_codex_plugin_mcp_uses_the_portable_uv_launcher",
+      "summary": "The Codex plugin launches the MCP server through the portable uv launcher.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC3",
+      "reference": "test:mcp-v2-client-auto",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_client_exercises_every_published_tool[auto]",
+      "summary": "Every published tool is exercised in auto mode (needs the semantic extra; green in CI).",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC3",
+      "reference": "test:mcp-v2-client-legacy",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_client_exercises_every_published_tool[legacy]",
+      "summary": "Every published tool is exercised in legacy mode (needs the semantic extra; green in CI).",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC3",
+      "reference": "test:mcp-v2-client-schema-errors",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_schema_errors_fail_closed_without_creating_state",
+      "summary": "Schema errors fail closed without creating state.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC4",
+      "reference": "test:mcp-v2-concurrent-state",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_backlog_mutations_do_not_lose_updates",
+      "summary": "Concurrent backlog mutations lose no updates. Also: test_concurrent_v2_backlog_stress_preserves_every_transaction.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC4",
+      "reference": "test:mcp-v2-concurrent-mapping",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_mapping_approvals_commit_one_exact_receipt",
+      "summary": "Concurrent mapping approvals commit one exact receipt. Also: test_concurrent_v2_mapping_receipt_refreshes_commit_one_transition.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC4",
+      "reference": "test:mcp-v2-cwd-isolation",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_concurrency.py::test_concurrent_v2_mapping_approvals_commit_one_exact_receipt",
+      "summary": "Tool calls leave the server's working directory unchanged. Also: test_v2_client_exercises_every_published_tool[auto].",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC5",
+      "reference": "test:mcp-v2-schema-enforcement",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_schema_errors_fail_closed_without_creating_state",
+      "summary": "Argument schemas are enforced.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC5",
+      "reference": "test:mcp-v2-uri-path-safety",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_unknown_resource_uri_is_a_protocol_error",
+      "summary": "Unknown URIs and unsafe paths are rejected. Also: test_v2_artifact_handlers_reject_unsafe_paths_before_execution.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC5",
+      "reference": "test:mcp-v2-error-semantics",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_handler_failures_are_error_results_without_internal_details",
+      "summary": "Handler failures become error results without internals.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC6",
+      "reference": "test:full-warning-strict",
+      "level": "tested",
+      "locator": ".github/workflows/test.yml",
+      "summary": "CI runs the whole suite with pytest -W error on Linux, Windows and macOS.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC6",
+      "reference": "validation:plugin-and-skill",
+      "level": "structural",
+      "locator": "tests/test_host_manifest_parity.py",
+      "summary": "Host manifest parity and shared skill validation.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+      "criterion_id": "MCP-V2-AC6",
+      "reference": "report:mcp-v2-self-dogfood",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/mcp-sdk-v2/reconciliation.json",
+      "summary": "Self-dogfood reconciliation for the MCP v2 change.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC1",
+      "reference": "test:explicit-candidate-source-binding",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_explicit_observed_guid_review_binds_differently_named_symbol",
+      "summary": "An explicit observed GUID binds a differently named symbol. Also: test_explicit_observed_guid_approval_replays_selection_and_marks_exact_symbol.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC1",
+      "reference": "cli:mapping-review-explicit-candidate",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/dag_cli.py::mapping_review",
+      "summary": "dag-tool mapping review --candidate-reality-id.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC1",
+      "reference": "mcp:review-mapping-explicit-candidate",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/mcp_server.py::review_mapping",
+      "summary": "MCP review_mapping with an explicit candidate.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC2",
+      "reference": "test:confirmed-receipt-review",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_confirmed_receipt_review_is_deterministic_and_read_only",
+      "summary": "Receipt review is deterministic and read-only.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC2",
+      "reference": "cli:mapping-review-receipt-refresh",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/dag_cli.py::mapping_receipt_refresh",
+      "summary": "dag-tool mapping receipt review and refresh.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC2",
+      "reference": "mcp:review-mapping-receipt-refresh",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/mcp_server.py::refresh_mapping_receipt",
+      "summary": "MCP review_mapping_receipt and refresh_mapping_receipt.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC3",
+      "reference": "test:identity-maintenance-stale-evidence",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_receipt_refresh_rejects_stale_digest_without_mutation",
+      "summary": "A stale digest is rejected without mutation.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC3",
+      "reference": "test:identity-maintenance-atomic-rollback",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_receipt_refresh_rolls_back_exact_bytes_when_postcondition_fails",
+      "summary": "Refresh rolls back exact bytes on a failed postcondition.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC3",
+      "reference": "test:identity-maintenance-concurrency",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_concurrent_receipt_refresh_has_one_winner_and_no_corruption",
+      "summary": "Concurrent refreshes have one winner.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC4",
+      "reference": "test:identity-maintenance-cli-mcp-parity",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_receipt_review_cli_and_mcp_json_match_python",
+      "summary": "CLI and MCP receipt review and refresh match the Python API. Also: test_receipt_refresh_cli_and_mcp_json_match_python.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC4",
+      "reference": "validation:manage-sdlc-skill",
+      "level": "structural",
+      "locator": "plugins/aio-agentic-sdlc/skills/manage-sdlc/SKILL.md",
+      "summary": "The shared manage-sdlc skill.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC4",
+      "reference": "validation:codex-plugin",
+      "level": "structural",
+      "locator": "tests/test_codex_plugin.py::test_codex_skill_routes_visual_review_before_mapping_approval",
+      "summary": "The Codex plugin skill routing.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC5",
+      "reference": "test:identity-maintenance-adversarial",
+      "level": "tested",
+      "locator": "tests/test_source_identity_maintenance.py::test_receipt_review_rejects_symlinked_source_without_external_read_or_write",
+      "summary": "Symlinked, hardlinked and swapped sources are rejected. Also: test_receipt_review_rejects_hardlinked_source_without_mutation, test_receipt_refresh_rejects_source_leaf_swap_before_transition.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC5",
+      "reference": "report:self-dogfood-identity-maintenance",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/source-identity-maintenance/post-approval-triage.json",
+      "summary": "Self-dogfood triage after the identity maintenance approval.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+      "criterion_id": "IDENTITY-MAINT-AC5",
+      "reference": "validation:fresh-reality-reconciliation",
+      "level": "structural",
+      "locator": ".aio-agentic-sdlc/changes/source-identity-maintenance/reconciliation.json",
+      "summary": "Reconciliation against freshly generated Reality.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+      "criterion_id": "INTENT-CONSISTENCY-AC1",
+      "reference": "test:intent-consistency-checks",
+      "level": "tested",
+      "locator": "tests/test_intent_consistency.py::test_reports_duplicate_and_overlapping_intent",
+      "summary": "Each consistency check reports its contradiction. Also: test_reports_inverted_and_ambiguous_hierarchy, test_reports_approval_contradictions, test_reports_open_ambiguity_and_restated_criteria.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+      "criterion_id": "INTENT-CONSISTENCY-AC1",
+      "reference": "test:intent-consistency-mcp-contract",
+      "level": "tested",
+      "locator": "tests/test_mcp_v2_contract.py::test_v2_client_discovers_the_complete_public_surface",
+      "summary": "check_intent_consistency is part of the v2 public surface.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+      "criterion_id": "INTENT-CONSISTENCY-AC2",
+      "reference": "test:intent-consistency-read-only",
+      "level": "tested",
+      "locator": "tests/test_intent_consistency.py::test_cli_is_read_only_and_strict_fails_only_on_errors",
+      "summary": "The check is read-only.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+      "criterion_id": "INTENT-CONSISTENCY-AC2",
+      "reference": "test:intent-consistency-strict-exit",
+      "level": "tested",
+      "locator": "tests/test_intent_consistency.py::test_cli_is_read_only_and_strict_fails_only_on_errors",
+      "summary": "--strict fails only on errors.",
+      "recorded_by": "Claude (sdlc_qa), project thread",
+      "recorded_at": "2026-11-08T20:24:33Z"
     }
   ]
 }
