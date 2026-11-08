@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "benchmark:request",
+      "statement": "When a customer closes their account, delete their personal data within 30 days, except invoices, which tax law requires us to keep."
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [
+    {
+      "question": "Which data counts as personal data for deletion?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "When a customer closes their account, their personal data is deleted within 30 days.",
+      "required_evidence": ["test:account-deletion"]
+    },
+    {
+      "id": "AC2",
+      "statement": "Invoices are kept after account closure, as tax law requires.",
+      "required_evidence": ["test:invoice-retention"]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-11-08T00:00:00Z",
+      "actor": "reference-translation",
+      "generator_version": "benchmark-reference",
+      "summary": "Reference translation for the scorer's positive control."
+    }
+  ],
+  "responsible_agent": "reference-translation",
+  "generator_version": "benchmark-reference",
+  "approval": {
+    "state": "review_required"
+  }
+}

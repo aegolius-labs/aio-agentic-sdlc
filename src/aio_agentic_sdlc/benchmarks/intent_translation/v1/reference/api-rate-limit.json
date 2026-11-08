@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "benchmark:request",
+      "statement": "Limit each API key to 100 requests per minute, and answer HTTP 429 with a Retry-After header when the limit is exceeded."
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Each API key is limited to 100 requests per minute.",
+      "required_evidence": ["test:api-rate-limit"]
+    },
+    {
+      "id": "AC2",
+      "statement": "A request over the limit gets HTTP 429.",
+      "required_evidence": ["test:api-rate-limit-429"]
+    },
+    {
+      "id": "AC3",
+      "statement": "The 429 response carries a Retry-After header.",
+      "required_evidence": ["test:api-rate-limit-retry-after"]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-11-08T00:00:00Z",
+      "actor": "reference-translation",
+      "generator_version": "benchmark-reference",
+      "summary": "Reference translation for the scorer's positive control."
+    }
+  ],
+  "responsible_agent": "reference-translation",
+  "generator_version": "benchmark-reference",
+  "approval": {
+    "state": "review_required"
+  }
+}

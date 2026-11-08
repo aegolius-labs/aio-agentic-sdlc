@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Add dark mode."
+    }
+  ],
+  "assumptions": [
+    "\"Dark mode\" means an alternate color theme with a dark background and light foreground, applied to the user-facing interface.",
+    "The target is an existing application that has a user interface; the request does not name which one.",
+    "\"The operating system's setting\" means the OS-level light/dark appearance preference (for example, the prefers-color-scheme media query on the web)."
+  ],
+  "ambiguities": [
+    {
+      "question": "Which application, surface, or component should get dark mode?",
+      "status": "resolved",
+      "resolution": "Only the dashboard and settings pages."
+    },
+    {
+      "question": "How is dark mode activated: a manual user toggle, following the operating system or browser preference, or both?",
+      "status": "open"
+    },
+    {
+      "question": "Should the user's choice persist across sessions or devices?",
+      "status": "open"
+    },
+    {
+      "question": "Should dark mode be the default, or should light remain the default?",
+      "status": "resolved",
+      "resolution": "Follow the operating system's setting by default."
+    },
+    {
+      "question": "Are there accessibility requirements, such as a minimum color contrast ratio, for the dark theme?",
+      "status": "open"
+    },
+    {
+      "question": "Does dark mode need to cover every screen and component, or only a defined subset?",
+      "status": "resolved",
+      "resolution": "Only the dashboard and settings pages."
+    },
+    {
+      "question": "Should users be able to override the operating system's setting with a manual choice?",
+      "status": "open"
+    },
+    {
+      "question": "Should the theme update live when the operating system's setting changes while the application is open?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "The application provides a dark mode.",
+      "required_evidence": [
+        "test:dark-mode-available"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "Dark mode applies only to the dashboard page and the settings page.",
+      "required_evidence": [
+        "test:dark-mode-scope-dashboard-settings"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "By default, the theme follows the operating system's light/dark setting.",
+      "required_evidence": [
+        "test:dark-mode-follows-os-default"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    },
+    {
+      "revision": 2,
+      "recorded_at": "2026-01-01T00:00:01Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Revised per feedback: scoped to dashboard and settings pages; default follows the operating system setting."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

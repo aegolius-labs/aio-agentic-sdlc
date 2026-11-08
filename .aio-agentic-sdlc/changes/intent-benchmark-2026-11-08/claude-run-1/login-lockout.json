@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Lock an account for 15 minutes after 5 failed logins in a row. Never lock administrators out completely: show them a CAPTCHA instead."
+    }
+  ],
+  "assumptions": [
+    "\"Failed logins in a row\" means consecutive failed login attempts with no successful login in between.",
+    "A successful login resets the consecutive-failure count.",
+    "The 15-minute lock starts at the moment of the 5th consecutive failure.",
+    "\"Administrators\" refers to accounts holding an administrator role in the existing authorization model."
+  ],
+  "ambiguities": [
+    {
+      "question": "Does the failure count apply per account, per IP address, or both?",
+      "status": "open"
+    },
+    {
+      "question": "Does a failed attempt during the lock period extend or restart the 15-minute lock?",
+      "status": "open"
+    },
+    {
+      "question": "Does the lock apply to all login methods (password, SSO, API tokens, etc.) or only password login?",
+      "status": "open"
+    },
+    {
+      "question": "Is the count reset only by a successful login, or also by elapsed time between failures?",
+      "status": "open"
+    },
+    {
+      "question": "For administrators, after how many failures is the CAPTCHA shown, and does it start at the 5th consecutive failure?",
+      "status": "open"
+    },
+    {
+      "question": "Does the CAPTCHA for administrators replace the lock entirely, or can administrators still be throttled or delayed in some other way?",
+      "status": "open"
+    },
+    {
+      "question": "Is the CAPTCHA required for every subsequent attempt until a successful login, or only for a limited time?",
+      "status": "open"
+    },
+    {
+      "question": "Which CAPTCHA provider or mechanism should be used?",
+      "status": "open"
+    },
+    {
+      "question": "Should the user be told that the account is locked and for how long, given the risk of account enumeration?",
+      "status": "open"
+    },
+    {
+      "question": "Should lock and CAPTCHA events be logged or should administrators or account owners be notified?",
+      "status": "open"
+    },
+    {
+      "question": "Can a locked account be unlocked early, for example by an administrator or a password reset?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "After 5 consecutive failed logins for a non-administrator account, the account is locked.",
+      "required_evidence": [
+        "test:lock-after-five-consecutive-failures"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "A non-administrator account locked by consecutive failed logins stays locked for 15 minutes.",
+      "required_evidence": [
+        "test:lock-duration-fifteen-minutes"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "Administrator accounts are never locked out completely, regardless of the number of failed logins.",
+      "required_evidence": [
+        "test:admin-never-fully-locked"
+      ]
+    },
+    {
+      "id": "AC4",
+      "statement": "When an administrator account reaches the failure threshold that would lock a non-administrator account, a CAPTCHA is shown to the administrator instead of locking the account.",
+      "required_evidence": [
+        "test:admin-captcha-instead-of-lock"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  },
+  "dependencies": []
+}

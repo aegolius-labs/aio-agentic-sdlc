@@ -99,3 +99,9 @@ jobs:
           "$RUNNER_TEMP/clean/bin/dag-tool" demo --directory "$RUNNER_TEMP/demo" \
             --approver "CI clean install" --yes
           grep -q "Status: done" "$RUNNER_TEMP/demo/TRACEABILITY.md"
+
+      - name: Score the packaged benchmark reference from the installed wheel
+        run: |
+          bin="$RUNNER_TEMP/clean/bin"
+          reference="$("$bin/python" -c 'from aio_agentic_sdlc.intent_benchmark import default_corpus_path as p; print(p() / "reference")')"
+          "$bin/dag-tool" benchmark-intent score --translations "$reference"

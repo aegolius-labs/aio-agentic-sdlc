@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "corpus": "intent-translation",
+  "corpus_version": 1,
+  "runs": 1,
+  "metrics": {
+    "omission_rate": 0.8519,
+    "invention_rate": 0.0,
+    "dependency_errors": 3,
+    "unjustified_completions": 0,
+    "stability": null,
+    "correction_quality": 0.0
+  },
+  "thresholds": {
+    "omission_rate_max": 0.1,
+    "invention_rate_max": 0.1,
+    "dependency_errors_max": 0,
+    "unjustified_completions_max": 0,
+    "stability_min": 0.8,
+    "correction_quality_min": 0.8
+  },
+  "checks": [
+    {
+      "metric": "omission_rate",
+      "value": 0.8519,
+      "kind": "max",
+      "limit": 0.1,
+      "passed": false
+    },
+    {
+      "metric": "invention_rate",
+      "value": 0.0,
+      "kind": "max",
+      "limit": 0.1,
+      "passed": true
+    },
+    {
+      "metric": "dependency_errors",
+      "value": 3,
+      "kind": "max",
+      "limit": 0,
+      "passed": false
+    },
+    {
+      "metric": "unjustified_completions",
+      "value": 0,
+      "kind": "max",
+      "limit": 0,
+      "passed": true
+    },
+    {
+      "metric": "stability",
+      "value": null,
+      "kind": "min",
+      "limit": 0.8,
+      "passed": null
+    },
+    {
+      "metric": "correction_quality",
+      "value": 0.0,
+      "kind": "min",
+      "limit": 0.8,
+      "passed": false
+    }
+  ],
+  "passed": false,
+  "totals": {
+    "expected_items": 27,
+    "omitted": 23,
+    "criteria": 2,
+    "invented": 0,
+    "dependency_errors": 3,
+    "unjustified_completions": 0,
+    "feedback_items": 4,
+    "feedback_fixed": 0,
+    "stable_cases": 0,
+    "missing_translations": 0,
+    "invalid_translations": 7
+  },
+  "cases": [
+    {
+      "id": "login-lockout",
+      "invalid": "not valid Intent IR: 20 validation errors for IntentIR"
+    },
+    {
+      "id": "invoice-export",
+      "invalid": "not valid Intent IR: 11 validation errors for IntentIR"
+    },
+    {
+      "id": "dark-mode",
+      "invalid": "not valid Intent IR: 20 validation errors for IntentIR"
+    },
+    {
+      "id": "admin-audit-log",
+      "invalid": "not valid Intent IR: 8 validation errors for IntentIR"
+    },
+    {
+      "id": "password-reset",
+      "invalid": "not valid Intent IR: 16 validation errors for IntentIR"
+    },
+    {
+      "id": "account-deletion",
+      "result": {
+        "expected_items": 4,
+        "found": [
+          "requirements:delete-data",
+          "constraints:keep-invoices",
+          "ambiguities:personal-scope",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 2,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      }
+    },
+    {
+      "id": "shipping-push",
+      "invalid": "not valid Intent IR: 19 validation errors for IntentIR"
+    },
+    {
+      "id": "api-rate-limit",
+      "invalid": "not valid Intent IR: 9 validation errors for IntentIR"
+    }
+  ]
+}

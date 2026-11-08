@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "benchmark:request",
+      "statement": "Let users export their invoices as CSV. It must reuse the existing Report Builder and finish in under 10 seconds for 10,000 rows."
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Users can export their invoices as a CSV file.",
+      "required_evidence": ["test:invoice-csv-export"]
+    },
+    {
+      "id": "AC2",
+      "statement": "An export of 10,000 rows finishes in under 10 seconds.",
+      "required_evidence": ["test:invoice-export-performance"]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-11-08T00:00:00Z",
+      "actor": "reference-translation",
+      "generator_version": "benchmark-reference",
+      "summary": "Reference translation for the scorer's positive control."
+    }
+  ],
+  "responsible_agent": "reference-translation",
+  "generator_version": "benchmark-reference",
+  "approval": {
+    "state": "review_required"
+  },
+  "dependencies": [
+    {
+      "target": "Report Builder",
+      "type": "depends_on"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "benchmark:request",
+      "statement": "Every admin action must be written to an append-only audit log that keeps entries for 7 years."
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Every admin action is written to the audit log.",
+      "required_evidence": ["test:audit-log-admin-actions"]
+    },
+    {
+      "id": "AC2",
+      "statement": "The audit log is append-only: existing entries cannot be modified or deleted.",
+      "required_evidence": ["test:audit-log-append-only"]
+    },
+    {
+      "id": "AC3",
+      "statement": "Audit log entries are kept for 7 years.",
+      "required_evidence": ["test:audit-log-retention"]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-11-08T00:00:00Z",
+      "actor": "reference-translation",
+      "generator_version": "benchmark-reference",
+      "summary": "Reference translation for the scorer's positive control."
+    }
+  ],
+  "responsible_agent": "reference-translation",
+  "generator_version": "benchmark-reference",
+  "approval": {
+    "state": "review_required"
+  }
+}

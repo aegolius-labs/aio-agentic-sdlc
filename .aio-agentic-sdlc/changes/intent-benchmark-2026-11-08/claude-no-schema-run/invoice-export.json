@@ -1,0 +1,88 @@
+{
+  "id": "intent-invoice-csv-export",
+  "title": "Export invoices as CSV",
+  "summary": "Let users export their invoices as CSV, reusing the existing Report Builder.",
+  "dependencies": [
+    {
+      "target": "Report Builder",
+      "type": "depends_on"
+    }
+  ],
+  "intent": {
+    "provenance": [
+      {
+        "type": "human_statement",
+        "statement": "Let users export their invoices as CSV. It must reuse the existing Report Builder and finish in under 10 seconds for 10,000 rows."
+      }
+    ],
+    "assumptions": [],
+    "ambiguities": [
+      {
+        "id": "amb-1",
+        "question": "Who counts as 'users' (all authenticated users, only account owners, admins, or specific roles), and may a user export only their own invoices or all invoices they can view?",
+        "status": "open"
+      },
+      {
+        "id": "amb-2",
+        "question": "Which invoice fields and which CSV conventions (columns, headers, delimiter, encoding, date and currency formats) should the export use?",
+        "status": "open"
+      },
+      {
+        "id": "amb-3",
+        "question": "Can users filter or select which invoices to export (date range, status, customer), or is the export always the full set?",
+        "status": "open"
+      },
+      {
+        "id": "amb-4",
+        "question": "Where is the export triggered and delivered (UI button, API endpoint, file download, emailed link)?",
+        "status": "open"
+      },
+      {
+        "id": "amb-5",
+        "question": "What are the conditions of the 10-second target for 10,000 rows (hardware, concurrent load, measurement point such as server-side generation versus end-to-end download), and what behavior is expected beyond 10,000 rows?",
+        "status": "open"
+      },
+      {
+        "id": "amb-6",
+        "question": "What does 'reuse the existing Report Builder' require: must the export run entirely through its existing interface, and may the Report Builder be extended if it lacks CSV output?",
+        "status": "open"
+      }
+    ],
+    "confidence": 0.6,
+    "acceptance_criteria": [
+      {
+        "id": "ac-1",
+        "statement": "Users can export their invoices as a CSV file.",
+        "required_evidence": [
+          "test:invoice-csv-export"
+        ]
+      },
+      {
+        "id": "ac-2",
+        "statement": "The export reuses the existing Report Builder.",
+        "required_evidence": [
+          "test:invoice-csv-export-uses-report-builder"
+        ]
+      },
+      {
+        "id": "ac-3",
+        "statement": "The export finishes in under 10 seconds for 10,000 rows.",
+        "required_evidence": [
+          "test:invoice-csv-export-performance-10k-rows"
+        ]
+      }
+    ],
+    "revision_history": [
+      {
+        "revision": 1,
+        "actor": "sdlc_intake",
+        "note": "Initial translation of the stated request; not yet reviewed."
+      }
+    ]
+  },
+  "approval": {
+    "state": "review_required",
+    "approver": null,
+    "approved_at": null
+  }
+}

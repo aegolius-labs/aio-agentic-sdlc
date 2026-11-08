@@ -133,6 +133,8 @@ Reference Demo (`cb02a996`).
   integration test, and CI runs it from the installed wheel. Its traceability
   report still needs an outside reader's review (DEMO-AC2).
 - [ ] A versioned golden corpus measures intent translation.
+  `dag-tool benchmark-intent` and corpus v1 exist; the corpus and its
+  thresholds wait for the owner's approval (BENCHMARK-AC1).
 
 ## M5: Federation seams
 

@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Every admin action must be written to an append-only audit log that keeps entries for 7 years."
+    }
+  ],
+  "assumptions": [
+    "The audit log is a distinct artifact from any existing application logging.",
+    "Retention of 7 years is measured from the time each entry is written."
+  ],
+  "ambiguities": [
+    {
+      "question": "What counts as an 'admin action'? Which roles, endpoints, or operations are in scope?",
+      "status": "open"
+    },
+    {
+      "question": "What fields must each audit entry record (actor, timestamp, action, target, outcome, source IP, before/after values)?",
+      "status": "open"
+    },
+    {
+      "question": "How strictly must 'append-only' be enforced (application-level convention, storage-level immutability such as WORM, or tamper-evidence such as hash chaining)?",
+      "status": "open"
+    },
+    {
+      "question": "What happens to entries after 7 years: must they be deleted, may they be kept longer, or is deletion optional?",
+      "status": "open"
+    },
+    {
+      "question": "Must the admin action fail if the audit write fails, or may it proceed (write-before-act vs. best-effort)?",
+      "status": "open"
+    },
+    {
+      "question": "Are failed or denied admin attempts also logged, or only successful actions?",
+      "status": "open"
+    },
+    {
+      "question": "Who may read or export the audit log, and does access need to be controlled or itself audited?",
+      "status": "open"
+    },
+    {
+      "question": "Is there a specific regulation or compliance regime (e.g. SOX, HIPAA, SOC 2) driving the 7-year requirement?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Every admin action results in an entry written to the audit log.",
+      "required_evidence": [
+        "test:admin-action-writes-audit-entry"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "The audit log is append-only: existing entries cannot be modified or deleted through any supported interface.",
+      "required_evidence": [
+        "test:audit-log-append-only"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "Audit log entries are retained for 7 years.",
+      "required_evidence": [
+        "test:audit-log-retention-7-years"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

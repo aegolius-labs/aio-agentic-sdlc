@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.46.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.46.0) (2026-11-08)
+
+### Added
+
+- `dag-tool benchmark-intent run` and `score` measure intent translation
+  against a versioned golden corpus of eight requests (ROADMAP M4, Intent
+  Translation Benchmark). It reports omissions, inventions, dependency
+  errors, unjustified completions, stability and correction quality against
+  the corpus thresholds, which are a proposal until the owner approves the
+  corpus.
+
 ## [0.45.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.45.0) (2026-11-08)
 
 ### Added

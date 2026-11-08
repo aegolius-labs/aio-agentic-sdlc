@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Add dark mode."
+    }
+  ],
+  "assumptions": [
+    "\"Dark mode\" means an alternate color theme with a dark background and light foreground, applied to the user-facing interface.",
+    "The target is an existing application that has a user interface; the request does not name which one."
+  ],
+  "ambiguities": [
+    {
+      "question": "Which application, surface, or component should get dark mode?",
+      "status": "open"
+    },
+    {
+      "question": "How is dark mode activated: a manual user toggle, following the operating system or browser preference, or both?",
+      "status": "open"
+    },
+    {
+      "question": "Should the user's choice persist across sessions or devices?",
+      "status": "open"
+    },
+    {
+      "question": "Should dark mode be the default, or should light remain the default?",
+      "status": "open"
+    },
+    {
+      "question": "Are there accessibility requirements, such as a minimum color contrast ratio, for the dark theme?",
+      "status": "open"
+    },
+    {
+      "question": "Does dark mode need to cover every screen and component, or only a defined subset?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.4,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "The application provides a dark mode.",
+      "required_evidence": [
+        "test:dark-mode-available"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

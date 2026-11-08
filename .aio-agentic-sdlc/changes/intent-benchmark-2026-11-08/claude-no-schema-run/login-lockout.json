@@ -1,0 +1,77 @@
+{
+  "intent_ir_version": 1,
+  "title": "Account lockout after repeated failed logins, with CAPTCHA for administrators",
+  "provenance": [
+    {
+      "type": "human_statement",
+      "quote": "Lock an account for 15 minutes after 5 failed logins in a row. Never lock administrators out completely: show them a CAPTCHA instead."
+    }
+  ],
+  "dependencies": [],
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "statement": "An account is locked for 15 minutes after 5 failed logins in a row.",
+      "required_evidence": [
+        "test:lock-after-5-consecutive-failed-logins",
+        "test:lock-duration-15-minutes"
+      ]
+    },
+    {
+      "id": "AC-2",
+      "statement": "Administrators are never locked out completely.",
+      "required_evidence": [
+        "test:admin-never-fully-locked-out"
+      ]
+    },
+    {
+      "id": "AC-3",
+      "statement": "When an administrator reaches the failed-login threshold, a CAPTCHA is shown instead of locking the account.",
+      "required_evidence": [
+        "test:admin-captcha-shown-instead-of-lock"
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-1",
+      "question": "Does 'in a row' mean the failure counter resets after a successful login? Does it also reset after a period of inactivity or after the lock expires?",
+      "status": "open"
+    },
+    {
+      "id": "AMB-2",
+      "question": "What counts as a failed login (wrong password only, or also wrong username, expired credentials, failed second factor)? What happens to attempts on a non-existent account?",
+      "status": "open"
+    },
+    {
+      "id": "AMB-3",
+      "question": "What happens to login attempts made during the 15-minute lock: are they rejected without checking credentials, do they extend the lock, and does the user see that the account is locked?",
+      "status": "open"
+    },
+    {
+      "id": "AMB-4",
+      "question": "How is an administrator identified (role, group, or flag), and does this include every privileged role or only one?",
+      "status": "open"
+    },
+    {
+      "id": "AMB-5",
+      "question": "Once the CAPTCHA is shown to an administrator, are further failed attempts still allowed, what happens if the CAPTCHA is failed repeatedly, and does the CAPTCHA remain required until a successful login or for some period?",
+      "status": "open"
+    },
+    {
+      "id": "AMB-6",
+      "question": "Which CAPTCHA mechanism or provider is intended, and what is the fallback if it is unavailable or inaccessible to the user?",
+      "status": "open"
+    },
+    {
+      "id": "AMB-7",
+      "question": "Should the lock be notified to the account owner or logged, and is there a way for an administrator or support to unlock early?",
+      "status": "open"
+    }
+  ],
+  "approval": {
+    "state": "review_required",
+    "approver": null,
+    "timestamp": null
+  }
+}

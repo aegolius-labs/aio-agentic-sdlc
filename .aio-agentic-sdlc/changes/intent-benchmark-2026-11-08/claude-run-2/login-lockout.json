@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Lock an account for 15 minutes after 5 failed logins in a row. Never lock administrators out completely: show them a CAPTCHA instead."
+    }
+  ],
+  "assumptions": [
+    "A 'failed login' means a rejected authentication attempt for an existing account.",
+    "The failure counter is tracked per account, not per IP address or device.",
+    "The 15-minute lock starts at the moment of the 5th consecutive failure.",
+    "A successful login resets the consecutive-failure count to zero.",
+    "An administrator is any account that holds the existing administrator role."
+  ],
+  "ambiguities": [
+    {
+      "question": "Does the 15-minute lock expire automatically, or can it also be cleared earlier (for example by an administrator or a password reset)?",
+      "status": "open"
+    },
+    {
+      "question": "Does a failed login attempt made while the account is locked extend the lock or reset the 15-minute timer?",
+      "status": "open"
+    },
+    {
+      "question": "Do failed attempts that happen further apart than some time window still count as 'in a row', or is only a successful login a reset?",
+      "status": "open"
+    },
+    {
+      "question": "Is the count kept per account, per IP address, or both?",
+      "status": "open"
+    },
+    {
+      "question": "When an administrator is shown a CAPTCHA, does it start after the 5th failure, and must it be solved on every later login attempt or only until one succeeds?",
+      "status": "open"
+    },
+    {
+      "question": "What happens when an administrator fails the CAPTCHA or keeps failing logins after it appears? Are there any further limits?",
+      "status": "open"
+    },
+    {
+      "question": "How is an administrator identified, and does this include every privileged role or only the 'administrator' role?",
+      "status": "open"
+    },
+    {
+      "question": "Which CAPTCHA provider or type should be used?",
+      "status": "open"
+    },
+    {
+      "question": "What do users see when their account is locked, and should the message reveal that the account is locked?",
+      "status": "open"
+    },
+    {
+      "question": "Should lockouts and CAPTCHA challenges be logged or should the account owner be notified?",
+      "status": "open"
+    },
+    {
+      "question": "Are the thresholds (5 failures, 15 minutes) fixed or configurable?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "After 5 consecutive failed logins for a non-administrator account, the account is locked for 15 minutes.",
+      "required_evidence": [
+        "test:lock-after-five-consecutive-failures"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "While a non-administrator account is locked, login attempts are refused, including attempts with the correct credentials, until the 15 minutes have passed.",
+      "required_evidence": [
+        "test:locked-account-refuses-login-for-15-minutes"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "An administrator account is never completely locked out, regardless of the number of consecutive failed logins.",
+      "required_evidence": [
+        "test:admin-never-fully-locked-out"
+      ]
+    },
+    {
+      "id": "AC4",
+      "statement": "After 5 consecutive failed logins on an administrator account, the administrator is shown a CAPTCHA instead of being locked.",
+      "required_evidence": [
+        "test:admin-shown-captcha-after-five-failures"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

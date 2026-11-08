@@ -1,0 +1,61 @@
+{
+  "intent_ir_version": 1,
+  "title": "Add dark mode",
+  "summary": "Add a dark mode to the software.",
+  "provenance": [
+    {
+      "type": "human_statement",
+      "source": "Request: Add dark mode.",
+      "quote": "Add dark mode.",
+      "asserted_by": "requester"
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "ac-1",
+      "statement": "Dark mode is added.",
+      "required_evidence": [
+        "test:dark-mode-added"
+      ]
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [
+    {
+      "id": "amb-1",
+      "question": "Which application, product, or surface should get dark mode? The request does not name one.",
+      "status": "open"
+    },
+    {
+      "id": "amb-2",
+      "question": "How is dark mode activated: a manual toggle, following the operating system or browser preference, or both?",
+      "status": "open"
+    },
+    {
+      "id": "amb-3",
+      "question": "Should the user's dark mode choice persist across sessions or devices, and if so where?",
+      "status": "open"
+    },
+    {
+      "id": "amb-4",
+      "question": "What is the scope of coverage: all screens and components, or a subset?",
+      "status": "open"
+    },
+    {
+      "id": "amb-5",
+      "question": "Are there design requirements such as a color palette, contrast or accessibility targets, or existing design tokens to follow?",
+      "status": "open"
+    },
+    {
+      "id": "amb-6",
+      "question": "Should dark mode be the default, or is light mode the default?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.3,
+  "dependencies": [],
+  "approval": {
+    "state": "review_required"
+  },
+  "revision": 1
+}

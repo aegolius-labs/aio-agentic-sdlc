@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "When a customer closes their account, delete their personal data within 30 days, except invoices, which tax law requires us to keep."
+    }
+  ],
+  "assumptions": [
+    "The 30-day period starts at the moment the account is closed.",
+    "\"Within 30 days\" means calendar days.",
+    "Invoices are retained in full, including any personal data they contain.",
+    "The invoice retention exception applies only to invoices, not to other financial or transactional records."
+  ],
+  "ambiguities": [
+    {
+      "question": "What event marks the start of the 30-day period: the customer's request to close, or the completion of closure?",
+      "status": "open"
+    },
+    {
+      "question": "What counts as personal data, and which data stores must be covered (primary database, backups, logs, analytics, third-party processors)?",
+      "status": "open"
+    },
+    {
+      "question": "Should deletion be hard deletion or is anonymization acceptable?",
+      "status": "open"
+    },
+    {
+      "question": "How long must invoices be retained, and which jurisdiction's tax law applies?",
+      "status": "open"
+    },
+    {
+      "question": "Should personal data held in retained invoices be restricted from other uses or access after the account is closed?",
+      "status": "open"
+    },
+    {
+      "question": "What happens if a customer reopens the account or asks to cancel closure within the 30 days?",
+      "status": "open"
+    },
+    {
+      "question": "How is deletion to be verified or recorded (audit trail, confirmation to the customer)?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "When a customer closes their account, their personal data is deleted within 30 days of closure.",
+      "required_evidence": [
+        "test:account-closure-deletes-personal-data-within-30-days"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "Invoices belonging to a closed account are not deleted by the personal data deletion.",
+      "required_evidence": [
+        "test:invoices-retained-after-account-closure"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "The invoice exception is justified by a tax law retention requirement.",
+      "required_evidence": [
+        "test:invoice-retention-tax-law-basis-documented"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Let users export their invoices as CSV. It must reuse the existing Report Builder and finish in under 10 seconds for 10,000 rows."
+    }
+  ],
+  "assumptions": [
+    "The export is a user-initiated action on invoice data the user is already permitted to see.",
+    "\"Under 10 seconds for 10,000 rows\" is measured end to end from the export request to the CSV being available to the user.",
+    "Report Builder is an existing component in this system that can be extended or called to produce the export."
+  ],
+  "ambiguities": [
+    {
+      "question": "Which users can export invoices: all users, or only certain roles? And does each user export only their own invoices or also others' invoices they can view?",
+      "status": "open"
+    },
+    {
+      "question": "Which invoices and which fields are included in the CSV (all invoices, a filtered or selected subset, a date range; which columns)?",
+      "status": "open"
+    },
+    {
+      "question": "What does 'reuse the existing Report Builder' require concretely: must the export go through Report Builder's public interface, or may it be extended or modified, and what if Report Builder cannot produce CSV today?",
+      "status": "open"
+    },
+    {
+      "question": "What are the performance measurement conditions (hardware, concurrent load, percentile such as p95 or worst case, cold or warm start) for the 10-second limit?",
+      "status": "open"
+    },
+    {
+      "question": "What is the expected behavior above 10,000 rows (also under 10 seconds, degrade gracefully, asynchronous export, row cap)?",
+      "status": "open"
+    },
+    {
+      "question": "How is the CSV delivered to the user (browser download, email, stored file) and where is the export triggered in the UI or API?",
+      "status": "open"
+    },
+    {
+      "question": "Are there CSV format requirements (delimiter, encoding, header row, date and currency formatting, escaping of special characters)?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "A user can export their invoices as a CSV file.",
+      "required_evidence": [
+        "test:invoice-csv-export"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "The invoice CSV export reuses the existing Report Builder rather than introducing a separate export implementation.",
+      "required_evidence": [
+        "test:invoice-export-uses-report-builder"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "Exporting 10,000 invoice rows to CSV completes in under 10 seconds.",
+      "required_evidence": [
+        "test:invoice-export-10k-rows-under-10s"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  },
+  "dependencies": [
+    {
+      "target": "Report Builder",
+      "type": "depends_on"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Limit each API key to 100 requests per minute, and answer HTTP 429 with a Retry-After header when the limit is exceeded."
+    }
+  ],
+  "assumptions": [
+    "API keys are already issued and identifiable on each incoming request",
+    "The limit applies uniformly to every API key, with no per-key overrides",
+    "Requests that receive a 429 response count toward or against the limit in whatever way is conventional; the request did not specify this"
+  ],
+  "ambiguities": [
+    {
+      "question": "Which kind of window is meant by 'per minute': a fixed calendar-minute window, a sliding window, or a token bucket?",
+      "status": "open"
+    },
+    {
+      "question": "What value and format should Retry-After carry: delay-seconds or an HTTP-date, and how is it computed?",
+      "status": "open"
+    },
+    {
+      "question": "Does the limit apply to all endpoints and HTTP methods, or only to some?",
+      "status": "open"
+    },
+    {
+      "question": "Is the limit counted per instance or shared across all instances of the service?",
+      "status": "open"
+    },
+    {
+      "question": "How should requests with a missing or invalid API key be handled with respect to rate limiting?",
+      "status": "open"
+    },
+    {
+      "question": "Should the 429 response include a body, and in what format?",
+      "status": "open"
+    },
+    {
+      "question": "Should rate limit state survive a service restart?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Each API key is limited to 100 requests per minute.",
+      "required_evidence": [
+        "test:rate-limit-per-key-100-per-minute"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "When a key exceeds its limit, the API responds with HTTP status 429.",
+      "required_evidence": [
+        "test:rate-limit-exceeded-returns-429"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "The 429 response includes a Retry-After header.",
+      "required_evidence": [
+        "test:rate-limit-429-has-retry-after-header"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}
