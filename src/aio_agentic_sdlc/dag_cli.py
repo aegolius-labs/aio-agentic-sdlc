@@ -748,9 +748,20 @@ def _receipt_summary(report):
 def _receipt_problem(receipt):
     if receipt["status"] == "invalid":
         return f"The receipt cannot be validated: {receipt['error']}."
+    if receipt.get("binding") == "file":
+        changed = (
+            f"{receipt['source_path']} changed since the mapping receipt for "
+            f"{receipt['symbol_name']} was approved. This older receipt binds to "
+            "the whole file; refreshing it binds it to the symbol."
+        )
+    elif receipt.get("error"):
+        changed = f"{receipt['error'].capitalize()}."
+    else:
+        changed = (
+            f"{receipt['symbol_name']} changed since its mapping receipt was approved."
+        )
     return (
-        f"{receipt['symbol_name']} changed since its mapping receipt was approved. "
-        "Review it with `dag-tool mapping receipt review --intent-id "
+        f"{changed} Review it with `dag-tool mapping receipt review --intent-id "
         f"{receipt['intent_id']}`, then refresh it with a named approver."
     )
 

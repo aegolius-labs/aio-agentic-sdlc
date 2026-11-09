@@ -860,6 +860,36 @@
       "summary": "--strict fails only on errors.",
       "recorded_by": "Claude (sdlc_qa), project thread",
       "recorded_at": "2026-11-08T20:24:33Z"
+    },
+    {
+      "intent_id": "cb02a996-6d3f-5610-9043-b1e768587d84",
+      "criterion_id": "DEMO-AC1",
+      "reference": "test:closed-loop-integration",
+      "level": "tested",
+      "locator": "tests/test_closed_loop_demo.py::test_closed_loop_demo_reproduces_one_requirement_from_an_empty_directory",
+      "summary": "Runs dag-tool demo end to end in an empty temporary directory and asserts the work reaches done with its evidence, approval and traceability report; tests/test_closed_loop_demo.py also covers a refused gate and a non-empty directory.",
+      "recorded_by": "Claude (sdlc_qa)",
+      "recorded_at": "2026-11-09T13:20:00Z"
+    },
+    {
+      "intent_id": "cb02a996-6d3f-5610-9043-b1e768587d84",
+      "criterion_id": "DEMO-AC1",
+      "reference": "demo:closed-loop-reproduction-script",
+      "level": "behaviorally_verified",
+      "locator": ".github/workflows/test.yml",
+      "summary": "The Clean install CI job installs the wheel alone and runs dag-tool demo with --yes in an empty directory, then checks that TRACEABILITY.md reports Status: done. Green on every merge since #163.",
+      "recorded_by": "Claude (sdlc_qa)",
+      "recorded_at": "2026-11-09T13:20:00Z"
+    },
+    {
+      "intent_id": "cb02a996-6d3f-5610-9043-b1e768587d84",
+      "criterion_id": "DEMO-AC2",
+      "reference": "artifact:human-readable-traceability-report",
+      "level": "structural",
+      "locator": "src/aio_agentic_sdlc/traceability.py",
+      "summary": "build_trace and render_trace_markdown write TRACEABILITY.md, which the demo produces. Understandability by an outside reader is not established: review:external-reader-usability stays open by the owner's 2026-11-09 decision.",
+      "recorded_by": "Claude (sdlc_qa)",
+      "recorded_at": "2026-11-09T13:20:00Z"
     }
   ]
 }

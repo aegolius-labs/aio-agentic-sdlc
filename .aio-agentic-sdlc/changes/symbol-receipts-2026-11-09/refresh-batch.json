@@ -1,0 +1,122 @@
+[
+  {
+    "intent_id": "6506870b-b262-4f54-b6e9-43de4a873a55",
+    "intent_name": "PRD Archiver",
+    "source_path": "src/aio_agentic_sdlc/archiver.py",
+    "symbol": "class PRDArchiver",
+    "status": "fresh",
+    "evidence_digest": "0db8d49e418b8c9d162182f727165e56e8202cdca6fab25c69211d89971f8620"
+  },
+  {
+    "intent_id": "f24b7477-032b-4f93-abcf-9b1c70627900",
+    "intent_name": "CLI Entrypoint",
+    "source_path": "src/aio_agentic_sdlc/cli.py",
+    "symbol": "function main",
+    "status": "fresh",
+    "evidence_digest": "85e4f9d90a8dc31a47271cfdc947c4b9d2193e0a53971cb99b1105018a515e26"
+  },
+  {
+    "intent_id": "685b1d12-3eed-48f6-9fa8-b8ec88a5587f",
+    "intent_name": "Traceability Validator",
+    "source_path": "src/aio_agentic_sdlc/core.py",
+    "symbol": "class TraceabilityValidator",
+    "status": "fresh",
+    "evidence_digest": "63b8d4bcc40b4586bcea9f5fc365bb5965d6ad2b1de382185b967fc8e701c583"
+  },
+  {
+    "intent_id": "fa35fa8a-b6b5-40ca-9080-b31421117e37",
+    "intent_name": "Diffing Engine",
+    "source_path": "src/aio_agentic_sdlc/diffing_engine.py",
+    "symbol": "class DiffingEngine",
+    "status": "fresh",
+    "evidence_digest": "048176937850d221f39d7d33d15d4e0a463250de2b175d4f3efd2856e9a6d477"
+  },
+  {
+    "intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+    "intent_name": "Explicit Evidence Model",
+    "source_path": "src/aio_agentic_sdlc/evidence.py",
+    "symbol": "class EvidenceEvaluator",
+    "status": "fresh",
+    "evidence_digest": "756ba51565a3fe332f42d65d53db9bd5fa229c592c0133a12567ff38fb902b7f"
+  },
+  {
+    "intent_id": "2131072d-9bb1-4236-9b9a-141ee087fa4b",
+    "intent_name": "Intention DAG Consistency Check",
+    "source_path": "src/aio_agentic_sdlc/intent_consistency.py",
+    "symbol": "class IntentConsistencyChecker",
+    "status": "fresh",
+    "evidence_digest": "b460c75313ae8a00d8e9a488d07857158551449b4630053f7b696228846202b3"
+  },
+  {
+    "intent_id": "7bcd1683-2a10-5cbc-ab91-440ea920eaf1",
+    "intent_name": "Intent IR v1",
+    "source_path": "src/aio_agentic_sdlc/intent_ir.py",
+    "symbol": "class IntentIR",
+    "status": "fresh",
+    "evidence_digest": "78b1a66ee1d36390790660a655f940aa6415922c01a9b19c30458bb53aa78a66"
+  },
+  {
+    "intent_id": "f4658dd7-1ea1-5e1f-b851-2a376cc1649a",
+    "intent_name": "Legacy Intent IR Migration",
+    "source_path": "src/aio_agentic_sdlc/intent_migration.py",
+    "symbol": "class LegacyIntentMigrator",
+    "status": "fresh",
+    "evidence_digest": "e70d5a09664208d4ad43b4f9ab489c6f6abc7be12ee67f4041a2bc7100324bde"
+  },
+  {
+    "intent_id": "15019926-c6be-5c98-b558-954c7657e5c6",
+    "intent_name": "Explicit Source Identity Maintenance",
+    "source_path": "src/aio_agentic_sdlc/mapping.py",
+    "symbol": "function refresh_receipt",
+    "status": "stale",
+    "evidence_digest": "30f44d8b2e3610965f81760b00ef86fa28c8348afbf35860be005dd2d5d68ff2"
+  },
+  {
+    "intent_id": "86367041-79ce-5415-b107-ef60cf721bf3",
+    "intent_name": "MCP SDK v2 Integration",
+    "source_path": "src/aio_agentic_sdlc/mcp_server.py",
+    "symbol": "class _SanitizingMCPServer",
+    "status": "fresh",
+    "evidence_digest": "1d754a1b9e8e2583f9c30a22dbf690f00baf3fdeb992b1ac68bcccbd4e3b026c"
+  },
+  {
+    "intent_id": "0fea8fea-9a23-404b-a16b-a9c9c3990e1b",
+    "intent_name": "Reality DAG Generator",
+    "source_path": "src/aio_agentic_sdlc/reality_dag_generator.py",
+    "symbol": "class RealityDAGGenerator",
+    "status": "fresh",
+    "evidence_digest": "dcc9c4f6970afc7efeaaea1a5862028caebd568ffaca24cb0c52ff30f1e9c174"
+  },
+  {
+    "intent_id": "5a81e63d-85c7-4704-a0b1-e076367b2fd1",
+    "intent_name": "Artifact Templating Engine",
+    "source_path": "src/aio_agentic_sdlc/templating_engine.py",
+    "symbol": "function generate_document",
+    "status": "fresh",
+    "evidence_digest": "7f07efc83b3c7093ebdb85f3c42d31e176c1a89ba8eb270c880e45b6e11265c4"
+  },
+  {
+    "intent_id": "d0307d83-371e-4bb6-925d-84a4b70beb6b",
+    "intent_name": "Parser Factory",
+    "source_path": "src/aio_agentic_sdlc/parsers/factory.py",
+    "symbol": "class ParserFactory",
+    "status": "fresh",
+    "evidence_digest": "0382b410a7e1286b1cb864e7de7bd85e52274374f6b06e06c6ca87a54a52ca07"
+  },
+  {
+    "intent_id": "a937dc0f-c261-461a-975f-03950289be88",
+    "intent_name": "Markdown Parser",
+    "source_path": "src/aio_agentic_sdlc/parsers/markdown_parser.py",
+    "symbol": "class MarkdownAgentParser",
+    "status": "fresh",
+    "evidence_digest": "594f65248050c1a540683219b912d83927a26ec3b92830bc717fe2e45a31ff22"
+  },
+  {
+    "intent_id": "9865715b-99a5-4dcb-ba92-90b03cc3cf1c",
+    "intent_name": "Tree-Sitter Parser",
+    "source_path": "src/aio_agentic_sdlc/parsers/python_parser.py",
+    "symbol": "class TreeSitterParser",
+    "status": "fresh",
+    "evidence_digest": "c726271d43fa55bb6c83337848cb30115dae7299cc9f227fe9a2f3fc20ffd10e"
+  }
+]

@@ -36,11 +36,14 @@ from aio_agentic_sdlc.reconciliation import ReconciliationEngine
 from aio_agentic_sdlc.source_markers import (
     MAPPING_APPROVAL_PREFIX,
     NODE_MARKER_PREFIX,
+    SYMBOL_DIGEST_FIELD,
     MappingReceiptAnnotation,
     SourceMarkerError,
+    annotation_symbol_sha256,
     iter_canonical_node_markers,
     mapping_receipt_freshness,
     parse_mapping_receipt_annotation,
+    symbol_source_sha256,
 )
 from aio_agentic_sdlc.workspace import (
     MAPPING_LOCK_FILE,
@@ -1288,6 +1291,10 @@ class MappingEngine:
         except SourceMarkerError as error:
             raise MappingError(str(error)) from error
         neutral_sha256 = hashlib.sha256(annotation.annotation_neutral_bytes).hexdigest()
+        try:
+            source["symbol_sha256"] = annotation_symbol_sha256(annotation)
+        except SourceMarkerError as error:
+            raise MappingError(str(error)) from error
         source["raw_source_sha256"] = snapshot.sha256
         source["annotation_neutral_source_sha256"] = neutral_sha256
         source["raw_sha256"] = snapshot.sha256
@@ -2064,6 +2071,17 @@ class MappingEngine:
             if snapshot.sha256 != source["source_sha256"]:
                 raise MappingError("stale mapping evidence source hash")
             self._reject_existing_marker(canonical_intent_id)
+            try:
+                # The marker goes on the definition's first line, so the
+                # unmarked source is exactly the annotation-neutral content.
+                symbol_sha256 = symbol_source_sha256(
+                    snapshot.content,
+                    symbol_kind=source["symbol_kind"],
+                    symbol_name=source["symbol_name"],
+                    start_line=source["marker_line"],
+                )
+            except SourceMarkerError as error:
+                raise MappingError(str(error)) from error
 
             receipt = {
                 "schema_version": MAPPING_APPROVAL_SCHEMA_VERSION,
@@ -2073,6 +2091,7 @@ class MappingEngine:
                 "symbol_kind": source["symbol_kind"],
                 "symbol_name": source["symbol_name"],
                 "source_sha256": source["source_sha256"],
+                SYMBOL_DIGEST_FIELD: symbol_sha256,
                 "evidence_digest": review["evidence_digest"],
                 "approved_by": approval.approved_by,
                 "approved_at": approval.approved_at.isoformat(),
@@ -2156,6 +2175,13 @@ class MappingEngine:
             ):
                 raise MappingError("stale receipt evidence source hash")
 
+            try:
+                symbol_sha256 = annotation_symbol_sha256(annotation)
+            except SourceMarkerError as error:
+                raise MappingError(str(error)) from error
+            if symbol_sha256 != source["symbol_sha256"]:
+                raise MappingError("stale receipt evidence source hash")
+
             prior = annotation.receipt
             identity_approval = (
                 prior if prior["schema_version"] == 1 else prior["identity_approval"]
@@ -2168,6 +2194,7 @@ class MappingEngine:
                 "symbol_kind": prior["symbol_kind"],
                 "symbol_name": prior["symbol_name"],
                 "source_sha256": neutral_sha256,
+                SYMBOL_DIGEST_FIELD: symbol_sha256,
                 "identity_approval": identity_approval,
                 "maintenance_approval": {
                     "evidence_digest": review["evidence_digest"],

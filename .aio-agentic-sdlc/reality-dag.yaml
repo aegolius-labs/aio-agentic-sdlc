@@ -215,6 +215,36 @@ nodes:
   type: component
   name: main
   description: Function main
+- id: ba789bdf-cf76-51a0-b81b-846b151e4289
+  type: module
+  name: closed_loop_demo.py
+  description: Module src.aio_agentic_sdlc.closed_loop_demo
+- id: 9184a8d1-1373-5fd2-8f56-bf28032a0db5
+  type: component
+  name: DemoError
+  description: The loop did not close; the message says where it stopped.
+- id: ce37cb7d-c0a8-5e11-99c7-347104ee8590
+  type: component
+  name: intake_payload
+  description: The Intent IR Intake records for the stated want, before approval.
+- id: e37cab00-4b42-5b37-87e7-6ed597094e09
+  type: component
+  name: scripted_agent
+  description: "The deterministic stand-in agent: implement what the work order asks.\n\
+    \n    It refuses a work order that does not carry the requirement, so the demo\n\
+    \    proves the agent is told what to build rather than guessing.\n    "
+- id: cb02a996-6d3f-5610-9043-b1e768587d84
+  type: component
+  name: ClosedLoopDemo
+  description: Run the loop in ``project`` with the framework's public commands.
+- id: 5ad91320-9b02-516e-bd2e-9ab0d266e3b8
+  type: component
+  name: __init__
+  description: Function __init__
+- id: efb3ad3f-289c-5624-b6a5-01bb99ade93e
+  type: component
+  name: run
+  description: Function run
 - id: 1b601f4c-40b3-5895-a9cb-445be5577970
   type: module
   name: config.py
@@ -354,6 +384,12 @@ nodes:
   type: component
   name: intent_set
   description: Create or revise Intent IR using optimistic revision protection.
+- id: 3019e81d-1cab-5288-a5e4-d86b23d23992
+  type: component
+  name: intent_decide
+  description: "Record a person's approval or rejection of one node's intent.\n\n\
+    \    Appends exactly one revision and leaves the intent's content unchanged.\n\
+    \    The decision is the person's: record it only after they made it.\n    "
 - id: 3e311f99-16aa-5421-9b44-6b5694ca6437
   type: component
   name: intent_inventory
@@ -421,6 +457,39 @@ nodes:
   type: component
   name: triage
   description: Classify safe reconciliation work before backlog execution.
+- id: 4fc69c67-0705-5eb9-b270-073c19357546
+  type: component
+  name: triage_decide
+  description: "Record one person's triage decision, bound to the current plan digest.\n\
+    \n    An existing decision file is added to only while its plan digest is\n  \
+    \  current. A stale file is refused, never silently re-bound: its decisions\n\
+    \    were made against a different state and must be re-derived.\n    "
+- id: 4def43f9-e737-5578-8456-9a4092f3e6c1
+  type: component
+  name: trace
+  description: "Explain one requirement end to end in plain language. Read-only.\n\
+    \n    From the stated want through approval, authorized work, the implementing\n\
+    \    symbol and the evidence for each acceptance criterion, to whether it is\n\
+    \    done.\n    "
+- id: d14ccf58-842c-5aae-bf2e-707d9d9ef136
+  type: component
+  name: demo
+  description: "Take one requirement through the whole loop in a throwaway project.\n\
+    \n    Intent, approval, authorized work, implementation by an agent, source\n\
+    \    mapping, tests, evidence and completion, using only public commands. It\n\
+    \    stops at each approval gate and asks you, unless --yes.\n    "
+- id: 8ee58e0e-8f6d-5061-9aec-c692d977ba0e
+  type: component
+  name: benchmark_intent
+  description: Measure intent translation against the golden corpus (ROADMAP M4).
+- id: 990e618c-5c93-5714-ba5e-02f8a5c1586b
+  type: component
+  name: benchmark_intent_score
+  description: Score translations; exit 1 when a threshold fails. Read-only.
+- id: 59794135-2009-5658-a498-8109f0cb78b4
+  type: component
+  name: benchmark_intent_run
+  description: Translate every case with an agent CLI, then score it with `score`.
 - id: 330f4f65-91f6-5678-8358-0ee4eae3d616
   type: component
   name: export_abk
@@ -464,6 +533,10 @@ nodes:
   type: component
   name: edge_remove
   description: Remove an edge.
+- id: 9ff5bffe-8e57-53d0-8a7c-9846d387b780
+  type: component
+  name: doctor
+  description: Check the installation and project state; exit 1 on a failure. Read-only.
 - id: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
   type: module
   name: dag_manager.py
@@ -587,8 +660,10 @@ nodes:
 - id: 6a211c50-1e72-581a-9364-627ee51a2f91
   type: component
   name: mutate_dag_file
-  description: Load, mutate, validate through the callback, and atomically save under
-    one lock.
+  description: "Load, mutate, validate through the callback, and atomically save under\
+    \ one lock.\n\n    With ``create_with``, a DAG file that does not exist yet starts\
+    \ empty with\n    that metadata, so the first canonical node creates the file\
+    \ under the same\n    lock instead of requiring a hand-written skeleton.\n    "
 - id: 841ddc3e-b7a2-57d3-80f1-bfb5ef9c6f58
   type: module
   name: dag_visualization.py
@@ -800,6 +875,76 @@ nodes:
   type: component
   name: orphaned_records
   description: Records whose intent, criterion or reference no longer exists.
+- id: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  type: module
+  name: install_check.py
+  description: Module src.aio_agentic_sdlc.install_check
+- id: 25f4ac89-ac24-5b3b-b26c-8696fc49c81d
+  type: component
+  name: Check
+  description: Class Check
+- id: 7349a210-62fa-5535-8df6-185865a7b4a9
+  type: component
+  name: check_entry_points
+  description: Function check_entry_points
+- id: 075cf9c8-6d58-5571-96e6-9a1962f6e31f
+  type: component
+  name: check_mcp_server
+  description: Function check_mcp_server
+- id: febde772-30b8-5de9-a8d7-49556b07ab88
+  type: component
+  name: check_project
+  description: Load whatever project state exists. A directory with none is not a
+    failure.
+- id: efa88f0c-a721-54f0-83f9-d17457a74d99
+  type: component
+  name: run_doctor
+  description: Function run_doctor
+- id: 2ad23881-9185-5ae0-90c5-62c4ab4563f5
+  type: component
+  name: render_doctor
+  description: Function render_doctor
+- id: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  type: module
+  name: intent_benchmark.py
+  description: Module src.aio_agentic_sdlc.intent_benchmark
+- id: 2ed04f23-d403-5d95-9a85-6748d9d988bc
+  type: component
+  name: BenchmarkError
+  description: The corpus or a translation cannot be used.
+- id: c2114a40-1acb-5d51-aca6-a6beeedc9d5b
+  type: component
+  name: default_corpus_path
+  description: The corpus shipped with the package.
+- id: 0827604d-2c16-5907-9b8f-e81c4ae5d4e7
+  type: component
+  name: load_corpus
+  description: Function load_corpus
+- id: 3726c501-b16f-56a6-b0c8-2d731167ed7c
+  type: component
+  name: validate_translation
+  description: A translation must be valid Intent IR, plus optional dependencies.
+- id: 61ef9c8b-782f-52b7-b3dd-962aef2f518e
+  type: component
+  name: score_case
+  description: Score one translation against one expectation.
+- id: e57a58c5-9aa6-5e9b-9ccc-9767245e5f90
+  type: component
+  name: score
+  description: "Score one or more runs of translations against the corpus.\n\n   \
+    \ The first run gives every metric except stability; stability needs at\n    least\
+    \ two runs and compares the items each run found per case.\n    "
+- id: 3d05d271-51db-5c4b-a011-5173f33fe840
+  type: component
+  name: render_report
+  description: Function render_report
+- id: a201f6b8-5f02-56cc-a684-df0638be19c0
+  type: component
+  name: run_translator
+  description: "Translate every case with an agent CLI and write one run directory.\n\
+    \n    The prompt goes to the command's stdin, like the ``command`` runtime;\n\
+    \    its stdout must contain the JSON translation. A case the translator\n   \
+    \ fails on is written as nothing, which the scorer counts as omissions.\n    "
 - id: e63a391f-87b9-5327-b422-35e94f8b8ed5
   type: module
   name: intent_consistency.py
@@ -924,11 +1069,19 @@ nodes:
 - id: 84123bb2-31f6-550b-add9-315c748a5364
   type: component
   name: create_intent_node_file
-  description: Atomically create one canonical DAG node with validated Intent IR.
+  description: "Atomically create one canonical DAG node with validated Intent IR.\n\
+    \n    With ``create_with``, a missing Intention DAG is created holding only\n\
+    \    this node, so a fresh project needs no hand-written DAG skeleton.\n    "
 - id: d0b7ad9d-9cfe-5ba9-aef9-dd0d41928561
   type: component
   name: update_intent_file
   description: Create or revise one node's Intent IR without rewriting audit history.
+- id: d4a43414-8829-5557-8294-91579c883811
+  type: component
+  name: decide_intent_file
+  description: "Record a person's approval or rejection as one appended revision.\n\
+    \n    The intent content is unchanged. Only the approval and the revision\n  \
+    \  history move, under the same optimistic revision check as any edit.\n    "
 - id: db87f8e5-dca8-5952-91f6-454eec0f1a34
   type: module
   name: mapping.py
@@ -1189,6 +1342,15 @@ nodes:
     \ that is back in the diff\n    reopens. Other execution state of tasks already\
     \ in the backlog is kept,\n    and items not cut from the diff are never touched.\n\
     \    "
+- id: 5e17f1b2-cfc1-56da-a987-55a688bb2061
+  type: component
+  name: work_order
+  description: "Return the prompt an implementing agent receives for one task.\n\n\
+    \    A diff task names its canonical intent only by GUID. The agent needs the\n\
+    \    intent itself, so the work order carries the node's name, description,\n\
+    \    provenance and acceptance criteria with their required evidence, plus the\n\
+    \    rules that keep approval with people. Nothing here is new intent: it is\n\
+    \    copied from the approved Intention node.\n    "
 - id: aa788b5d-b918-5414-b688-a1db5fda7ea4
   type: component
   name: execute_task_with_agent
@@ -1343,16 +1505,30 @@ nodes:
   type: component
   name: iter_canonical_node_markers
   description: Return canonical UUIDs from actual Python comment tokens only.
+- id: e86ca9c4-4e02-5e62-8b5a-3f8650feffe3
+  type: component
+  name: symbol_source_sha256
+  description: "Hash the exact source of the one definition that starts at ``start_line``.\n\
+    \n    ``neutral_content`` is the file without its receipt and marker, so the\n\
+    \    definition, decorators included, starts on the line the receipt occupied.\n\
+    \    The digest covers only that definition's lines: moving it or editing the\n\
+    \    rest of the file leaves the digest unchanged, while any edit inside it,\n\
+    \    including a rename, changes or invalidates it.\n    "
+- id: df736232-96a5-5ac3-9962-e026eda094da
+  type: component
+  name: annotation_symbol_sha256
+  description: Function annotation_symbol_sha256
 - id: 3337985c-d662-5f20-b465-e2cfe35cbb59
   type: component
   name: mapping_receipt_freshness
   description: "Check whether one source file's mapping receipt still matches its\
-    \ source.\n\n    Returns ``None`` when the file carries no receipt. Otherwise\
-    \ the status is\n    ``fresh`` when the annotation-neutral source still hashes\
-    \ to the receipt's\n    ``source_sha256``, ``stale`` when the source changed since\
-    \ approval, and\n    ``invalid`` when the receipt cannot be validated at all.\
-    \ Read-only: a stale\n    receipt is refreshed only through ``dag-tool mapping\
-    \ receipt refresh`` with\n    a named approver.\n    "
+    \ source.\n\n    Returns ``None`` when the file carries no receipt. A receipt\
+    \ with\n    ``symbol_sha256`` binds to its symbol's source; an older one binds\
+    \ to the\n    whole annotation-neutral file through ``source_sha256``. The status\
+    \ is\n    ``fresh`` when the source the receipt binds to is unchanged, ``stale``\
+    \ when\n    it changed since approval, and\n    ``invalid`` when the receipt cannot\
+    \ be validated at all. Read-only: a stale\n    receipt is refreshed only through\
+    \ ``dag-tool mapping receipt refresh`` with\n    a named approver.\n    "
 - id: f71e0f60-3a1d-54d4-ac81-403f66de42c7
   type: module
   name: state.py
@@ -1447,6 +1623,22 @@ nodes:
     \ package.\n        project_path: Optional project root for private recovery artifacts.\
     \ When omitted, the\n            output directory is treated as the project root.\n\
     \n    Returns:\n        The content of the generated document.\n    "
+- id: 86cde312-d4fb-5694-b5d9-c88e342d4e58
+  type: module
+  name: traceability.py
+  description: Module src.aio_agentic_sdlc.traceability
+- id: 9c9ccd53-e2b2-58f7-b803-33e95e1162d3
+  type: component
+  name: TraceError
+  description: The trace cannot be built from the project's state.
+- id: 07a54dfc-b328-5f36-be18-ca3f69222326
+  type: component
+  name: build_trace
+  description: Collect one node's trace from committed state. Read-only.
+- id: ff1366e5-7159-51ff-b13d-9a97251b4c51
+  type: component
+  name: render_trace_markdown
+  description: Render a trace for a reader who does not know the framework.
 - id: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
   type: module
   name: workspace.py
@@ -1741,6 +1933,27 @@ edges:
   target: f24b7477-032b-4f93-abcf-9b1c70627900
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: ba789bdf-cf76-51a0-b81b-846b151e4289
+  type: contains
+- source: ba789bdf-cf76-51a0-b81b-846b151e4289
+  target: 9184a8d1-1373-5fd2-8f56-bf28032a0db5
+  type: contains
+- source: ba789bdf-cf76-51a0-b81b-846b151e4289
+  target: ce37cb7d-c0a8-5e11-99c7-347104ee8590
+  type: contains
+- source: ba789bdf-cf76-51a0-b81b-846b151e4289
+  target: e37cab00-4b42-5b37-87e7-6ed597094e09
+  type: contains
+- source: ba789bdf-cf76-51a0-b81b-846b151e4289
+  target: cb02a996-6d3f-5610-9043-b1e768587d84
+  type: contains
+- source: cb02a996-6d3f-5610-9043-b1e768587d84
+  target: 5ad91320-9b02-516e-bd2e-9ab0d266e3b8
+  type: contains
+- source: cb02a996-6d3f-5610-9043-b1e768587d84
+  target: efb3ad3f-289c-5624-b6a5-01bb99ade93e
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 1b601f4c-40b3-5895-a9cb-445be5577970
   type: contains
 - source: 1b601f4c-40b3-5895-a9cb-445be5577970
@@ -1843,6 +2056,9 @@ edges:
   target: eecf7ebe-dbd5-5b94-b7e2-c9979bb55136
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 3019e81d-1cab-5288-a5e4-d86b23d23992
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 3e311f99-16aa-5421-9b44-6b5694ca6437
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -1891,6 +2107,24 @@ edges:
   target: 65e8c64a-7f28-515f-b34b-d6afa699f8ee
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 4fc69c67-0705-5eb9-b270-073c19357546
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 4def43f9-e737-5578-8456-9a4092f3e6c1
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: d14ccf58-842c-5aae-bf2e-707d9d9ef136
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 8ee58e0e-8f6d-5061-9aec-c692d977ba0e
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 990e618c-5c93-5714-ba5e-02f8a5c1586b
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 59794135-2009-5658-a498-8109f0cb78b4
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 330f4f65-91f6-5678-8358-0ee4eae3d616
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -1919,6 +2153,9 @@ edges:
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 9933b843-51ec-5a9c-b197-522873bb2b09
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 9ff5bffe-8e57-53d0-8a7c-9846d387b780
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 32cbe30e-0414-5b27-a71a-77c392f4b4e9
@@ -2164,6 +2401,54 @@ edges:
   target: 7d1b8a4a-8b0d-5899-a0d8-80e22e3323da
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  type: contains
+- source: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  target: 25f4ac89-ac24-5b3b-b26c-8696fc49c81d
+  type: contains
+- source: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  target: 7349a210-62fa-5535-8df6-185865a7b4a9
+  type: contains
+- source: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  target: 075cf9c8-6d58-5571-96e6-9a1962f6e31f
+  type: contains
+- source: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  target: febde772-30b8-5de9-a8d7-49556b07ab88
+  type: contains
+- source: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  target: efa88f0c-a721-54f0-83f9-d17457a74d99
+  type: contains
+- source: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
+  target: 2ad23881-9185-5ae0-90c5-62c4ab4563f5
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: 2ed04f23-d403-5d95-9a85-6748d9d988bc
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: c2114a40-1acb-5d51-aca6-a6beeedc9d5b
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: 0827604d-2c16-5907-9b8f-e81c4ae5d4e7
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: 3726c501-b16f-56a6-b0c8-2d731167ed7c
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: 61ef9c8b-782f-52b7-b3dd-962aef2f518e
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: e57a58c5-9aa6-5e9b-9ccc-9767245e5f90
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: 3d05d271-51db-5c4b-a011-5173f33fe840
+  type: contains
+- source: 1caad0fe-09aa-5751-81d2-0a7397547f02
+  target: a201f6b8-5f02-56cc-a684-df0638be19c0
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: e63a391f-87b9-5327-b422-35e94f8b8ed5
   type: contains
 - source: e63a391f-87b9-5327-b422-35e94f8b8ed5
@@ -2258,6 +2543,9 @@ edges:
   type: contains
 - source: 214466a1-8303-573d-abd3-6c91afc5783e
   target: d0b7ad9d-9cfe-5ba9-aef9-dd0d41928561
+  type: contains
+- source: 214466a1-8303-573d-abd3-6c91afc5783e
+  target: d4a43414-8829-5557-8294-91579c883811
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: db87f8e5-dca8-5952-91f6-454eec0f1a34
@@ -2440,6 +2728,9 @@ edges:
   target: 2ebf00ef-c11d-501f-add4-f86a1df8be8a
   type: contains
 - source: 654e7846-a5b4-5627-af8a-6045142b4851
+  target: 5e17f1b2-cfc1-56da-a987-55a688bb2061
+  type: contains
+- source: 654e7846-a5b4-5627-af8a-6045142b4851
   target: aa788b5d-b918-5414-b688-a1db5fda7ea4
   type: contains
 - source: 654e7846-a5b4-5627-af8a-6045142b4851
@@ -2539,6 +2830,12 @@ edges:
   target: 828c3a86-8c8c-59a9-b76b-194ea93baad6
   type: contains
 - source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: e86ca9c4-4e02-5e62-8b5a-3f8650feffe3
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: df736232-96a5-5ac3-9962-e026eda094da
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
   target: 3337985c-d662-5f20-b465-e2cfe35cbb59
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
@@ -2600,6 +2897,18 @@ edges:
   type: contains
 - source: bcf289fc-073a-5a5c-9e95-c8da5d4d1f1d
   target: 5a81e63d-85c7-4704-a0b1-e076367b2fd1
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 86cde312-d4fb-5694-b5d9-c88e342d4e58
+  type: contains
+- source: 86cde312-d4fb-5694-b5d9-c88e342d4e58
+  target: 9c9ccd53-e2b2-58f7-b803-33e95e1162d3
+  type: contains
+- source: 86cde312-d4fb-5694-b5d9-c88e342d4e58
+  target: 07a54dfc-b328-5f36-be18-ca3f69222326
+  type: contains
+- source: 86cde312-d4fb-5694-b5d9-c88e342d4e58
+  target: ff1366e5-7159-51ff-b13d-9a97251b4c51
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 1dc1d2dc-ae88-58e5-be6b-8e7f47462b14
