@@ -155,9 +155,12 @@ Ontology Portability (`15302505`), Product Hardening (`82579715`).
   `google-antigravity` is now an optional extra.
 - [ ] Python and TypeScript parsers emit the same core ontology.
 - [ ] A clean environment installs and validates the CLI, MCP server and both
-  host plugins through documented contracts. CI now installs the wheel alone
-  and runs both entry points, a prompt-free `init` and the MCP server import
-  in an empty project; the host plugins are not yet covered.
+  host plugins through documented contracts. CI installs the wheel alone and
+  runs `dag-tool doctor`, which performs a real MCP handshake, and installs
+  the Claude Code plugin into an empty profile
+  ([install contract](doc/install-contract.md),
+  [recovery](doc/recovery.md)). The Codex plugin has no validator CI can run,
+  so it is covered only by the manifest parity tests.
 - [ ] Proposal, no Intention node yet: record opt-in usage evidence under the
   organization's
   [usage evidence contract](https://github.com/aegolius-labs/.github/blob/main/docs/usage-evidence.md).

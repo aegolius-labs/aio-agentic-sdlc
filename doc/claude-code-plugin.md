@@ -77,8 +77,8 @@ example the installed plugin plus a local override — collide.
 ## Verifying the connection
 
 The server identifies itself as `aio-agentic-sdlc` with the installed distribution
-version. A healthy handshake reports protocol `2025-11-25`, 24 tools, 2 resources, and
-1 prompt. Running from a source tree with no installed distribution metadata reports
+version. A healthy handshake reports 24 tools, 2 resources, and 1 prompt;
+`dag-tool doctor` performs one and prints the negotiated protocol. Running from a source tree with no installed distribution metadata reports
 version `0.0.0+unknown`, which is expected rather than an error.
 
 Ask Claude to call `get_next_task`. On a project with no backlog it returns

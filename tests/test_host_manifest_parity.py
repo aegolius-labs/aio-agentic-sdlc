@@ -11,6 +11,7 @@ git URL finds the top-level `plugins/` folder and installs this directory.
 """
 
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -120,25 +121,34 @@ class TestMarketplaceEntries(unittest.TestCase):
         codex_path = (REPO_ROOT / codex_entry["source"]["path"]).resolve()
         self.assertEqual(claude_path, codex_path)
 
-    def test_marketplace_version_matches_the_claude_plugin_manifest(self):
-        entry = _load(CLAUDE_MARKETPLACE)["plugins"][0]
-        self.assertEqual(entry["version"], _load(CLAUDE_PLUGIN)["version"])
+    def test_claude_code_manifests_declare_no_version(self):
+        """Claude Code versions an unversioned plugin by commit.
 
-    def test_both_host_manifests_declare_the_same_version(self):
-        """Hosts ship one artifact, so they must not advertise different versions.
-
-        The Codex manifest sat at 0.21.0 through twelve minor releases because
-        nothing checked it, so installers were shown a version that was not the
-        one they got.
+        A declared version is a cache key: Claude Code keeps the first copy it
+        installed under that version, so `claude plugin update` delivers nothing
+        until someone edits the number. This manifest sat at 0.33.0 through
+        thirteen releases. The organization decided on 2026-10-06 that Claude
+        Code manifests declare no version.
         """
 
-        claude = _load(CLAUDE_PLUGIN)["version"]
-        codex = _load(CODEX_PLUGIN)["version"]
+        self.assertNotIn("version", _load(CLAUDE_PLUGIN))
+        for entry in _load(CLAUDE_MARKETPLACE)["plugins"]:
+            self.assertNotIn("version", entry, entry["name"])
+
+    def test_codex_manifest_version_is_the_latest_release(self):
+        """Codex shows this version, so it must name the release being shipped.
+
+        Each pull request that cuts a release promotes the CHANGELOG by hand;
+        it updates this version in the same change.
+        """
+
+        changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        latest = re.search(r"^## \[(\d+\.\d+\.\d+)\]", changelog, re.MULTILINE)
+        self.assertIsNotNone(latest)
         self.assertEqual(
-            claude.split("+", 1)[0],
-            codex.split("+", 1)[0],
-            "host manifests advertise different versions; "
-            "update both when the package version changes",
+            _load(CODEX_PLUGIN)["version"].split("+", 1)[0],
+            latest.group(1),
+            "update .codex-plugin/plugin.json when promoting the CHANGELOG",
         )
 
 

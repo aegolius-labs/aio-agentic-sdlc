@@ -1903,3 +1903,36 @@ def edge_remove(file, source, target, type):
 
 if __name__ == "__main__":
     cli()
+
+
+@cli.command("doctor")
+@click.option(
+    "--project",
+    "project_path",
+    default=".",
+    type=click.Path(file_okay=False),
+    help="Project to check. Defaults to the current directory.",
+)
+@click.option(
+    "--no-mcp",
+    is_flag=True,
+    help="Skip the MCP handshake (it starts the server once).",
+)
+@click.option("--timeout", default=60.0, show_default=True, help="Seconds for MCP.")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    show_default=True,
+)
+def doctor(project_path, no_mcp, timeout, output_format):
+    """Check the installation and project state; exit 1 on a failure. Read-only."""
+    from aio_agentic_sdlc.install_check import render_doctor, run_doctor
+
+    report = run_doctor(project_path, mcp=not no_mcp, timeout=timeout)
+    if output_format == "json":
+        click.echo(json.dumps(report, indent=2))
+    else:
+        click.echo(render_doctor(report))
+    sys.exit(0 if report["passed"] else 1)
