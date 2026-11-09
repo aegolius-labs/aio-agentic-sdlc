@@ -165,6 +165,19 @@ uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc agb init
 uvx --from git+https://github.com/aegolius-labs/aio-agentic-sdlc agb export
 ```
 
+### Check the installation
+
+```bash
+dag-tool doctor
+```
+
+`doctor` is read-only. It confirms the entry points are installed, performs a
+real MCP handshake with the installed server, and loads the project's state
+files when run inside a project. It exits 1 on any failure. The
+[installation and release contract](doc/install-contract.md) lists what stays
+stable across releases, and [recovery procedures](doc/recovery.md) explain each
+refusal the tooling can give and how to recover.
+
 ## See the whole loop in one command
 
 `dag-tool demo` builds a throwaway project and takes one requirement through

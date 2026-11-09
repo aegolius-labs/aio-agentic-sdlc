@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [0.47.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.47.0) (2026-11-09)
+
+### Added
+
+- `dag-tool doctor` checks an installation without writing anything: the
+  entry points, a real MCP handshake with the installed server, and the
+  project's state files (Product Hardening, HARDENING-AC1). CI runs it from
+  the installed wheel alone.
+- CI validates the Claude Code plugin with Claude Code's bundled validator and
+  installs it from the checkout into an empty profile.
+- `doc/install-contract.md` states what is stable across releases, and
+  `doc/recovery.md` explains each refusal the tooling can give and how to
+  recover.
+
+### Fixed
+
+- The Claude Code plugin and marketplace manifests no longer declare a
+  version. They had stayed at 0.33.0 for thirteen releases, and Claude Code
+  treats a declared version as a cache key, so `claude plugin update`
+  delivered nothing new. Claude Code now versions the plugin by commit, as in
+  the organization's other plugins. The Codex manifest names the latest
+  release, and a test keeps it in step with this changelog.
+
 ## [0.46.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.46.0) (2026-11-08)
 
 ### Added
