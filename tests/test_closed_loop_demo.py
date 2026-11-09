@@ -101,8 +101,9 @@ def test_closed_loop_demo_reproduces_one_requirement_from_an_empty_directory(
         project, approver="Test Reviewer", confirm=approve, echo=output.append
     ).run()
 
-    # Four human gates: intent, triage decision, mapping, acceptance.
-    assert questions == ["Approve as Test Reviewer?"] * 4
+    # Five human gates: intent, triage decision, mapping, acceptance and the
+    # Approval Gate on the finished work.
+    assert questions == ["Approve as Test Reviewer?"] * 5
     text = report.read_text(encoding="utf-8")
     assert report.name == REPORT_FILE
     assert "**Status: done.**" in text
@@ -123,7 +124,8 @@ def test_closed_loop_demo_reproduces_one_requirement_from_an_empty_directory(
     )
     (task,) = backlog["nodes"].values()
     assert task["status"] == "Completed"
-    assert task["resolution"] == "left the diff"
+    assert task["resolution"] == "left the diff; approved by Test Reviewer"
+    assert task["approval"]["approved_by"] == "Test Reviewer"
     assert "# aio-sdlc-node: " + DEMO_INTENT_ID in (
         project / "src" / "demo_app" / "tokens.py"
     ).read_text(encoding="utf-8")

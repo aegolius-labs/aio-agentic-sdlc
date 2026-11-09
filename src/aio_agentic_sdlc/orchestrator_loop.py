@@ -4,6 +4,8 @@ from uuid import UUID
 
 from aio_agentic_sdlc import core
 from aio_agentic_sdlc.agent_runtime import run_agent
+from aio_agentic_sdlc.approval_gate import GATED, approval_mode, hold_for_approval
+from aio_agentic_sdlc.core import AWAITING_APPROVAL
 from aio_agentic_sdlc.dag_manager import DAGManager
 from aio_agentic_sdlc.diffing_engine import DiffingEngine
 from aio_agentic_sdlc.drift_triage import DriftTriageEngine
@@ -108,7 +110,8 @@ def ingest_diff(decisions=None):
     Each ingested task records whether drift triage authorizes its
     implementation. The backlog equals the diff: a diff task that is no longer
     in the diff completes, and a completed one that is back in the diff
-    reopens. Other execution state of tasks already in the backlog is kept,
+    reopens. In the default `gated` approval mode a task that left the diff
+    waits for `aio-sdlc approve` instead of completing (Approval Gate). Other execution state of tasks already in the backlog is kept,
     and items not cut from the diff are never touched.
     """
     intention_dag = DAGManager.load(INTENTION_DAG_FILE)
@@ -122,6 +125,7 @@ def ingest_diff(decisions=None):
     edges = diff.get("edges", [])
     authorized = authorized_subjects(intention_dag, reality_dag, decisions, evidence)
 
+    gated = approval_mode() == GATED
     backlog = core.load_backlog() or {}
 
     existing_items = backlog.get("nodes", {})
@@ -136,6 +140,13 @@ def ingest_diff(decisions=None):
                 for field in EXECUTION_FIELDS:
                     if field in prior:
                         task[field] = prior[field]
+            if AWAITING_APPROVAL in task.get("blockers", []):
+                # Back in the diff before anyone approved it: it is work again.
+                task["blockers"] = [
+                    b for b in task["blockers"] if b != AWAITING_APPROVAL
+                ]
+                task["status"] = "Blocked" if task["blockers"] else "New"
+                task["resolution"] = "reopened: the task is in the diff again"
             if task.get("status") == "Completed" and is_diff_task(task):
                 task["status"] = "New"
                 task["resolution"] = "reopened: the task is in the diff again"
@@ -147,13 +158,17 @@ def ingest_diff(decisions=None):
     for name, item in existing_items.items():
         if name in current or not is_diff_task(item):
             continue
-        if item.get("status") != "Completed":
-            item["status"] = "Completed"
-            item["resolution"] = "left the diff"
         item["blockers"] = [
             b for b in item.get("blockers", []) if b != AWAITING_EVIDENCE
         ]
         item["implementation_authorized"] = False
+        if item.get("status") == "Completed":
+            continue
+        if gated:
+            hold_for_approval(item)
+        else:
+            item["status"] = "Completed"
+            item["resolution"] = "left the diff"
 
     backlog["nodes"] = existing_items
 

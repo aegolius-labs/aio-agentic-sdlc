@@ -117,6 +117,10 @@ Intention node: Explicit Evidence Model (`6b1b3459`).
 - [x] `apply` marks a task complete only on evidence, not because an agent
   call returned. A finished agent call leaves the task blocked as awaiting
   evidence until it leaves the diff.
+- [x] A person approves finished work before it completes (Approval Gate,
+  `40566eb0`; Operational Modes Config, `7b029abd`). Work that leaves the
+  diff waits for `aio-sdlc approve`; `approval_mode: bypass` in
+  `config.json` completes it on its own for continuous delivery.
 
 ## M4: The closed loop
 

@@ -510,7 +510,8 @@ def apply_cmd(args):
         if executed:
             print(
                 f"Apply executed '{executed}'. It is blocked as awaiting evidence "
-                "and completes once a later apply no longer finds it in the diff. "
+                "until a later apply no longer finds it in the diff; then it "
+                "awaits `aio-sdlc approve` unless approval_mode is bypass. "
                 "Regenerate Reality (dag-tool generate-reality) and record "
                 "acceptance evidence (dag-tool evidence record) first."
             )
@@ -521,6 +522,38 @@ def apply_cmd(args):
             )
     except Exception as e:
         print(f"Error during apply: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def approve_cmd(args):
+    from datetime import datetime, timezone
+
+    from .approval_gate import approve_task, awaiting_approval
+
+    try:
+        if args.name is None:
+            waiting = awaiting_approval()
+            if not waiting:
+                print("No work is awaiting approval.")
+            for name in waiting:
+                print(name)
+            return
+        if not args.approved_by or not args.rationale:
+            raise ValueError("approve needs --approved-by and --rationale")
+        approved_at = (
+            datetime.fromisoformat(args.approved_at.replace("Z", "+00:00"))
+            if args.approved_at
+            else datetime.now(timezone.utc)
+        )
+        item = approve_task(
+            args.name,
+            approved_by=args.approved_by,
+            approved_at=approved_at,
+            rationale=args.rationale,
+        )
+        print(f"Approved '{args.name}': {item['status']} ({item['resolution']}).")
+    except ValueError as e:
+        print(str(e), file=sys.stderr)
         sys.exit(1)
 
 
@@ -806,6 +839,17 @@ def main():
         ),
     )
 
+    p_approve = subparsers.add_parser(
+        "approve",
+        help="Approve work that left the diff (Approval Gate); no name lists it",
+    )
+    p_approve.add_argument("name", nargs="?", help="Item awaiting approval")
+    p_approve.add_argument("--approved-by", help="The person approving")
+    p_approve.add_argument("--rationale", help="Why the work is accepted")
+    p_approve.add_argument(
+        "--approved-at", help="Timezone-aware ISO-8601 time (default: now)"
+    )
+
     p_migrate_state = subparsers.add_parser(
         "migrate-state",
         help="Migrate the local execution backlog to the current schema",
@@ -848,6 +892,8 @@ def main():
             plan_cmd(args)
         elif args.command == "apply":
             apply_cmd(args)
+        elif args.command == "approve":
+            approve_cmd(args)
         elif args.command == "migrate-state":
             migrate_state_cmd(args)
         elif args.command == "migrate-ids":

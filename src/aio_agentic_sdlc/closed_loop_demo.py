@@ -11,8 +11,8 @@ through the whole loop with the framework's public commands:
 5. Reality is regenerated and a person approves which symbol implements it.
 6. The tests run; their result is recorded as acceptance evidence, and a
    person accepts the result.
-7. ``aio-sdlc apply`` runs again and the task completes because it left the
-   diff, not because the agent returned.
+7. ``aio-sdlc apply`` runs again. The task leaves the diff, not because the
+   agent returned, and a person approves it through the Approval Gate.
 8. ``dag-tool trace`` writes a plain-language traceability report.
 
 Every approval is a gate. The demo stops and asks the named approver at each
@@ -225,6 +225,16 @@ class ClosedLoopDemo:
             self.echo(f"  {line}")
         if not self.confirm(f"Approve as {self.approver}?"):
             raise DemoError(f"stopped at the gate: {title}")
+
+    def _demo_tasks(self) -> dict:
+        backlog = json.loads(
+            (self.workspace / "backlog.json").read_text(encoding="utf-8")
+        )
+        return {
+            name: item
+            for name, item in backlog.get("nodes", {}).items()
+            if item.get("canonical_intent_id") == DEMO_INTENT_ID
+        }
 
     def _step(self, number: int, title: str) -> None:
         self.echo("")
@@ -553,21 +563,37 @@ class ClosedLoopDemo:
             ],
         )
 
-        self._step(7, "apply again: the task completes because it left the diff")
+        self._step(7, "apply again: the work left the diff, so a person approves it")
         self._run("aio-sdlc", ["apply"])
         if self._triage_item(self._triage()) is not None:
             raise DemoError("the requirement is still in the diff")
-        backlog = json.loads(
-            (self.workspace / "backlog.json").read_text(encoding="utf-8")
+        tasks = self._demo_tasks()
+        if [item.get("status") for item in tasks.values()] != ["Blocked"]:
+            raise DemoError(f"expected one task awaiting approval, found {tasks}")
+        task_name = next(iter(tasks))
+        self._gate(
+            "approve the finished work",
+            [
+                "The requirement left the diff: its code is mapped and its "
+                "evidence is recorded.",
+                "Approving completes the task and records you as its approver.",
+            ],
         )
-        statuses = [
-            item.get("status")
-            for item in backlog.get("nodes", {}).values()
-            if item.get("canonical_intent_id") == DEMO_INTENT_ID
-        ]
+        self._run(
+            "aio-sdlc",
+            [
+                "approve",
+                task_name,
+                "--approved-by",
+                self.approver,
+                "--rationale",
+                "The requirement left the diff with its evidence recorded.",
+            ],
+        )
+        statuses = [item.get("status") for item in self._demo_tasks().values()]
         if statuses != ["Completed"]:
             raise DemoError(f"expected one completed task, found {statuses}")
-        self.echo("  The requirement left the diff and its task is Completed.")
+        self.echo("  The requirement left the diff and its approved task is Completed.")
 
         self._step(8, "Write the traceability report")
         report = self.project / REPORT_FILE
