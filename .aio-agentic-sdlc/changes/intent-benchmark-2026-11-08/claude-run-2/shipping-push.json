@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Send a push notification when an order ships. Use the Notification Gateway, and react to events from the Order Service."
+    }
+  ],
+  "assumptions": [
+    "\"Order ships\" corresponds to a discrete shipped event emitted by the Order Service.",
+    "The Notification Gateway is an existing component that accepts push notification send requests."
+  ],
+  "ambiguities": [
+    {
+      "question": "Who receives the push notification (the customer who placed the order, or someone else)?",
+      "status": "open"
+    },
+    {
+      "question": "What content should the push notification contain?",
+      "status": "open"
+    },
+    {
+      "question": "Which Order Service event signals that an order has shipped, and what is its name and payload?",
+      "status": "open"
+    },
+    {
+      "question": "How should failures be handled (delivery failure, gateway unavailable, duplicate or redelivered events)?",
+      "status": "open"
+    },
+    {
+      "question": "Should recipients be able to opt out of or configure these notifications?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "A push notification is sent when an order ships.",
+      "required_evidence": [
+        "test:push-notification-sent-on-order-shipped"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "The push notification is sent through the Notification Gateway.",
+      "required_evidence": [
+        "test:notification-sent-via-notification-gateway"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "The system reacts to events emitted by the Order Service to trigger the notification.",
+      "required_evidence": [
+        "test:reacts-to-order-service-events"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  },
+  "dependencies": [
+    {
+      "target": "Notification Gateway",
+      "type": "depends_on"
+    },
+    {
+      "target": "Order Service",
+      "type": "subscribes"
+    }
+  ]
+}

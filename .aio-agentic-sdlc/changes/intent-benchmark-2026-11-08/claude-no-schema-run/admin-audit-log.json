@@ -1,0 +1,90 @@
+{
+  "node": {
+    "title": "Append-only admin audit log with 7-year retention",
+    "kind": "requirement",
+    "description": "Every admin action must be written to an append-only audit log that keeps entries for 7 years.",
+    "dependencies": [],
+    "intent": {
+      "provenance": [
+        {
+          "type": "human_statement",
+          "quote": "Every admin action must be written to an append-only audit log that keeps entries for 7 years."
+        }
+      ],
+      "assumptions": [],
+      "ambiguities": [
+        {
+          "id": "amb-1",
+          "status": "open",
+          "question": "What counts as an 'admin action'? Which roles, and which operations (reads, config changes, user management, logins)?"
+        },
+        {
+          "id": "amb-2",
+          "status": "open",
+          "question": "What must each audit entry contain (actor, timestamp, target, action, before/after values, source IP, outcome)?"
+        },
+        {
+          "id": "amb-3",
+          "status": "open",
+          "question": "How is 'append-only' to be enforced and verified (storage-level immutability, WORM storage, hash chaining, DB permissions), and does it need to resist tampering by admins themselves?"
+        },
+        {
+          "id": "amb-4",
+          "status": "open",
+          "question": "What happens to entries after 7 years: must they be deleted, may they be deleted, or may they be retained longer? Does the 7 years run from entry creation?"
+        },
+        {
+          "id": "amb-5",
+          "status": "open",
+          "question": "What should happen if writing the audit entry fails: block the admin action (fail closed) or allow it and alert?"
+        },
+        {
+          "id": "amb-6",
+          "status": "open",
+          "question": "Who may read or export the audit log, and must access to it be controlled or itself logged?"
+        },
+        {
+          "id": "amb-7",
+          "status": "open",
+          "question": "Which existing system, services, or storage should host the log, and what regulatory or compliance regime (if any) drives the 7-year requirement?"
+        }
+      ],
+      "confidence": 0.5,
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "statement": "Every admin action is written to an audit log.",
+          "required_evidence": [
+            "test:admin-action-writes-audit-entry"
+          ]
+        },
+        {
+          "id": "ac-2",
+          "statement": "The audit log is append-only: existing entries cannot be modified or deleted.",
+          "required_evidence": [
+            "test:audit-log-append-only"
+          ]
+        },
+        {
+          "id": "ac-3",
+          "statement": "Audit log entries are kept for 7 years.",
+          "required_evidence": [
+            "test:audit-log-retention-7-years"
+          ]
+        }
+      ],
+      "revisions": [
+        {
+          "revision": 1,
+          "actor": "sdlc_intake",
+          "summary": "Initial translation of human request into Intent IR v1"
+        }
+      ],
+      "approval": {
+        "state": "review_required",
+        "approver": null,
+        "approved_at": null
+      }
+    }
+  }
+}

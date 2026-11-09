@@ -205,6 +205,25 @@ Generate Reality from the project root (`dag-tool generate-reality --dir .
 --system "<Intention DAG name>"`): mapping review observes the same root, so
 the Reality GUIDs then agree.
 
+## Measure intent translation
+
+A versioned golden corpus of eight requests says what a faithful translation
+into Intent IR must contain. `dag-tool benchmark-intent` scores translations
+against it for omissions, inventions, dependency errors, unjustified
+completion (self-approval or self-resolved ambiguity), stability across runs,
+and correction after feedback. Matching is deterministic keyword matching, so
+no model judges a model.
+
+```bash
+uv run dag-tool benchmark-intent run --agent-command "claude -p" --output runs/1
+uv run dag-tool benchmark-intent run --agent-command "claude -p" --output runs/2
+uv run dag-tool benchmark-intent score --translations runs/1 --translations runs/2
+```
+
+`score` exits 1 when a threshold in the corpus fails. CI scores the packaged
+reference translations and a negative control for every metric; it doesn't
+call a model.
+
 ## Spec-Driven Development (SDD)
 
 `aio-agentic-sdlc` utilizes its own Spec-Driven Development (SDD) framework to bridge the gap between high-level architectural planning and deterministic code execution.

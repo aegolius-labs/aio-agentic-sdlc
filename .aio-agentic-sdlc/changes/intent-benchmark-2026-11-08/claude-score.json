@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "corpus": "intent-translation",
+  "corpus_version": 1,
+  "runs": 2,
+  "metrics": {
+    "omission_rate": 0.0,
+    "invention_rate": 0.0,
+    "dependency_errors": 0,
+    "unjustified_completions": 0,
+    "stability": 1.0,
+    "correction_quality": 1.0
+  },
+  "thresholds": {
+    "omission_rate_max": 0.1,
+    "invention_rate_max": 0.1,
+    "dependency_errors_max": 0,
+    "unjustified_completions_max": 0,
+    "stability_min": 0.8,
+    "correction_quality_min": 0.8
+  },
+  "checks": [
+    {
+      "metric": "omission_rate",
+      "value": 0.0,
+      "kind": "max",
+      "limit": 0.1,
+      "passed": true
+    },
+    {
+      "metric": "invention_rate",
+      "value": 0.0,
+      "kind": "max",
+      "limit": 0.1,
+      "passed": true
+    },
+    {
+      "metric": "dependency_errors",
+      "value": 0,
+      "kind": "max",
+      "limit": 0,
+      "passed": true
+    },
+    {
+      "metric": "unjustified_completions",
+      "value": 0,
+      "kind": "max",
+      "limit": 0,
+      "passed": true
+    },
+    {
+      "metric": "stability",
+      "value": 1.0,
+      "kind": "min",
+      "limit": 0.8,
+      "passed": true
+    },
+    {
+      "metric": "correction_quality",
+      "value": 1.0,
+      "kind": "min",
+      "limit": 0.8,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "totals": {
+    "expected_items": 27,
+    "omitted": 0,
+    "criteria": 23,
+    "invented": 0,
+    "dependency_errors": 0,
+    "unjustified_completions": 0,
+    "feedback_items": 4,
+    "feedback_fixed": 4,
+    "stable_cases": 8,
+    "missing_translations": 0,
+    "invalid_translations": 0
+  },
+  "cases": [
+    {
+      "id": "login-lockout",
+      "result": {
+        "expected_items": 4,
+        "found": [
+          "requirements:lockout",
+          "constraints:admin-captcha",
+          "ambiguities:counter-reset",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 4,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "stable": true
+    },
+    {
+      "id": "invoice-export",
+      "result": {
+        "expected_items": 3,
+        "found": [
+          "requirements:csv-export",
+          "constraints:performance",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "stable": true
+    },
+    {
+      "id": "dark-mode",
+      "result": {
+        "expected_items": 3,
+        "found": [
+          "requirements:dark-theme",
+          "ambiguities:scope",
+          "ambiguities:default"
+        ],
+        "omitted": [],
+        "criteria": 1,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "after_feedback": {
+        "expected_items": 3,
+        "found": [
+          "requirements:dark-theme",
+          "requirements:pages",
+          "requirements:os-default"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": [],
+        "feedback_items": 2,
+        "feedback_fixed": [
+          "pages",
+          "os-default"
+        ]
+      },
+      "stable": true
+    },
+    {
+      "id": "admin-audit-log",
+      "result": {
+        "expected_items": 4,
+        "found": [
+          "requirements:log-actions",
+          "constraints:append-only",
+          "constraints:retention",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "stable": true
+    },
+    {
+      "id": "password-reset",
+      "result": {
+        "expected_items": 3,
+        "found": [
+          "requirements:email-reset",
+          "ambiguities:link-lifetime",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "after_feedback": {
+        "expected_items": 4,
+        "found": [
+          "requirements:email-reset",
+          "requirements:expiry",
+          "requirements:single-use",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 5,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": [],
+        "feedback_items": 2,
+        "feedback_fixed": [
+          "expiry",
+          "single-use"
+        ]
+      },
+      "stable": true
+    },
+    {
+      "id": "account-deletion",
+      "result": {
+        "expected_items": 4,
+        "found": [
+          "requirements:delete-data",
+          "constraints:keep-invoices",
+          "ambiguities:personal-scope",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "stable": true
+    },
+    {
+      "id": "shipping-push",
+      "result": {
+        "expected_items": 2,
+        "found": [
+          "requirements:push-on-ship",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "stable": true
+    },
+    {
+      "id": "api-rate-limit",
+      "result": {
+        "expected_items": 4,
+        "found": [
+          "requirements:limit",
+          "requirements:status-429",
+          "requirements:retry-after",
+          "evidence:tested"
+        ],
+        "omitted": [],
+        "criteria": 3,
+        "invented": [],
+        "dependency_errors": [],
+        "unjustified_completions": []
+      },
+      "stable": true
+    }
+  ]
+}

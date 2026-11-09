@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "benchmark:request",
+      "statement": "Add dark mode."
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [
+    {
+      "question": "Which screens or pages does dark mode cover?",
+      "status": "resolved",
+      "resolution": "The dashboard and settings pages."
+    },
+    {
+      "question": "What is the default?",
+      "status": "resolved",
+      "resolution": "Follow the operating system's setting."
+    }
+  ],
+  "confidence": 0.7,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Users can switch the interface to a dark theme.",
+      "required_evidence": ["test:dark-mode"]
+    },
+    {
+      "id": "AC2",
+      "statement": "Dark mode covers the dashboard and settings pages.",
+      "required_evidence": ["test:dark-mode-pages"]
+    },
+    {
+      "id": "AC3",
+      "statement": "By default the theme follows the operating system setting.",
+      "required_evidence": ["test:dark-mode-os-default"]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-11-08T00:00:00Z",
+      "actor": "reference-translation",
+      "generator_version": "benchmark-reference",
+      "summary": "Reference translation for the scorer's positive control."
+    }
+  ],
+  "responsible_agent": "reference-translation",
+  "generator_version": "benchmark-reference",
+  "approval": {
+    "state": "review_required"
+  }
+}

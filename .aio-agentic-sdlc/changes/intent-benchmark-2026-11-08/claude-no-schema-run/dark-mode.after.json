@@ -1,0 +1,88 @@
+{
+  "intent_ir_version": 1,
+  "title": "Add dark mode",
+  "summary": "Add a dark mode to the dashboard and settings pages, following the operating system's color-scheme setting by default.",
+  "provenance": [
+    {
+      "type": "human_statement",
+      "source": "Request: Add dark mode.",
+      "quote": "Add dark mode.",
+      "asserted_by": "requester"
+    },
+    {
+      "type": "human_statement",
+      "source": "Feedback on the previous translation",
+      "quote": "Only the dashboard and settings pages. Follow the operating system's setting by default.",
+      "asserted_by": "requester"
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "ac-1",
+      "statement": "Dark mode is added.",
+      "required_evidence": [
+        "test:dark-mode-added"
+      ]
+    },
+    {
+      "id": "ac-2",
+      "statement": "Dark mode applies only to the dashboard page and the settings page.",
+      "required_evidence": [
+        "test:dark-mode-dashboard-settings-only"
+      ]
+    },
+    {
+      "id": "ac-3",
+      "statement": "By default, dark mode follows the operating system's color-scheme setting.",
+      "required_evidence": [
+        "test:dark-mode-follows-os-default"
+      ]
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [
+    {
+      "id": "amb-1",
+      "question": "Which application, product, or surface should get dark mode? The request does not name one.",
+      "status": "open"
+    },
+    {
+      "id": "amb-2",
+      "question": "How is dark mode activated: a manual toggle, following the operating system or browser preference, or both?",
+      "status": "open"
+    },
+    {
+      "id": "amb-3",
+      "question": "Should the user's dark mode choice persist across sessions or devices, and if so where?",
+      "status": "open"
+    },
+    {
+      "id": "amb-4",
+      "question": "What is the scope of coverage: all screens and components, or a subset?",
+      "status": "resolved",
+      "resolution": "Only the dashboard and settings pages."
+    },
+    {
+      "id": "amb-5",
+      "question": "Are there design requirements such as a color palette, contrast or accessibility targets, or existing design tokens to follow?",
+      "status": "open"
+    },
+    {
+      "id": "amb-6",
+      "question": "Should dark mode be the default, or is light mode the default?",
+      "status": "resolved",
+      "resolution": "Follow the operating system's setting by default."
+    },
+    {
+      "id": "amb-7",
+      "question": "Can the user override the operating system setting (for example with a manual toggle), or is OS-following the only behavior? The feedback says 'by default', which implies an override may exist but does not say.",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.5,
+  "dependencies": [],
+  "approval": {
+    "state": "review_required"
+  },
+  "revision": 2
+}

@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Every admin action must be written to an append-only audit log that keeps entries for 7 years."
+    }
+  ],
+  "assumptions": [
+    "The 7-year retention period is measured from the time each entry is written.",
+    "Entries are only removed after the 7-year retention period has elapsed, never earlier."
+  ],
+  "ambiguities": [
+    {
+      "question": "What counts as an 'admin action'? Which roles, operations, and interfaces (UI, API, CLI, background jobs) are in scope?",
+      "status": "open"
+    },
+    {
+      "question": "Which fields must each audit entry record (actor, timestamp, action, target, outcome, before/after values, source IP)?",
+      "status": "open"
+    },
+    {
+      "question": "Should failed or denied admin actions also be logged, or only successful ones?",
+      "status": "open"
+    },
+    {
+      "question": "Is the log write synchronous with the admin action (does the action fail if the log write fails), or may it be asynchronous?",
+      "status": "open"
+    },
+    {
+      "question": "What does 'append-only' have to guarantee: application-level no update/delete API, storage-level immutability (e.g. WORM), or tamper-evidence such as hash chaining?",
+      "status": "open"
+    },
+    {
+      "question": "What happens to entries after 7 years: must they be deleted, may they be deleted, or may they be archived?",
+      "status": "open"
+    },
+    {
+      "question": "Who may read or export the audit log, and is access to the log itself audited?",
+      "status": "open"
+    },
+    {
+      "question": "Are there privacy or legal constraints (for example erasure requests) that conflict with immutable 7-year retention?",
+      "status": "open"
+    },
+    {
+      "question": "Does the 7-year retention apply to entries that existed before this feature, or only to entries written after it ships?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "Every admin action results in an entry being written to the audit log.",
+      "required_evidence": [
+        "test:admin-action-writes-audit-entry"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "The audit log is append-only: existing entries cannot be modified or deleted.",
+      "required_evidence": [
+        "test:audit-log-append-only"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "Audit log entries are retained for 7 years.",
+      "required_evidence": [
+        "test:audit-log-retention-7-years"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Add dark mode."
+    },
+    {
+      "source_type": "human_statement",
+      "reference": "feedback",
+      "statement": "Only the dashboard and settings pages. Follow the operating system's setting by default."
+    }
+  ],
+  "assumptions": [
+    "The request refers to a user-facing application with a visual interface that currently has a single (light) theme.",
+    "'Dark mode' means an alternate color scheme with light-on-dark colors applied to the application's UI.",
+    "'The operating system's setting' means the OS-level light/dark color-scheme preference (e.g. as exposed to the application via the prefers-color-scheme media query)."
+  ],
+  "ambiguities": [
+    {
+      "question": "Which application, surface, or component(s) should get dark mode (e.g. web UI, docs site, CLI output, generated visualizations)?",
+      "status": "resolved",
+      "resolution": "Only the dashboard and settings pages."
+    },
+    {
+      "question": "How is dark mode activated: follows the OS/browser preference, a manual user toggle, or both?",
+      "status": "open"
+    },
+    {
+      "question": "Should the user's choice persist across sessions, and where is it stored?",
+      "status": "open"
+    },
+    {
+      "question": "Which screens and components are in scope, and are any excluded?",
+      "status": "resolved",
+      "resolution": "Only the dashboard and settings pages are in scope; all other screens are excluded."
+    },
+    {
+      "question": "Are there accessibility or contrast requirements (e.g. WCAG level) for the dark theme?",
+      "status": "open"
+    },
+    {
+      "question": "Is there an existing design system, palette, or theming mechanism the dark theme must conform to?",
+      "status": "open"
+    },
+    {
+      "question": "Is a manual override of the OS setting wanted at all (e.g. a toggle on the settings page)? The feedback says to follow the OS setting 'by default', which implies an override may exist but does not say so.",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "A dark mode is available on the dashboard page.",
+      "required_evidence": [
+        "test:dark-mode-dashboard"
+      ]
+    },
+    {
+      "id": "AC2",
+      "statement": "A dark mode is available on the settings page.",
+      "required_evidence": [
+        "test:dark-mode-settings"
+      ]
+    },
+    {
+      "id": "AC3",
+      "statement": "Dark mode is applied only to the dashboard and settings pages; no other pages are changed.",
+      "required_evidence": [
+        "test:dark-mode-scope-limited"
+      ]
+    },
+    {
+      "id": "AC4",
+      "statement": "By default, the theme follows the operating system's light/dark setting.",
+      "required_evidence": [
+        "test:dark-mode-follows-os-default"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    },
+    {
+      "revision": 2,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Revised using feedback: scoped to dashboard and settings pages; default follows the OS setting."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

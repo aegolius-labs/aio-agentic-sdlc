@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request",
+      "statement": "Add dark mode."
+    }
+  ],
+  "assumptions": [
+    "The request refers to a user-facing application with a visual interface that currently has a single (light) theme.",
+    "'Dark mode' means an alternate color scheme with light-on-dark colors applied to the application's UI."
+  ],
+  "ambiguities": [
+    {
+      "question": "Which application, surface, or component(s) should get dark mode (e.g. web UI, docs site, CLI output, generated visualizations)?",
+      "status": "open"
+    },
+    {
+      "question": "How is dark mode activated: follows the OS/browser preference, a manual user toggle, or both?",
+      "status": "open"
+    },
+    {
+      "question": "Should the user's choice persist across sessions, and where is it stored?",
+      "status": "open"
+    },
+    {
+      "question": "Which screens and components are in scope, and are any excluded?",
+      "status": "open"
+    },
+    {
+      "question": "Are there accessibility or contrast requirements (e.g. WCAG level) for the dark theme?",
+      "status": "open"
+    },
+    {
+      "question": "Is there an existing design system, palette, or theming mechanism the dark theme must conform to?",
+      "status": "open"
+    }
+  ],
+  "confidence": 0.4,
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "statement": "A dark mode is available in the application.",
+      "required_evidence": [
+        "test:dark-mode-available"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-01-01T00:00:00Z",
+      "actor": "sdlc_intake",
+      "generator_version": "intake",
+      "summary": "Translated the request."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake",
+  "approval": {
+    "state": "review_required"
+  }
+}

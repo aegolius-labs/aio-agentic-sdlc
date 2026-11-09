@@ -1494,6 +1494,107 @@ def demo(directory, approver, yes, agent_command):
         sys.exit(1)
 
 
+@cli.group("benchmark-intent")
+def benchmark_intent():
+    """Measure intent translation against the golden corpus (ROADMAP M4)."""
+
+
+@benchmark_intent.command("score")
+@click.option(
+    "--translations",
+    "runs",
+    required=True,
+    multiple=True,
+    type=click.Path(exists=True, file_okay=False),
+    help=(
+        "A directory of translations, one <case>.json per case and "
+        "<case>.after.json after feedback. Repeat for repeated runs; stability "
+        "needs at least two."
+    ),
+)
+@click.option(
+    "--corpus",
+    type=click.Path(exists=True),
+    help="Corpus directory or corpus.yaml. Defaults to the packaged corpus.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json"], case_sensitive=False),
+    default="human",
+    show_default=True,
+)
+def benchmark_intent_score(runs, corpus, output_format):
+    """Score translations; exit 1 when a threshold fails. Read-only."""
+    from aio_agentic_sdlc.intent_benchmark import (
+        BenchmarkError,
+        load_corpus,
+        render_report,
+        score,
+    )
+
+    try:
+        report = score(load_corpus(corpus), runs)
+    except BenchmarkError as e:
+        click.secho(f"Error scoring the benchmark: {e}", err=True, fg="red")
+        sys.exit(2)
+    if output_format == "json":
+        click.echo(json.dumps(report, indent=2))
+    else:
+        click.echo(render_report(report), nl=False)
+    if not report["passed"]:
+        sys.exit(1)
+
+
+@benchmark_intent.command("run")
+@click.option(
+    "--agent-command",
+    required=True,
+    help='The translator CLI, for example "claude -p". The prompt is on stdin.',
+)
+@click.option(
+    "--output",
+    required=True,
+    type=click.Path(file_okay=False),
+    help="Directory for this run's translations.",
+)
+@click.option(
+    "--corpus",
+    type=click.Path(exists=True),
+    help="Corpus directory or corpus.yaml. Defaults to the packaged corpus.",
+)
+@click.option(
+    "--timeout",
+    type=click.IntRange(min=1),
+    default=300,
+    show_default=True,
+    help="Seconds allowed for each translation.",
+)
+def benchmark_intent_run(agent_command, output, corpus, timeout):
+    """Translate every case with an agent CLI, then score it with `score`."""
+    import shlex
+
+    from aio_agentic_sdlc.intent_benchmark import (
+        BenchmarkError,
+        load_corpus,
+        run_translator,
+    )
+
+    try:
+        failures = run_translator(
+            load_corpus(corpus), shlex.split(agent_command), output, timeout=timeout
+        )
+    except BenchmarkError as e:
+        click.secho(f"Error running the translator: {e}", err=True, fg="red")
+        sys.exit(2)
+    for failure in failures:
+        click.secho(f"  {failure}", err=True, fg="yellow")
+    click.echo(
+        f"Wrote translations to {output}. Score them with: "
+        f"dag-tool benchmark-intent score --translations {output}"
+    )
+
+
 @cli.command("export-abk")
 @click.option(
     "--intention",

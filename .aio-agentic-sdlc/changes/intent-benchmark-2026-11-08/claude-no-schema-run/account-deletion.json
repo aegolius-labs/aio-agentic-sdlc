@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "provenance": [
+    {
+      "source_type": "human_statement",
+      "reference": "request:account-closure-data-deletion",
+      "statement": "When a customer closes their account, delete their personal data within 30 days, except invoices, which tax law requires us to keep."
+    }
+  ],
+  "assumptions": [],
+  "ambiguities": [
+    {
+      "question": "What counts as personal data for deletion? Is there a defined list or data classification, or does it mean everything tied to the customer other than invoices?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "When does the 30-day period start: when the customer requests closure, or when the closure takes effect?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "Does the requirement cover only customer-initiated closures, or also closures started by staff or by the system, such as for non-payment?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "Must retained invoices stay unchanged, or may the personal data inside them be minimized or pseudonymized to the extent tax law allows?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "How long must invoices be kept, and under which jurisdiction's tax law? Should they be deleted after that retention period ends?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "Does deletion have to reach backups, logs, analytics stores and third-party processors, and within the same 30 days?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "Does 'delete' mean irreversible erasure, or is anonymization acceptable?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "Is any other data besides invoices subject to legal retention that would also be excepted from deletion?",
+      "status": "open",
+      "resolution": null
+    },
+    {
+      "question": "Should the customer be told when deletion is complete, and how is completion verified?",
+      "status": "open",
+      "resolution": null
+    }
+  ],
+  "confidence": 0.6,
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "statement": "When a customer closes their account, their personal data is deleted within 30 days.",
+      "required_evidence": [
+        "test:account-closure-deletes-personal-data-within-30-days"
+      ]
+    },
+    {
+      "id": "AC-2",
+      "statement": "Invoices are excepted from deletion and are retained after account closure, because tax law requires us to keep them.",
+      "required_evidence": [
+        "test:account-closure-retains-invoices"
+      ]
+    }
+  ],
+  "revision_history": [
+    {
+      "revision": 1,
+      "recorded_at": "2026-11-08T00:00:00+00:00",
+      "actor": "sdlc_intake",
+      "generator_version": "intake-1",
+      "summary": "Initial translation of the stated request into Intent IR v1 for human review."
+    }
+  ],
+  "responsible_agent": "sdlc_intake",
+  "generator_version": "intake-1",
+  "approval": {
+    "state": "review_required",
+    "approved_by": null,
+    "approved_at": null,
+    "rationale": null
+  },
+  "dependencies": []
+}

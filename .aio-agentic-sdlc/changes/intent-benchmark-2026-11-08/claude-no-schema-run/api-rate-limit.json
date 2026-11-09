@@ -1,0 +1,85 @@
+{
+  "title": "Per-API-key rate limit",
+  "intent": {
+    "schema_version": "intent-ir-v1",
+    "revision": 1,
+    "provenance": [
+      {
+        "type": "human_statement",
+        "quote": "Limit each API key to 100 requests per minute, and answer HTTP 429 with a Retry-After header when the limit is exceeded."
+      }
+    ],
+    "assumptions": [],
+    "ambiguities": [
+      {
+        "id": "amb-1",
+        "status": "open",
+        "question": "Is the 100 requests per minute window fixed, sliding, or a token bucket?"
+      },
+      {
+        "id": "amb-2",
+        "status": "open",
+        "question": "Which endpoints does the limit apply to: all API endpoints, or only some?"
+      },
+      {
+        "id": "amb-3",
+        "status": "open",
+        "question": "How should requests with a missing or invalid API key be handled?"
+      },
+      {
+        "id": "amb-4",
+        "status": "open",
+        "question": "What value and format should Retry-After use: delay in seconds or an HTTP date? How should it be computed?"
+      },
+      {
+        "id": "amb-5",
+        "status": "open",
+        "question": "Should requests rejected with 429 count toward the limit?"
+      },
+      {
+        "id": "amb-6",
+        "status": "open",
+        "question": "Must the limit hold across multiple server instances, so that counters need shared storage?"
+      },
+      {
+        "id": "amb-7",
+        "status": "open",
+        "question": "Should the 429 response include a body, and in what format?"
+      },
+      {
+        "id": "amb-8",
+        "status": "open",
+        "question": "Is the limit the same for every API key, or can some keys have different limits?"
+      }
+    ],
+    "confidence": 0.6,
+    "acceptance_criteria": [
+      {
+        "id": "ac-1",
+        "statement": "Each API key is limited to 100 requests per minute.",
+        "required_evidence": [
+          "test:rate-limit-100-per-minute-per-key"
+        ]
+      },
+      {
+        "id": "ac-2",
+        "statement": "When a key exceeds its limit, the API answers with HTTP 429.",
+        "required_evidence": [
+          "test:rate-limit-exceeded-returns-429"
+        ]
+      },
+      {
+        "id": "ac-3",
+        "statement": "The HTTP 429 response includes a Retry-After header.",
+        "required_evidence": [
+          "test:rate-limit-429-has-retry-after-header"
+        ]
+      }
+    ],
+    "responsible_agent": "sdlc_intake",
+    "approval": {
+      "state": "review_required"
+    }
+  },
+  "dependencies": []
+}

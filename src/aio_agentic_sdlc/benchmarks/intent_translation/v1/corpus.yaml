@@ -1,0 +1,214 @@
+# Intent translation golden corpus (ROADMAP M4, Intention node d64fbc3a).
+#
+# Each case is a request a person might state, and what a faithful
+# translation into Intent IR must contain. Matching is deterministic: an
+# expected item is found when every group in `match` has at least one of its
+# alternatives in the relevant text (case-insensitive substring). No model
+# judges any case.
+#
+# The thresholds are a proposal until the owner approves the corpus
+# (BENCHMARK-AC1 requires review:golden-case-approval).
+corpus: intent-translation
+version: 1
+thresholds:
+  omission_rate_max: 0.10
+  invention_rate_max: 0.10
+  dependency_errors_max: 0
+  unjustified_completions_max: 0
+  stability_min: 0.80
+  correction_quality_min: 0.80
+cases:
+  - id: login-lockout
+    request: >-
+      Lock an account for 15 minutes after 5 failed logins in a row. Never
+      lock administrators out completely: show them a CAPTCHA instead.
+    expected:
+      requirements:
+        - id: lockout
+          match: [[lock, block, suspend], ['5', five], ['15', fifteen]]
+      constraints:
+        - id: admin-captcha
+          match: [[admin], [captcha]]
+      ambiguities:
+        - id: counter-reset
+          match: [[reset, successful, window, expire, clear]]
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies: []
+      forbidden:
+        - [[email, notify, notification]]
+
+  - id: invoice-export
+    request: >-
+      Let users export their invoices as CSV. It must reuse the existing
+      Report Builder and finish in under 10 seconds for 10,000 rows.
+    expected:
+      requirements:
+        - id: csv-export
+          match: [[export], [csv], [invoice]]
+      constraints:
+        - id: performance
+          match:
+            [
+              ['10 second', ten second, 10s],
+              ['10,000', '10000', 10k, ten thousand],
+            ]
+      ambiguities: []
+      evidence:
+        - id: tested
+          match: [['test:', 'benchmark:', 'perf']]
+      dependencies:
+        - target: Report Builder
+          type: depends_on
+      forbidden:
+        - [[pdf, excel, xlsx]]
+
+  - id: dark-mode
+    request: Add dark mode.
+    expected:
+      requirements:
+        - id: dark-theme
+          match: [[dark]]
+      constraints: []
+      ambiguities:
+        - id: scope
+          match: [[which, scope, screen, page, surface, where]]
+        - id: default
+          match: [[default, system, os, preference]]
+      evidence: []
+      dependencies: []
+      forbidden: []
+    feedback: >-
+      Only the dashboard and settings pages. Follow the operating system's
+      setting by default.
+    expected_after_feedback:
+      requirements:
+        - id: dark-theme
+          match: [[dark]]
+        - id: pages
+          match: [[dashboard], [settings]]
+        - id: os-default
+          match: [[operating system, os, system], [default]]
+      constraints: []
+      ambiguities: []
+      evidence: []
+      dependencies: []
+      forbidden: []
+      feedback_items: [pages, os-default]
+
+  - id: admin-audit-log
+    request: >-
+      Every admin action must be written to an append-only audit log that
+      keeps entries for 7 years.
+    expected:
+      requirements:
+        - id: log-actions
+          match: [[admin], [action], [log]]
+      constraints:
+        - id: append-only
+          match:
+            [[append-only, append only, immutable, cannot be modified, tamper]]
+        - id: retention
+          match: [['7 year', seven year]]
+      ambiguities: []
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies: []
+      forbidden: []
+
+  - id: password-reset
+    request: Users can reset their password by email.
+    expected:
+      requirements:
+        - id: email-reset
+          match: [[reset], [password], [email]]
+      constraints: []
+      ambiguities:
+        - id: link-lifetime
+          match: [[expire, expiry, lifetime, valid, how long]]
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies: []
+      forbidden: []
+    feedback: Reset links must expire after 30 minutes and work only once.
+    expected_after_feedback:
+      requirements:
+        - id: email-reset
+          match: [[reset], [password], [email]]
+        - id: expiry
+          match: [[expire, expiry, valid], ['30', thirty]]
+        - id: single-use
+          match: [[once, single-use, single use, one-time, one time]]
+      constraints: []
+      ambiguities: []
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies: []
+      forbidden: []
+      feedback_items: [expiry, single-use]
+
+  - id: account-deletion
+    request: >-
+      When a customer closes their account, delete their personal data within
+      30 days, except invoices, which tax law requires us to keep.
+    expected:
+      requirements:
+        - id: delete-data
+          match:
+            [[delete, erase, remove], [personal data, personal], ['30', thirty]]
+      constraints:
+        - id: keep-invoices
+          match: [[invoice], [keep, kept, retain, preserve, except, exclud]]
+      ambiguities:
+        - id: personal-scope
+          match: [[personal data, which data, what data, categories, counts as]]
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies: []
+      forbidden: []
+
+  - id: shipping-push
+    request: >-
+      Send a push notification when an order ships. Use the Notification
+      Gateway, and react to events from the Order Service.
+    expected:
+      requirements:
+        - id: push-on-ship
+          match: [[push], [ship]]
+      constraints: []
+      ambiguities: []
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies:
+        - target: Notification Gateway
+          type: depends_on
+        - target: Order Service
+          type: subscribes
+      forbidden:
+        - [[sms, text message]]
+
+  - id: api-rate-limit
+    request: >-
+      Limit each API key to 100 requests per minute, and answer HTTP 429 with
+      a Retry-After header when the limit is exceeded.
+    expected:
+      requirements:
+        - id: limit
+          match: [['100'], [minute], [api key, key]]
+        - id: status-429
+          match: [['429']]
+        - id: retry-after
+          match: [[retry-after, retry after]]
+      constraints: []
+      ambiguities: []
+      evidence:
+        - id: tested
+          match: [['test:']]
+      dependencies: []
+      forbidden: []
