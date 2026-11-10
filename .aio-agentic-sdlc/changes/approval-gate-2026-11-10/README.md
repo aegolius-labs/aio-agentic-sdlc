@@ -5,10 +5,10 @@ On 2026-11-09 the owner chose to gate completion, on by default, with
 builds the Approval Gate (`40566eb0`) and Operational Modes Config
 (`7b029abd`).
 
-## Receipts waiting for the owner
+## Receipts refreshed (approved 2026-11-10)
 
-Two mapped symbols change, so their symbol-bound receipts are stale until the
-owner approves a refresh:
+Two mapped symbols change, so their symbol-bound receipts went stale until the
+owner approved their refresh at 18:23 UTC; both digests matched when re-run:
 
 | Intention node | Symbol | Why it changed | Review digest |
 | --- | --- | --- | --- |
