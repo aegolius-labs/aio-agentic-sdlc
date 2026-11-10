@@ -11,8 +11,8 @@ through the whole loop with the framework's public commands:
 5. Reality is regenerated and a person approves which symbol implements it.
 6. The tests run; their result is recorded as acceptance evidence, and a
    person accepts the result.
-7. ``aio-sdlc apply`` runs again and the task completes because it left the
-   diff, not because the agent returned.
+7. ``aio-sdlc apply`` runs again. The task leaves the diff, not because the
+   agent returned, and a person approves it through the Approval Gate.
 8. ``dag-tool trace`` writes a plain-language traceability report.
 
 Every approval is a gate. The demo stops and asks the named approver at each
@@ -150,7 +150,7 @@ def scripted_agent(stdin_text: str, project: Path) -> None:
     (tests / "test_tokens.py").write_text(AGENT_TESTS, encoding="utf-8")
 
 
-# aio-sdlc-mapping-approval: {"approved_at":"2026-11-09T12:53:58+00:00","approved_by":"Felix","candidate_reality_id":"35232643-c2e0-53e5-a03b-e9689803e260","evidence_digest":"541a3da0d59f3a82aeec201a7f967b614d28419307dd3f8591a0166db0c394d9","intent_id":"cb02a996-6d3f-5610-9043-b1e768587d84","rationale":"Felix approved on the 2026-11-09 decision card that ClosedLoopDemo is the implementation identity of the Closed-loop Demo node, at this exact evidence digest. Identity only; it does not approve intent, prove acceptance, or replace the outside-reader review of DEMO-AC2.","schema_version":1,"source_path":"src/aio_agentic_sdlc/closed_loop_demo.py","source_sha256":"919a10509dc75c35b6b4be49d3d962ad316ca19d84413e58bd00a941a609c088","symbol_kind":"class","symbol_name":"ClosedLoopDemo","symbol_sha256":"992e8f38f0c033a21b5088eb8af5842e7a82eecd5bbd33d3c83b58fdf514e630"}
+# aio-sdlc-mapping-approval: {"candidate_reality_id":"35232643-c2e0-53e5-a03b-e9689803e260","identity_approval":{"approved_at":"2026-11-09T12:53:58+00:00","approved_by":"Felix","candidate_reality_id":"35232643-c2e0-53e5-a03b-e9689803e260","evidence_digest":"541a3da0d59f3a82aeec201a7f967b614d28419307dd3f8591a0166db0c394d9","intent_id":"cb02a996-6d3f-5610-9043-b1e768587d84","rationale":"Felix approved on the 2026-11-09 decision card that ClosedLoopDemo is the implementation identity of the Closed-loop Demo node, at this exact evidence digest. Identity only; it does not approve intent, prove acceptance, or replace the outside-reader review of DEMO-AC2.","schema_version":1,"source_path":"src/aio_agentic_sdlc/closed_loop_demo.py","source_sha256":"919a10509dc75c35b6b4be49d3d962ad316ca19d84413e58bd00a941a609c088","symbol_kind":"class","symbol_name":"ClosedLoopDemo","symbol_sha256":"992e8f38f0c033a21b5088eb8af5842e7a82eecd5bbd33d3c83b58fdf514e630"},"intent_id":"cb02a996-6d3f-5610-9043-b1e768587d84","maintenance_approval":{"approved_at":"2026-11-10T18:23:30+00:00","approved_by":"Felix","evidence_digest":"c33bda0c22c060871f6732a027996a8bdaf82dcbd9682c6d9ca47ebf47e15e41","rationale":"Felix approved refreshing this receipt on the 2026-11-10 Approval Gate decision card, at the review digest in .aio-agentic-sdlc/changes/approval-gate-2026-11-10/refresh-batch.json. The symbol keeps its approved identity; no behavior or acceptance is claimed.","supersedes_receipt_sha256":"b3593452cccec56f8711e981177f07aadabbf253b04dc9847cf8023e317fed77"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/closed_loop_demo.py","source_sha256":"16bdba13b5b6c2bbe4ac73af50c753f2f60745ebdd18f6cd3665db7f4559b28c","symbol_kind":"class","symbol_name":"ClosedLoopDemo","symbol_sha256":"b144d135fdc2ff0e9d0631e573cb75637eb2fe7bde842ae40274f98c4907b9ad"}
 # aio-sdlc-node: cb02a996-6d3f-5610-9043-b1e768587d84
 class ClosedLoopDemo:
     """Run the loop in ``project`` with the framework's public commands."""
@@ -225,6 +225,16 @@ class ClosedLoopDemo:
             self.echo(f"  {line}")
         if not self.confirm(f"Approve as {self.approver}?"):
             raise DemoError(f"stopped at the gate: {title}")
+
+    def _demo_tasks(self) -> dict:
+        backlog = json.loads(
+            (self.workspace / "backlog.json").read_text(encoding="utf-8")
+        )
+        return {
+            name: item
+            for name, item in backlog.get("nodes", {}).items()
+            if item.get("canonical_intent_id") == DEMO_INTENT_ID
+        }
 
     def _step(self, number: int, title: str) -> None:
         self.echo("")
@@ -553,21 +563,37 @@ class ClosedLoopDemo:
             ],
         )
 
-        self._step(7, "apply again: the task completes because it left the diff")
+        self._step(7, "apply again: the work left the diff, so a person approves it")
         self._run("aio-sdlc", ["apply"])
         if self._triage_item(self._triage()) is not None:
             raise DemoError("the requirement is still in the diff")
-        backlog = json.loads(
-            (self.workspace / "backlog.json").read_text(encoding="utf-8")
+        tasks = self._demo_tasks()
+        if [item.get("status") for item in tasks.values()] != ["Blocked"]:
+            raise DemoError(f"expected one task awaiting approval, found {tasks}")
+        task_name = next(iter(tasks))
+        self._gate(
+            "approve the finished work",
+            [
+                "The requirement left the diff: its code is mapped and its "
+                "evidence is recorded.",
+                "Approving completes the task and records you as its approver.",
+            ],
         )
-        statuses = [
-            item.get("status")
-            for item in backlog.get("nodes", {}).values()
-            if item.get("canonical_intent_id") == DEMO_INTENT_ID
-        ]
+        self._run(
+            "aio-sdlc",
+            [
+                "approve",
+                task_name,
+                "--approved-by",
+                self.approver,
+                "--rationale",
+                "The requirement left the diff with its evidence recorded.",
+            ],
+        )
+        statuses = [item.get("status") for item in self._demo_tasks().values()]
         if statuses != ["Completed"]:
             raise DemoError(f"expected one completed task, found {statuses}")
-        self.echo("  The requirement left the diff and its task is Completed.")
+        self.echo("  The requirement left the diff and its approved task is Completed.")
 
         self._step(8, "Write the traceability report")
         report = self.project / REPORT_FILE

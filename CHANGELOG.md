@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [0.49.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.49.0) (2026-11-10)
+
+### Added
+
+- The Approval Gate (Intention nodes Approval Gate and Operational Modes
+  Config, owner decision 2026-11-09). Work that leaves the diff waits, blocked
+  as awaiting approval, until a person runs `aio-sdlc approve`, which records
+  the approver, time and rationale on the task. `"approval_mode": "bypass"` in
+  `config.json` restores completion as soon as work leaves the diff.
+- `dag-tool demo` gains a fifth gate: approving the finished work.
+
+### Changed
+
+- **Behavior change**: completion is gated by default. Before, a diff task
+  completed as soon as it left the diff. Projects that relied on that set
+  `approval_mode` to `bypass`. Setting such a task to `Completed`, or removing
+  its approval blocker by hand, is now refused.
+
 ## [0.48.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.48.0) (2026-11-09)
 
 ### Changed

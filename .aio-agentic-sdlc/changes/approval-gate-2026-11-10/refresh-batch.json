@@ -1,0 +1,16 @@
+[
+  {
+    "intent_id": "f24b7477-032b-4f93-abcf-9b1c70627900",
+    "intent_name": "CLI Entrypoint",
+    "source_path": "src/aio_agentic_sdlc/cli.py",
+    "symbol": "function main",
+    "evidence_digest": "3b2f67c1de2e58847f1b4f0c7aff1e93a65ddbc3ad64209cf6cdaab99e343da9"
+  },
+  {
+    "intent_id": "cb02a996-6d3f-5610-9043-b1e768587d84",
+    "intent_name": "Closed-loop Reference Demo",
+    "source_path": "src/aio_agentic_sdlc/closed_loop_demo.py",
+    "symbol": "class ClosedLoopDemo",
+    "evidence_digest": "c33bda0c22c060871f6732a027996a8bdaf82dcbd9682c6d9ca47ebf47e15e41"
+  }
+]

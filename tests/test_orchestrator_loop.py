@@ -332,9 +332,12 @@ def test_tasks_that_leave_the_diff_leave_the_queue(
     tmp_path, monkeypatch, mock_dag_manager, mock_diffing_engine
 ):
     from aio_agentic_sdlc import core
+    from aio_agentic_sdlc.config import save_config
 
     monkeypatch.chdir(tmp_path)
     core.add_item("hand-added", 3, 2, "Feature", "not from the diff")
+    # Bypass mode: work completes as soon as it leaves the diff.
+    save_config({"approval_mode": "bypass"})
     mock_diffing_engine.return_value.calculate_diff.return_value = {
         "nodes": {
             "done": _diff_task(INTENT_ID, "work an agent finished"),

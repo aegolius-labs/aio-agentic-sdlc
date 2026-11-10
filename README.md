@@ -185,13 +185,13 @@ the full loop with the public commands: Intake records a want as intent, you
 approve it, triage asks whether the implementation is missing and you decide,
 `aio-sdlc apply` hands the authorized task to an agent, you approve which code
 implements it, the tests run and their result is recorded as evidence, you
-accept the result, and the task completes because it left the diff.
+accept the result, the task leaves the diff, and you approve its completion.
 
 ```bash
 uv run dag-tool demo --directory ./loop-demo --approver "Your Name"
 ```
 
-It stops at each of the four approval gates and asks you, and records your
+It stops at each of the five approval gates and asks you, and records your
 name on each approval. It ends by writing `TRACEABILITY.md`, a plain-language
 report of the requirement from the stated want to its evidence. The agent is
 a scripted stand-in by default, so the demo needs no model access; pass
@@ -211,6 +211,22 @@ uv run dag-tool triage-decide --intention .aio-agentic-sdlc/intention-dag.yaml \
   --decided-by "Your Name" --decided-at 2026-11-08T12:05:00Z
 uv run dag-tool trace --intent-id <guid>
 ```
+
+### The Approval Gate
+
+Work that leaves the diff does not complete on its own. Its task waits,
+blocked as awaiting approval, until a person approves it:
+
+```bash
+uv run aio-sdlc approve                      # list the work awaiting approval
+uv run aio-sdlc approve "<task name>" --approved-by "Your Name" \
+  --rationale "The evidence is recorded and the result is what we wanted."
+```
+
+The approval is recorded on the task. Setting the status to `Completed` or
+removing the blocker by hand is refused. For continuous delivery, set
+`"approval_mode": "bypass"` in `.aio-agentic-sdlc/config.json` and work
+completes as soon as it leaves the diff. Any other value is refused.
 
 `triage-decide` adds to a decision file only while its plan digest is current
 and refuses a stale one, so an old decision is never re-bound to a new state.

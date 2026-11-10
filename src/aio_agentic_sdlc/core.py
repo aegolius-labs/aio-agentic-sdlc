@@ -12,6 +12,13 @@ from .workspace import INTENTION_DAG_FILE, REALITY_DAG_FILE, SPECS_DIR
 
 VALID_STATUSES = ("New", "In Progress", "Completed", "Blocked")
 
+# Set by the Approval Gate on work that left the diff. Only `aio-sdlc approve`
+# removes it, recording who approved the completion (see approval_gate).
+AWAITING_APPROVAL = (
+    "Awaiting approval: this work left the diff; a person completes it with "
+    "`aio-sdlc approve`."
+)
+
 
 class BacklogOperationError(ValueError):
     """Raised for an expected, user-correctable backlog operation failure."""
@@ -23,6 +30,20 @@ def _get_status(item):
 
 def _get_blockers(item):
     return item.get("blockers", [])
+
+
+def _refuse_gate_bypass(item, *, status=None, blockers=None):
+    """Keep the Approval Gate's blocker until a person approves the work."""
+
+    if AWAITING_APPROVAL not in _get_blockers(item):
+        return
+    if status == "Completed" or (
+        blockers is not None and AWAITING_APPROVAL not in blockers
+    ):
+        raise BacklogOperationError(
+            "This work is awaiting approval. Complete it with `aio-sdlc approve`, "
+            "which records who approved it."
+        )
 
 
 def _resolve_blocked_status(item):
@@ -467,6 +488,11 @@ def update_item(
             set_requires(data, name, requires_list)
         if ai_driven is not None:
             item["ai_driven"] = ai_driven
+        if blockers is not None:
+            next_blockers = [b.strip() for b in blockers.split(",")] if blockers else []
+        else:
+            next_blockers = None
+        _refuse_gate_bypass(item, status=status, blockers=next_blockers)
         if status is not None:
             item["status"] = status
         if description is not None:
@@ -485,6 +511,7 @@ def set_status(name, new_status, project_path="."):
     def mutate(data):
         if name not in data.get("nodes", {}):
             raise BacklogOperationError(f"Item '{name}' not found.")
+        _refuse_gate_bypass(data["nodes"][name], status=new_status)
         data["nodes"][name]["status"] = new_status
         if new_status == "Completed":
             for other_name, other in data["nodes"].items():
@@ -526,6 +553,8 @@ def remove_blocker(name, reason, project_path="."):
             raise BacklogOperationError(f"Item '{name}' not found.")
         item = data["nodes"][name]
         blockers = _get_blockers(item)
+        if reason == AWAITING_APPROVAL:
+            _refuse_gate_bypass(item, blockers=[])
         if reason in blockers:
             blockers.remove(reason)
         item["blockers"] = blockers
