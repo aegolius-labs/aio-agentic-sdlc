@@ -150,6 +150,8 @@ def scripted_agent(stdin_text: str, project: Path) -> None:
     (tests / "test_tokens.py").write_text(AGENT_TESTS, encoding="utf-8")
 
 
+# aio-sdlc-mapping-approval: {"approved_at":"2026-11-09T12:53:58+00:00","approved_by":"Felix","candidate_reality_id":"35232643-c2e0-53e5-a03b-e9689803e260","evidence_digest":"541a3da0d59f3a82aeec201a7f967b614d28419307dd3f8591a0166db0c394d9","intent_id":"cb02a996-6d3f-5610-9043-b1e768587d84","rationale":"Felix approved on the 2026-11-09 decision card that ClosedLoopDemo is the implementation identity of the Closed-loop Demo node, at this exact evidence digest. Identity only; it does not approve intent, prove acceptance, or replace the outside-reader review of DEMO-AC2.","schema_version":1,"source_path":"src/aio_agentic_sdlc/closed_loop_demo.py","source_sha256":"919a10509dc75c35b6b4be49d3d962ad316ca19d84413e58bd00a941a609c088","symbol_kind":"class","symbol_name":"ClosedLoopDemo","symbol_sha256":"992e8f38f0c033a21b5088eb8af5842e7a82eecd5bbd33d3c83b58fdf514e630"}
+# aio-sdlc-node: cb02a996-6d3f-5610-9043-b1e768587d84
 class ClosedLoopDemo:
     """Run the loop in ``project`` with the framework's public commands."""
 

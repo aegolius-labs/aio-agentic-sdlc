@@ -36,11 +36,14 @@ from aio_agentic_sdlc.reconciliation import ReconciliationEngine
 from aio_agentic_sdlc.source_markers import (
     MAPPING_APPROVAL_PREFIX,
     NODE_MARKER_PREFIX,
+    SYMBOL_DIGEST_FIELD,
     MappingReceiptAnnotation,
     SourceMarkerError,
+    annotation_symbol_sha256,
     iter_canonical_node_markers,
     mapping_receipt_freshness,
     parse_mapping_receipt_annotation,
+    symbol_source_sha256,
 )
 from aio_agentic_sdlc.workspace import (
     MAPPING_LOCK_FILE,
@@ -1288,6 +1291,10 @@ class MappingEngine:
         except SourceMarkerError as error:
             raise MappingError(str(error)) from error
         neutral_sha256 = hashlib.sha256(annotation.annotation_neutral_bytes).hexdigest()
+        try:
+            source["symbol_sha256"] = annotation_symbol_sha256(annotation)
+        except SourceMarkerError as error:
+            raise MappingError(str(error)) from error
         source["raw_source_sha256"] = snapshot.sha256
         source["annotation_neutral_source_sha256"] = neutral_sha256
         source["raw_sha256"] = snapshot.sha256
@@ -2064,6 +2071,17 @@ class MappingEngine:
             if snapshot.sha256 != source["source_sha256"]:
                 raise MappingError("stale mapping evidence source hash")
             self._reject_existing_marker(canonical_intent_id)
+            try:
+                # The marker goes on the definition's first line, so the
+                # unmarked source is exactly the annotation-neutral content.
+                symbol_sha256 = symbol_source_sha256(
+                    snapshot.content,
+                    symbol_kind=source["symbol_kind"],
+                    symbol_name=source["symbol_name"],
+                    start_line=source["marker_line"],
+                )
+            except SourceMarkerError as error:
+                raise MappingError(str(error)) from error
 
             receipt = {
                 "schema_version": MAPPING_APPROVAL_SCHEMA_VERSION,
@@ -2073,6 +2091,7 @@ class MappingEngine:
                 "symbol_kind": source["symbol_kind"],
                 "symbol_name": source["symbol_name"],
                 "source_sha256": source["source_sha256"],
+                SYMBOL_DIGEST_FIELD: symbol_sha256,
                 "evidence_digest": review["evidence_digest"],
                 "approved_by": approval.approved_by,
                 "approved_at": approval.approved_at.isoformat(),
@@ -2112,7 +2131,7 @@ class MappingEngine:
                 "postcondition": postcondition,
             }
 
-    # aio-sdlc-mapping-approval: {"approved_at":"2026-11-08T19:50:53+00:00","approved_by":"Felix","candidate_reality_id":"a03577cc-ff8f-588e-ab72-553938656f7b","evidence_digest":"4925758e417d2e4bc528e19e9b11e5e0873fe566665f7d6d5aab33c560bb8d74","intent_id":"15019926-c6be-5c98-b558-954c7657e5c6","rationale":"Felix approved this mapping on the 2026-11-08 follow-up decision card after its evidence digest changed: MappingEngine.refresh_receipt is the implementation identity of 'Explicit Source Identity Maintenance'. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/mapping.py","source_sha256":"2065241f5330ef8b6b5c00f4fbf54ec12d8fb1fc4abb9e6a3cb3adb78fe3817e","symbol_kind":"function","symbol_name":"refresh_receipt"}
+    # aio-sdlc-mapping-approval: {"candidate_reality_id":"a03577cc-ff8f-588e-ab72-553938656f7b","identity_approval":{"approved_at":"2026-11-08T19:50:53+00:00","approved_by":"Felix","candidate_reality_id":"a03577cc-ff8f-588e-ab72-553938656f7b","evidence_digest":"4925758e417d2e4bc528e19e9b11e5e0873fe566665f7d6d5aab33c560bb8d74","intent_id":"15019926-c6be-5c98-b558-954c7657e5c6","rationale":"Felix approved this mapping on the 2026-11-08 follow-up decision card after its evidence digest changed: MappingEngine.refresh_receipt is the implementation identity of 'Explicit Source Identity Maintenance'. Identity only; it does not approve intent or prove acceptance.","schema_version":1,"source_path":"src/aio_agentic_sdlc/mapping.py","source_sha256":"2065241f5330ef8b6b5c00f4fbf54ec12d8fb1fc4abb9e6a3cb3adb78fe3817e","symbol_kind":"function","symbol_name":"refresh_receipt"},"intent_id":"15019926-c6be-5c98-b558-954c7657e5c6","maintenance_approval":{"approved_at":"2026-11-10T12:17:12+00:00","approved_by":"Felix","evidence_digest":"30f44d8b2e3610965f81760b00ef86fa28c8348afbf35860be005dd2d5d68ff2","rationale":"Felix approved the batch refresh of the 15 older mapping receipts on the 2026-11-10 decision card, at the review digests listed in .aio-agentic-sdlc/changes/symbol-receipts-2026-11-09/refresh-batch.json. Rebinds the receipt to its symbol; the approved identity is unchanged and no behavior or acceptance is claimed.","supersedes_receipt_sha256":"a636bd240221050ebc6bd86b7a222b88941ab3e9d5cb88dbfb3176b032dd9491"},"schema_version":2,"source_path":"src/aio_agentic_sdlc/mapping.py","source_sha256":"305878a1389ec91eda42e263567f614acb735a80f3d222c5478fea6d7a3cd760","symbol_kind":"function","symbol_name":"refresh_receipt","symbol_sha256":"75dea76bc5d99c6cdc5579e58613f4452a7f7245e013e1d7d45eb40f3070b5b6"}
     # aio-sdlc-node: 15019926-c6be-5c98-b558-954c7657e5c6
     def refresh_receipt(
         self,
@@ -2156,6 +2175,13 @@ class MappingEngine:
             ):
                 raise MappingError("stale receipt evidence source hash")
 
+            try:
+                symbol_sha256 = annotation_symbol_sha256(annotation)
+            except SourceMarkerError as error:
+                raise MappingError(str(error)) from error
+            if symbol_sha256 != source["symbol_sha256"]:
+                raise MappingError("stale receipt evidence source hash")
+
             prior = annotation.receipt
             identity_approval = (
                 prior if prior["schema_version"] == 1 else prior["identity_approval"]
@@ -2168,6 +2194,7 @@ class MappingEngine:
                 "symbol_kind": prior["symbol_kind"],
                 "symbol_name": prior["symbol_name"],
                 "source_sha256": neutral_sha256,
+                SYMBOL_DIGEST_FIELD: symbol_sha256,
                 "identity_approval": identity_approval,
                 "maintenance_approval": {
                     "evidence_digest": review["evidence_digest"],

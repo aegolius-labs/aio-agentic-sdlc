@@ -170,9 +170,11 @@ digest. Explicit refresh approval preserves the marker byte-for-byte and atomica
 the adjacent receipt. Candidate and receipt decisions establish source identity only; they do not
 prove behavior, satisfy acceptance criteria, or approve Intent.
 
-Receipt evidence currently uses the whole annotation-neutral file hash. An unrelated edit in the
-same file therefore intentionally stales the receipt and requires another review and separate human
-approval. Marker and receipt mutations have no manual fallback: Python, CLI, and MCP adapters all
+A receipt binds to its mapped symbol: `symbol_sha256` hashes the definition's own lines,
+decorators included, in the annotation-neutral file (decided 2026-11-09). An edit elsewhere in the
+file leaves it fresh. Any edit inside the symbol, or a rename, stales it and requires another review
+and separate human approval. Receipts written before that decision carry no `symbol_sha256`, stay
+bound to the whole file, and become symbol-bound when refreshed. Marker and receipt mutations have no manual fallback: Python, CLI, and MCP adapters all
 route through the same persistent locks, stale-evidence checks, guarded atomic transition, rollback,
 and post-write Reality verification.
 

@@ -139,9 +139,9 @@ intervening Intent, Reality, source, or displayed evidence change invalidates it
 
 For a confirmed marker whose receipt is stale, `review_mapping_receipt` produces fresh read-only
 maintenance evidence. Only after a human separately approves that exact digest may
-`refresh_mapping_receipt` preserve the marker and atomically replace its adjacent receipt. The
-current evidence model hashes the whole annotation-neutral file, so an unrelated same-file edit
-intentionally makes the receipt stale. Candidate and receipt approval establish source identity
+`refresh_mapping_receipt` preserve the marker and atomically replace its adjacent receipt. A
+receipt binds to its mapped symbol, so only an edit inside that symbol makes it stale; an older
+receipt without `symbol_sha256` stays bound to the whole file until it is refreshed. Candidate and receipt approval establish source identity
 only; they do not establish behavioral correctness, satisfy acceptance criteria, or approve Intent.
 Use the MCP operations, CLI, or Python API—there is no manual marker or receipt fallback.
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import io
 import json
@@ -51,6 +52,10 @@ _SCHEMA_TWO_FIELDS = {
     "identity_approval",
     "maintenance_approval",
 }
+# Optional on both schemas. When present, the receipt binds to the mapped
+# symbol's own source instead of the whole file (decided 2026-11-09), so an
+# edit elsewhere in the file leaves it fresh.
+SYMBOL_DIGEST_FIELD = "symbol_sha256"
 _MAINTENANCE_APPROVAL_FIELDS = {
     "evidence_digest",
     "approved_by",
@@ -151,8 +156,18 @@ def _receipt_comment_line_indexes(content: bytes) -> list[int]:
         ) from error
 
 
+def _has_field_shape(receipt: dict[str, Any], fields: set[str]) -> bool:
+    keys = set(receipt)
+    if keys == fields:
+        return True
+    if keys == fields | {SYMBOL_DIGEST_FIELD}:
+        _require_digest(receipt[SYMBOL_DIGEST_FIELD], label=SYMBOL_DIGEST_FIELD)
+        return True
+    return False
+
+
 def _validate_schema_one(receipt: dict[str, Any]) -> dict[str, Any]:
-    if set(receipt) != _SCHEMA_ONE_FIELDS:
+    if not _has_field_shape(receipt, _SCHEMA_ONE_FIELDS):
         raise SourceMarkerError("mapping receipt schema 1 has an unknown field shape")
     if receipt.get("schema_version") != 1:
         raise SourceMarkerError("mapping receipt schema_version must be 1 or 2")
@@ -171,7 +186,7 @@ def _validate_schema_one(receipt: dict[str, Any]) -> dict[str, Any]:
 
 
 def _validate_schema_two(receipt: dict[str, Any]) -> dict[str, Any]:
-    if set(receipt) != _SCHEMA_TWO_FIELDS:
+    if not _has_field_shape(receipt, _SCHEMA_TWO_FIELDS):
         raise SourceMarkerError("mapping receipt schema 2 has an unknown field shape")
     if receipt.get("schema_version") != 2:
         raise SourceMarkerError("mapping receipt schema_version must be 1 or 2")
@@ -347,14 +362,67 @@ def iter_canonical_node_markers(content: str):
         ) from error
 
 
+def symbol_source_sha256(
+    neutral_content: bytes,
+    *,
+    symbol_kind: str,
+    symbol_name: str,
+    start_line: int,
+) -> str:
+    """Hash the exact source of the one definition that starts at ``start_line``.
+
+    ``neutral_content`` is the file without its receipt and marker, so the
+    definition, decorators included, starts on the line the receipt occupied.
+    The digest covers only that definition's lines: moving it or editing the
+    rest of the file leaves the digest unchanged, while any edit inside it,
+    including a rename, changes or invalidates it.
+    """
+
+    kinds = (
+        (ast.ClassDef,)
+        if symbol_kind == "class"
+        else (ast.FunctionDef, ast.AsyncFunctionDef)
+    )
+    try:
+        tree = ast.parse(neutral_content)
+    except (SyntaxError, ValueError) as error:
+        raise SourceMarkerError("mapping source cannot be parsed") from error
+    matches = []
+    for node in ast.walk(tree):
+        if not isinstance(node, kinds) or node.name != symbol_name:
+            continue
+        first = min([node.lineno, *(item.lineno for item in node.decorator_list)])
+        if first == start_line and node.end_lineno is not None:
+            matches.append((first, node.end_lineno))
+    if len(matches) != 1:
+        raise SourceMarkerError(
+            f"no single {symbol_kind} {symbol_name!r} follows its mapping marker"
+        )
+    first, last = matches[0]
+    lines = neutral_content.splitlines(keepends=True)
+    return hashlib.sha256(b"".join(lines[first - 1 : last])).hexdigest()
+
+
+def annotation_symbol_sha256(annotation: MappingReceiptAnnotation) -> str:
+    receipt = annotation.receipt
+    return symbol_source_sha256(
+        annotation.annotation_neutral_bytes,
+        symbol_kind=receipt["symbol_kind"],
+        symbol_name=receipt["symbol_name"],
+        start_line=annotation.receipt_line,
+    )
+
+
 def mapping_receipt_freshness(
     content: bytes, source_path: str
 ) -> dict[str, Any] | None:
     """Check whether one source file's mapping receipt still matches its source.
 
-    Returns ``None`` when the file carries no receipt. Otherwise the status is
-    ``fresh`` when the annotation-neutral source still hashes to the receipt's
-    ``source_sha256``, ``stale`` when the source changed since approval, and
+    Returns ``None`` when the file carries no receipt. A receipt with
+    ``symbol_sha256`` binds to its symbol's source; an older one binds to the
+    whole annotation-neutral file through ``source_sha256``. The status is
+    ``fresh`` when the source the receipt binds to is unchanged, ``stale`` when
+    it changed since approval, and
     ``invalid`` when the receipt cannot be validated at all. Read-only: a stale
     receipt is refreshed only through ``dag-tool mapping receipt refresh`` with
     a named approver.
@@ -391,13 +459,40 @@ def mapping_receipt_freshness(
     except SourceMarkerError as error:
         return {**report, "status": "invalid", "error": str(error)}
     receipt = annotation.receipt
-    current = hashlib.sha256(annotation.annotation_neutral_bytes).hexdigest()
-    return {
-        **report,
-        "status": "fresh" if current == receipt["source_sha256"] else "stale",
+    identity = {
         "intent_id": receipt["intent_id"],
         "symbol_kind": receipt["symbol_kind"],
         "symbol_name": receipt["symbol_name"],
+    }
+    if SYMBOL_DIGEST_FIELD in receipt:
+        try:
+            current = annotation_symbol_sha256(annotation)
+        except SourceMarkerError as error:
+            # The symbol under the marker is gone or renamed: its identity
+            # changed, which is exactly what a person must review again.
+            return {
+                **report,
+                **identity,
+                "status": "stale",
+                "binding": "symbol",
+                "error": str(error),
+                "receipt_symbol_sha256": receipt[SYMBOL_DIGEST_FIELD],
+                "current_symbol_sha256": None,
+            }
+        return {
+            **report,
+            **identity,
+            "status": ("fresh" if current == receipt[SYMBOL_DIGEST_FIELD] else "stale"),
+            "binding": "symbol",
+            "receipt_symbol_sha256": receipt[SYMBOL_DIGEST_FIELD],
+            "current_symbol_sha256": current,
+        }
+    current = hashlib.sha256(annotation.annotation_neutral_bytes).hexdigest()
+    return {
+        **report,
+        **identity,
+        "status": "fresh" if current == receipt["source_sha256"] else "stale",
+        "binding": "file",
         "receipt_source_sha256": receipt["source_sha256"],
         "current_source_sha256": current,
     }

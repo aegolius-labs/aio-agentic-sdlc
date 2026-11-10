@@ -62,8 +62,10 @@ compares against Reality generated that way.
 
 ## Mapping receipts (in source files)
 
-A `# aio-sdlc-mapping-approval:` receipt binds to the content of its file.
-Any edit to the file makes the receipt stale, and CI fails.
+A `# aio-sdlc-mapping-approval:` receipt binds to the source of its mapped
+symbol. Any edit inside that symbol, or a rename, makes the receipt stale, and
+CI fails. An older receipt without `symbol_sha256` binds to the whole file
+until it is refreshed.
 
 1. `dag-tool mapping receipt check` lists the stale receipts.
 2. `dag-tool mapping receipt review` shows fresh evidence for one of them.

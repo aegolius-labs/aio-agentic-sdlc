@@ -384,7 +384,7 @@ uv run dag-tool mapping receipt review --project-path /absolute/project --intent
 uv run dag-tool mapping receipt refresh --project-path /absolute/project --intent-id <guid> \
   --evidence-digest <reviewed-digest> \
   --approved-by <identity> --approved-at <timezone-aware-iso8601> \
-  --rationale "Why the refreshed whole-file evidence preserves this source identity"
+  --rationale "Why the refreshed evidence preserves this source identity"
 ```
 
 Review regenerates Reality in memory and defaults to a human decision brief. The brief puts the
@@ -398,9 +398,10 @@ back unless a fresh scan confirms the intended GUID at the same symbol.
 
 Explicit candidate review and receipt review are read-only. Each exact digest requires its own
 human approval; approval of one candidate or receipt never authorizes another. Receipt refresh
-preserves the canonical marker and replaces only its adjacent receipt. Evidence currently hashes
-the whole annotation-neutral file, so even an unrelated edit in that file intentionally makes the
-receipt stale. Only observed Python classes and functions are supported. Use these tools or their
+preserves the canonical marker and replaces only its adjacent receipt. A receipt binds to its
+mapped symbol's own source, decorators included, so editing the rest of the file leaves it fresh
+and any edit inside the symbol makes it stale. Receipts written before 2026-11-09 bind to the whole
+file until refreshed. Only observed Python classes and functions are supported. Use these tools or their
 Python API equivalents—never insert, replace, or repair mapping markers and receipts manually.
 
 ### Projecting work to GitHub (Seam A)

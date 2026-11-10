@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.48.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.48.0) (2026-11-09)
+
+### Changed
+
+- Mapping receipts bind to their mapped symbol instead of the whole file, as
+  the owner decided on 2026-11-09. A new or refreshed receipt carries
+  `symbol_sha256`, the digest of the definition's own lines with its
+  decorators. Editing the rest of the file leaves it fresh. Editing the
+  symbol, or renaming it, still makes it stale and needs a person's review.
+  Receipts without `symbol_sha256` stay bound to the whole file until they are
+  refreshed. `mapping receipt check` reports each receipt's `binding`.
+
 ## [0.47.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.47.0) (2026-11-09)
 
 ### Added
