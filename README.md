@@ -274,7 +274,13 @@ call a model.
 Instead of relying on token-heavy LLM context windows or external integrations, the framework strictly enforces:
 
 - **Intention DAG (I-DAG)**: A graph-based structural representation of planned features and dependencies.
-- **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic. Python and TypeScript (`.ts`, `.tsx`) are observed in one shared ontology: modules, classes, functions and methods, with `contains` and `depends_on` edges. TypeScript-only concepts such as interfaces, type aliases, enums and `.d.ts` files are not observed, and a `// aio-sdlc-node: <uuid>` comment marks identity the way `# aio-sdlc-node:` does in Python. Mapping approval and receipts are Python-only for now.
+- **Reality DAG (R-DAG)**: A deterministic reflection of the actual codebase logic.
+  Python and TypeScript (`.ts`, `.tsx`) are observed in one shared ontology:
+  modules, classes, functions and methods, with `contains` and `depends_on`
+  edges. TypeScript-only concepts such as interfaces, type aliases, enums and
+  `.d.ts` files are not observed, and a `// aio-sdlc-node: <uuid>` comment marks
+  identity the way `# aio-sdlc-node:` does in Python. Mapping approval and
+  receipts are Python-only for now.
 - **Canonical Traceability**: PRDs in `.aio-agentic-sdlc/specs/` are anchored to both DAGs using `aio-sdlc-node` GUID tags, allowing subagents to detect architectural drift and execute Just-In-Time (JIT) TDD loops from explicit evidence.
 
 Intent IR can be validated strictly or reviewed without reading raw YAML:
