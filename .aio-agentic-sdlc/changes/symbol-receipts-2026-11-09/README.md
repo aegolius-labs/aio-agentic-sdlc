@@ -12,12 +12,18 @@ the work that followed from his other two answers that day.
 - The 15 receipts written before that carry no `symbol_sha256` and stay bound to
   the whole file until refreshed.
 
-## Batch refresh waiting for the owner
+## Batch refresh (approved 2026-11-10)
 
 The card's chosen option says the owner approves one batch refresh of all the
 older receipts after the change is built. `refresh-batch.json` lists each one
 with the digest of its fresh `dag-tool mapping receipt review`. A refresh only
 rebinds the receipt; it never changes the identity the owner approved.
+
+The owner approved the batch on 2026-11-10 at 12:17 UTC. Each review was run
+again first and matched its listed digest exactly. All 15 were then refreshed
+with the owner as the maintenance approver, keeping each original identity
+approval. Afterwards `mapping receipt check` reports 16 fresh, 0 stale, and
+regenerated Reality is byte-identical, so the triage decisions stay current.
 
 | Intention node | File | Symbol | Status | Review digest |
 | --- | --- | --- | --- | --- |
