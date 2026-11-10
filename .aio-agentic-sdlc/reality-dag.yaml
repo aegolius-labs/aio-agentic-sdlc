@@ -133,6 +133,26 @@ nodes:
   type: component
   name: local_agent_config
   description: Function local_agent_config
+- id: 186575e1-d696-56a5-b9dd-94200a052fa5
+  type: module
+  name: approval_gate.py
+  description: Module src.aio_agentic_sdlc.approval_gate
+- id: 2e9ae669-a593-5b12-8c36-637b7714102f
+  type: component
+  name: approval_mode
+  description: Return the configured mode. An unknown value fails closed.
+- id: 148928cb-62b4-5c05-bad5-36a105545724
+  type: component
+  name: hold_for_approval
+  description: Block one finished diff task until a person approves it.
+- id: ffbde803-750d-5c8f-a8e4-462574026ed0
+  type: component
+  name: awaiting_approval
+  description: Function awaiting_approval
+- id: f15eb201-1a36-56c0-8a6e-4612e07ef05d
+  type: component
+  name: approve_task
+  description: Complete one task that awaits approval, recording the approval on it.
 - id: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
   type: module
   name: archiver.py
@@ -203,6 +223,10 @@ nodes:
   type: component
   name: apply_cmd
   description: Function apply_cmd
+- id: 1387b1e0-8579-5042-9bbd-f5062e3a3977
+  type: component
+  name: approve_cmd
+  description: Function approve_cmd
 - id: b0179b46-154b-5188-b8ba-c3de4407ac92
   type: component
   name: migrate_state_cmd
@@ -533,6 +557,13 @@ nodes:
   type: component
   name: edge_remove
   description: Remove an edge.
+- id: ee99ec21-adaf-56ed-8fe9-ddb31ca07a5a
+  type: component
+  name: guids
+  description: "List the Intention GUIDs the project's files claim; exit 1 on a problem.\n\
+    \n    Reads Python comment markers with Tree-Sitter and agent frontmatter with\n\
+    \    PyYAML. Reports malformed markers, GUIDs claimed twice, and GUIDs the\n \
+    \   Intention DAG does not define. Read-only.\n    "
 - id: 9ff5bffe-8e57-53d0-8a7c-9846d387b780
   type: component
   name: doctor
@@ -875,6 +906,38 @@ nodes:
   type: component
   name: orphaned_records
   description: Records whose intent, criterion or reference no longer exists.
+- id: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  type: module
+  name: guid_extractor.py
+  description: Module src.aio_agentic_sdlc.guid_extractor
+- id: 701ecc1b-24e0-5ba5-b439-2448e61e2b1b
+  type: component
+  name: GuidExtractionError
+  description: The project cannot be scanned.
+- id: 222f14c5-f1fa-5db8-a96d-ff73acac8b3a
+  type: component
+  name: GuidMarker
+  description: Class GuidMarker
+- id: 35b0e50b-fc52-590b-acac-194e6f1fd603
+  type: component
+  name: MalformedMarker
+  description: Class MalformedMarker
+- id: 568a7c95-6c8f-5dca-85cd-207e579d3d4e
+  type: component
+  name: extract_comment_markers
+  description: Return the node markers in one Python file's comments.
+- id: 4828cc7a-dbbb-5319-8b67-65bc46140ae9
+  type: component
+  name: extract_frontmatter_markers
+  description: Return the node GUIDs an agent definition's frontmatter declares.
+- id: 327574f6-8cdd-5835-95a3-a50a49c30646
+  type: component
+  name: scan_project
+  description: Extract every claimed GUID under the project and report the problems.
+- id: b9dcaef8-3d05-55ee-83e4-e5ae49b97f23
+  type: component
+  name: render_scan
+  description: Function render_scan
 - id: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb
   type: module
   name: install_check.py
@@ -1339,9 +1402,10 @@ nodes:
     \ followed by core.prioritize_items.\n\n    Each ingested task records whether\
     \ drift triage authorizes its\n    implementation. The backlog equals the diff:\
     \ a diff task that is no longer\n    in the diff completes, and a completed one\
-    \ that is back in the diff\n    reopens. Other execution state of tasks already\
-    \ in the backlog is kept,\n    and items not cut from the diff are never touched.\n\
-    \    "
+    \ that is back in the diff\n    reopens. In the default `gated` approval mode\
+    \ a task that left the diff\n    waits for `aio-sdlc approve` instead of completing\
+    \ (Approval Gate). Other execution state of tasks already in the backlog is kept,\n\
+    \    and items not cut from the diff are never touched.\n    "
 - id: 5e17f1b2-cfc1-56da-a987-55a688bb2061
   type: component
   name: work_order
@@ -1873,6 +1937,21 @@ edges:
   target: 60b6af8e-5a49-51b9-9912-8b399679828d
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 186575e1-d696-56a5-b9dd-94200a052fa5
+  type: contains
+- source: 186575e1-d696-56a5-b9dd-94200a052fa5
+  target: 2e9ae669-a593-5b12-8c36-637b7714102f
+  type: contains
+- source: 186575e1-d696-56a5-b9dd-94200a052fa5
+  target: 148928cb-62b4-5c05-bad5-36a105545724
+  type: contains
+- source: 186575e1-d696-56a5-b9dd-94200a052fa5
+  target: ffbde803-750d-5c8f-a8e4-462574026ed0
+  type: contains
+- source: 186575e1-d696-56a5-b9dd-94200a052fa5
+  target: f15eb201-1a36-56c0-8a6e-4612e07ef05d
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
   type: contains
 - source: 7e96ebb9-baca-5acc-9c69-605df0a7d51f
@@ -1922,6 +2001,9 @@ edges:
   type: contains
 - source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
   target: 460cc297-75fe-5c44-86f2-6d7aab7bd975
+  type: contains
+- source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
+  target: 1387b1e0-8579-5042-9bbd-f5062e3a3977
   type: contains
 - source: bb5caaf3-7d15-58e8-8f9c-2da3fabddaf3
   target: b0179b46-154b-5188-b8ba-c3de4407ac92
@@ -2153,6 +2235,9 @@ edges:
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 9933b843-51ec-5a9c-b197-522873bb2b09
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: ee99ec21-adaf-56ed-8fe9-ddb31ca07a5a
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 9ff5bffe-8e57-53d0-8a7c-9846d387b780
@@ -2399,6 +2484,30 @@ edges:
   type: contains
 - source: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
   target: 7d1b8a4a-8b0d-5899-a0d8-80e22e3323da
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: 701ecc1b-24e0-5ba5-b439-2448e61e2b1b
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: 222f14c5-f1fa-5db8-a96d-ff73acac8b3a
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: 35b0e50b-fc52-590b-acac-194e6f1fd603
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: 568a7c95-6c8f-5dca-85cd-207e579d3d4e
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: 4828cc7a-dbbb-5319-8b67-65bc46140ae9
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: 327574f6-8cdd-5835-95a3-a50a49c30646
+  type: contains
+- source: adced954-4f7c-59a4-ac03-2b7dbb0a2167
+  target: b9dcaef8-3d05-55ee-83e4-e5ae49b97f23
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 0e9cd8fa-6f4a-536d-8e54-d56f70fb13fb

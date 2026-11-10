@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.50.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.50.0) (2026-11-10)
+
+### Added
+
+- The Canonical GUID Extractor (Intention node Canonical GUID Extractor).
+  `dag-tool guids` lists every Intention GUID the project claims, from
+  `# aio-sdlc-node:` comments read with Tree-Sitter and from agent frontmatter
+  read with PyYAML. It reports malformed markers, GUIDs claimed more than once
+  and GUIDs the Intention DAG does not define, and exits 1 on any of them. It
+  is read-only.
+
 ## [0.49.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.49.0) (2026-11-10)
 
 ### Added
