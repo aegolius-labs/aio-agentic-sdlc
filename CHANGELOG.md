@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [0.49.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.49.0) (2026-11-09)
+## [0.49.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.49.0) (2026-11-10)
 
 ### Added
 
