@@ -178,6 +178,19 @@ files when run inside a project. It exits 1 on any failure. The
 stable across releases, and [recovery procedures](doc/recovery.md) explain each
 refusal the tooling can give and how to recover.
 
+### Check the node markers
+
+```bash
+dag-tool guids
+```
+
+`guids` lists every Intention GUID the project's files claim: the
+`# aio-sdlc-node:` comments in Python source, read with Tree-Sitter so a marker
+inside a string never counts, and `metadata.node_id` or `aio-sdlc-node` in the
+frontmatter of agent definitions under `.agents/agents/`. It exits 1 when a
+marker is not a UUID, a GUID is claimed twice, or a GUID is not an Intention
+DAG node. It is read-only and never writes a marker.
+
 ## See the whole loop in one command
 
 `dag-tool demo` builds a throwaway project and takes one requirement through

@@ -1916,6 +1916,41 @@ if __name__ == "__main__":
     cli()
 
 
+@cli.command("guids")
+@click.option(
+    "--project-path", default=".", show_default=True, help="Project root to scan."
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    show_default=True,
+)
+def guids(project_path, output_format):
+    """List the Intention GUIDs the project's files claim; exit 1 on a problem.
+
+    Reads Python comment markers with Tree-Sitter and agent frontmatter with
+    PyYAML. Reports malformed markers, GUIDs claimed twice, and GUIDs the
+    Intention DAG does not define. Read-only.
+    """
+    from aio_agentic_sdlc.guid_extractor import (
+        GuidExtractionError,
+        render_scan,
+        scan_project,
+    )
+
+    try:
+        report = scan_project(project_path)
+    except GuidExtractionError as error:
+        raise click.ClickException(str(error)) from error
+    if output_format == "json":
+        click.echo(json.dumps(report, indent=2))
+    else:
+        click.echo(render_scan(report))
+    sys.exit(0 if report["passed"] else 1)
+
+
 @cli.command("doctor")
 @click.option(
     "--project",

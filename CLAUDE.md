@@ -148,7 +148,7 @@ architectural components, Reality nodes are individual symbols.
   `check_duplicate_prd`.
 - **`dag-tool`** — `diff`, `reconcile`, `triage`, `visualize`, `validate`,
   `validate-intent`, `check-consistency`, `intent`, `intent-summary`, `mapping`, `evidence`, `node`, `edge`,
-  `generate-reality`.
+  `generate-reality`, `guids`, `doctor`, `demo`.
 - **`aio-sdlc` / `aio-agentic-sdlc` / `agb`** — backlog CLI: `init`, `add`, `update`,
   `remove`, `prioritize`, `next`, `status`, `block`, `unblock`, `export`, `plan`, `apply`,
   `migrate-state`, `migrate-ids`.

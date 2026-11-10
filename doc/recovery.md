@@ -73,6 +73,20 @@ until it is refreshed.
    `dag-tool mapping receipt refresh` records that decision. Never refresh a
    receipt without that review.
 
+## Node markers
+
+`dag-tool guids` reports three problems with `# aio-sdlc-node:` markers and
+agent frontmatter GUIDs.
+
+- **Malformed**: the value is not a UUID. Fix the typo against the Intention
+  DAG node it was meant to name.
+- **Claimed more than once**: two places claim the same node, so its identity
+  is ambiguous. Keep the one the mapping receipt names and remove the other.
+- **Not an Intention DAG node**: the node was removed or the GUID is wrong.
+  Do not add an Intention node to make the marker valid; that would turn an
+  observation into intent. Remove the marker, or map the symbol to the right
+  node with `dag-tool mapping review`.
+
 ## Triage decisions
 
 Triage decisions bind to a digest of both DAGs and the evidence ledger. Any
