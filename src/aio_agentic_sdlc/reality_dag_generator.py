@@ -30,7 +30,13 @@ IGNORED_DIRECTORIES = {
 TEST_DIRECTORIES = {"test", "tests"}
 
 TEST_FILENAME_PREFIXES = ("test_", "conftest")
-TEST_FILENAME_SUFFIXES = ("_test.py",)
+TEST_FILENAME_SUFFIXES = (
+    "_test.py",
+    ".test.ts",
+    ".spec.ts",
+    ".test.tsx",
+    ".spec.tsx",
+)
 
 
 def is_ignored_directory(directory: str) -> bool:

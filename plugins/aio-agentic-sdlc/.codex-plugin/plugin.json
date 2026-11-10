@@ -1,6 +1,6 @@
 {
   "name": "aio-agentic-sdlc",
-  "version": "0.50.0",
+  "version": "0.51.0",
   "description": "Run a traceable, dual-DAG software delivery workflow with Codex and the AIO Agentic SDLC MCP tools.",
   "author": {
     "name": "aegolius-labs",

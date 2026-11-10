@@ -1,6 +1,7 @@
 from .base import BaseFileParser
 from .markdown_parser import MarkdownAgentParser
 from .python_parser import PYTHON_LANGUAGE, TreeSitterParser
+from .typescript_parser import TypeScriptParser
 from .visitors import TreeSitterVisitor
 
 
@@ -12,6 +13,9 @@ class ParserFactory:
             ".py": TreeSitterParser(PYTHON_LANGUAGE, TreeSitterVisitor),
             ".md": MarkdownAgentParser(),
         }
+        typescript = TypeScriptParser()
+        self.parsers[".ts"] = typescript
+        self.parsers[".tsx"] = typescript
 
     def get_parser(self, ext: str) -> BaseFileParser | None:
         return self.parsers.get(ext)

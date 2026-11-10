@@ -157,7 +157,12 @@ Ontology Portability (`15302505`), Product Hardening (`82579715`).
 - [x] Agent invocation sits behind a runtime adapter (`agent_runtime`):
   `antigravity` or any agent CLI through `command`, chosen by configuration.
   `google-antigravity` is now an optional extra.
-- [ ] Python and TypeScript parsers emit the same core ontology.
+- [x] Python and TypeScript parsers emit the same core ontology.
+  `tests/test_typescript_parser.py` checks one project written in both
+  languages (`tests/fixtures/mixed-python-typescript`) and GUID traceability
+  across them. Still open: the ontology-boundary review (ONTOLOGY-AC2) is the
+  owner's, and `dag-tool mapping` writes and checks receipts in Python source
+  only, so a TypeScript symbol takes its identity from a hand-written marker.
 - [ ] A clean environment installs and validates the CLI, MCP server and both
   host plugins through documented contracts. CI installs the wheel alone and
   runs `dag-tool doctor`, which performs a real MCP handshake, and installs

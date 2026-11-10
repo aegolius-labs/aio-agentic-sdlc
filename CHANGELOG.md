@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+## [0.51.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.51.0) (2026-11-10)
+
+### Added
+
+- Reality observes TypeScript (Intention node Cross-language Ontology
+  Portability, ONTOLOGY-AC1). `.ts` and `.tsx` files produce the same core
+  nodes and edges as Python: modules, classes (entities when they extend
+  `BaseModel`, `Model` or `Entity`), public functions, methods and
+  function-valued constants, `contains` edges, and `depends_on` edges for
+  imports, with relative imports resolved to the imported file's module.
+  Interfaces, type aliases, enums, `.d.ts` files and `*.test.ts` or
+  `*.spec.ts` files are not observed.
+- `// aio-sdlc-node: <uuid>` gives a TypeScript definition or module its
+  Intention GUID, and `dag-tool guids` reads these markers too.
+- New runtime dependency: `tree-sitter-typescript`.
+
+### Known limits
+
+- `dag-tool mapping` approves and checks receipts in Python source only.
+- TypeScript functions are never classified as endpoints.
+
 ## [0.50.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.50.0) (2026-11-10)
 
 ### Added
