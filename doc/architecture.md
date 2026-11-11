@@ -5,12 +5,15 @@ This document describes the high-level architecture and data flow of the
 
 ## System Overview
 
-> **Note:** Please read [VISION.md](./VISION.md) to understand the foundational North-Star of this project—the Semantic Roadmap Graph—before making architectural changes.
+> **Note:** Please read [VISION.md](./VISION.md) to understand the foundational North-Star of this project—the Dual-DAG reconciliation engine, where the backlog is the diff between the Intention DAG and the Reality DAG—before making architectural changes.
 
 The CLI and MCP server act as deterministic backlog interfaces using a 3-Dimensional matrix
 (Impact, Effort, Dependency) to calculate priority scores and topologically sort tasks. The MCP
 adapter uses the official Python SDK v2 `MCPServer` API over stdio. All framework state is local.
-External trackers are not authoritative and synchronization support is intentionally absent.
+External trackers are not authoritative. This repository never calls GitHub: `dag-tool export-abk`
+writes the authorized work as an `agentic-backlog-kit` manifest, that kit projects it one way, and
+`dag-tool reconcile --observed-state` reads what GitHub shows back as evidence (Seam A in
+[authority-model.md](authority-model.md)).
 
 ## Repository layout
 
@@ -23,7 +26,7 @@ and build configuration. Framework-owned project artifacts share one parent.
 | `.agents/` | Agent definitions, legacy rules, workflows, and marketplace metadata. |
 | `.codex/` | Repository-scoped Codex agent adapters. |
 | `.github/`, `.husky/` | CI and commit-hook integration. |
-| `plugins/` | Distributable Codex plugin. |
+| `plugins/` | Distributable plugin for Claude Code, Codex and Antigravity: one shared skill body with a thin manifest per host. |
 | `src/`, `tests/`, `doc/` | Product code, verification, and durable documentation. |
 | `.aio-agentic-sdlc/` | Canonical DAGs, framework artifacts, and ignored local runtime state. |
 
@@ -100,7 +103,7 @@ directories such as `specs/` and `changes/` are deliberately outside automatic m
 migrator bridges the old and new state and mapping locks, removes known obsolete locks only after release,
 deletes the deprecated directory when empty, and reports unknown entries without removing them.
 
-Framework tools, rather than hand edits, perform state transitions. External issue trackers may be reintroduced later as one-way projections, but they cannot select or replace the authoritative state.
+Framework tools, rather than hand edits, perform state transitions. External issue trackers are one-way projections through `agentic-backlog-kit`. They cannot select or replace the authoritative state.
 
 Intention DAG nodes can embed the versioned Intent IR v1 contract. Intent IR records provenance,
 assumptions, ambiguities, confidence, acceptance criteria and their required evidence, revision

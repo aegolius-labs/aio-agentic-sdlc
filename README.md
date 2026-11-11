@@ -1,15 +1,17 @@
 # aio-agentic-sdlc
 
-An agentic SDLC framework whose backlog is the computed diff between an Intention DAG (what the software should be) and a Reality DAG (what it is). At its core is a deterministic, 3-Dimensional Impact/Effort/Dependency backlog manager designed for AI/Agentic workflows.
+An agentic SDLC framework whose backlog is the computed diff between an Intention DAG (what the software should be) and a Reality DAG (what it is). A person states what they want, the framework records it as approved intent, and agents work the diff until Reality satisfies it. See [doc/VISION.md](doc/VISION.md) for the goal and [ROADMAP.md](ROADMAP.md) for how far it has come.
 
-It replaces token-heavy LLM prioritization of Markdown files with a strict, deterministic JSON-based tracking system. It calculates recursive dependency scores, performs topological sorting to ensure prerequisites come first, and auto-generates human-readable Markdown exports.
+The diff's work items are held in a strict, deterministic JSON backlog instead of Markdown files that an LLM must re-prioritize. A deterministic Impact/Effort/Dependency scoring engine orders them: it calculates recursive dependency scores, sorts topologically so prerequisites come first, and generates human-readable Markdown exports.
+
+Two companion kits federate with the framework and also work on their own: [agentic-backlog-kit](https://github.com/aegolius-labs/agentic-backlog-kit) projects the work one way onto GitHub Issues and Projects, and [agentic-qa-kit](https://github.com/aegolius-labs/agentic-qa-kit) returns QA evidence. [doc/authority-model.md](doc/authority-model.md) defines how they compose.
 
 ## Architectural Highlights
 
 The `aio-agentic-sdlc` framework includes several built-in features that ensure deterministic, secure, and traceable agentic operations:
 
 - **Canonical GUID Traceability**: Node IDs map natively and consistently across your PRDs, codebase comments, and DAG structures.
-- **QA Sandbox Isolation**: QA agents operate strictly within robust `.qa-sandbox/<session-id>/` environments to ensure they cannot leak or destructively modify core source files.
+- **QA Sandbox Convention**: The `sdlc_qa` role is instructed to keep its scratch files, logs and temporary scripts under a gitignored `.qa-sandbox/<session-id>/` folder, which Reality generation skips. This is a rule the role follows, not an enforced isolation boundary.
 - **MCP Server Integration**: The official Python MCP SDK v2 `MCPServer` exposes the Agentic Backlog server over stdio with 24 tools, two resources, and one prompt; the two additive tools maintain source-identity receipts.
 - **Versioned Local State**: The execution backlog uses explicit schema and revision numbers, atomic replacement, stale-writer protection, and a local transaction audit log.
 - **Auditable Intent IR**: Intention nodes can preserve source provenance, assumptions, ambiguities, confidence, evidence-bound acceptance criteria, revision history, and approval state in a strict versioned schema.
