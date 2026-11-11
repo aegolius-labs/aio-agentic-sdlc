@@ -2,7 +2,8 @@
 
 A file claims an Intention node in one of two ways:
 
-- a Python comment `# aio-sdlc-node: <uuid>`, found with Tree-Sitter, so a
+- a source comment, `# aio-sdlc-node: <uuid>` in Python or
+  `// aio-sdlc-node: <uuid>` in TypeScript, found with Tree-Sitter, so a
   marker inside a string or docstring never counts;
 - an agent definition's YAML frontmatter, `metadata.node_id: <uuid>` or a
   top-level `aio-sdlc-node: <uuid>`, read with PyYAML. Agent definitions are
@@ -28,16 +29,26 @@ import yaml
 from tree_sitter import Parser, Query, QueryCursor
 
 from aio_agentic_sdlc.parsers.python_parser import PYTHON_LANGUAGE
+from aio_agentic_sdlc.parsers.typescript_parser import (
+    TSX_LANGUAGE,
+    TYPESCRIPT_LANGUAGE,
+    is_declaration_file,
+)
 from aio_agentic_sdlc.reality_dag_generator import (
     is_ignored_directory,
     is_test_directory,
+    is_test_file,
 )
-from aio_agentic_sdlc.source_markers import NODE_MARKER_PREFIX, canonical_node_marker
+from aio_agentic_sdlc.source_markers import (
+    NODE_MARKER_PREFIX,
+    canonical_line_comment_marker,
+    canonical_node_marker,
+)
 from aio_agentic_sdlc.workspace import INTENTION_DAG_FILE
 
 COMMENT = "comment"
 FRONTMATTER = "frontmatter"
-_MARKER_CANDIDATE = re.compile(r"^#\s*aio-sdlc-node\s*:")
+_MARKER_CANDIDATE = re.compile(r"^(#|//)\s*aio-sdlc-node\s*:")
 AGENT_DIRECTORY = ".agents/agents/"
 _FRONTMATTER_KEY = NODE_MARKER_PREFIX.rstrip(":")
 
@@ -71,17 +82,29 @@ def _canonical(value: Any) -> str | None:
         return None
 
 
-_PARSER = Parser(PYTHON_LANGUAGE)
-_COMMENTS = Query(PYTHON_LANGUAGE, f"({COMMENT}) @{COMMENT}")
+_LANGUAGES = {
+    ".py": (PYTHON_LANGUAGE, canonical_node_marker),
+    ".ts": (TYPESCRIPT_LANGUAGE, canonical_line_comment_marker),
+    ".tsx": (TSX_LANGUAGE, canonical_line_comment_marker),
+}
+_COMMENT_READERS = {
+    extension: (Parser(language), Query(language, f"({COMMENT}) @{COMMENT}"), read)
+    for extension, (language, read) in _LANGUAGES.items()
+}
+SOURCE_EXTENSIONS = tuple(_LANGUAGES)
 
 
 def extract_comment_markers(
     content: bytes, path: str
 ) -> tuple[list[GuidMarker], list[MalformedMarker]]:
-    """Return the node markers in one Python file's comments."""
+    """Return the node markers in one source file's comments."""
 
-    tree = _PARSER.parse(content)
-    captures = QueryCursor(_COMMENTS).captures(tree.root_node)
+    extension = os.path.splitext(path)[1].casefold()
+    parser, query, canonical_marker = _COMMENT_READERS.get(
+        extension, _COMMENT_READERS[".py"]
+    )
+    tree = parser.parse(content)
+    captures = QueryCursor(query).captures(tree.root_node)
     markers: list[GuidMarker] = []
     malformed: list[MalformedMarker] = []
     for node in sorted(captures.get(COMMENT, []), key=lambda n: n.start_byte):
@@ -89,7 +112,7 @@ def extract_comment_markers(
         if not _MARKER_CANDIDATE.match(text):
             continue
         line = node.start_point.row + 1
-        guid = canonical_node_marker(text)
+        guid = canonical_marker(text)
         if guid is None:
             malformed.append(MalformedMarker(path, line, COMMENT, text.strip()))
         else:
@@ -165,7 +188,12 @@ def _iter_files(root: Path):
             path = Path(directory) / name
             relative = path.relative_to(root).as_posix()
             is_agent = name.endswith(".md") and relative.startswith(AGENT_DIRECTORY)
-            if (name.endswith(".py") or is_agent) and not path.is_symlink():
+            is_source = (
+                name.casefold().endswith(SOURCE_EXTENSIONS)
+                and not is_test_file(name)
+                and not is_declaration_file(name)
+            )
+            if (is_source or is_agent) and not path.is_symlink():
                 if path.is_file():
                     yield path
 
@@ -198,7 +226,7 @@ def scan_project(project_path: str | Path = ".") -> dict[str, Any]:
     for path in _iter_files(root):
         relative = path.relative_to(root).as_posix()
         content = path.read_bytes()
-        if path.suffix == ".py":
+        if path.suffix.casefold() in SOURCE_EXTENSIONS:
             found, bad = extract_comment_markers(content, relative)
         else:
             try:

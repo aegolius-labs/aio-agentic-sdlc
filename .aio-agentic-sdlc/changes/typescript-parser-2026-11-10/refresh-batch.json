@@ -1,0 +1,9 @@
+[
+  {
+    "intent_id": "d0307d83-371e-4bb6-925d-84a4b70beb6b",
+    "intent_name": "Parser Factory",
+    "source_path": "src/aio_agentic_sdlc/parsers/factory.py",
+    "symbol": "class ParserFactory",
+    "evidence_digest": "a47911c0fdbf706c00d2035bc4641b0e5f804a1b92432558896f514ef777c707"
+  }
+]

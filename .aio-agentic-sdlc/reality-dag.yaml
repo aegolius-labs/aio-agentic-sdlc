@@ -925,7 +925,7 @@ nodes:
 - id: 568a7c95-6c8f-5dca-85cd-207e579d3d4e
   type: component
   name: extract_comment_markers
-  description: Return the node markers in one Python file's comments.
+  description: Return the node markers in one source file's comments.
 - id: 4828cc7a-dbbb-5319-8b67-65bc46140ae9
   type: component
   name: extract_frontmatter_markers
@@ -1565,6 +1565,11 @@ nodes:
   type: component
   name: canonical_node_marker
   description: Return a canonical UUID only when the entire comment is a valid marker.
+- id: 78676d70-433a-5fbb-8015-4972dea6fcd1
+  type: component
+  name: canonical_line_comment_marker
+  description: "Return a canonical UUID from a `// aio-sdlc-node:` comment, as TypeScript\n\
+    \    writes it, only when the entire comment is a valid marker."
 - id: 828c3a86-8c8c-59a9-b76b-194ea93baad6
   type: component
   name: iter_canonical_node_markers
@@ -1803,6 +1808,42 @@ nodes:
   type: component
   name: parse
   description: Function parse
+- id: 1aff7c5f-a080-5009-a02b-f07a256aad13
+  type: module
+  name: typescript_parser.py
+  description: Module src.aio_agentic_sdlc.parsers.typescript_parser
+- id: 11819b36-95ad-5906-8e16-8dce5a0d9b7c
+  type: component
+  name: is_declaration_file
+  description: Function is_declaration_file
+- id: b0475f18-b4db-52d6-a4b0-fb04296e17cf
+  type: component
+  name: TypeScriptParser
+  description: Parse one `.ts` or `.tsx` file into Reality nodes and edges.
+- id: 4ff16ba5-ce73-5af6-8de3-10b0cbe186e9
+  type: component
+  name: __init__
+  description: Function __init__
+- id: b0395153-2812-5308-9052-588034fb29ea
+  type: component
+  name: parse
+  description: Function parse
+- id: 9522b48f-e0b9-5be7-965a-2acf6f749b15
+  type: component
+  name: TypeScriptVisitor
+  description: Class TypeScriptVisitor
+- id: 430da02e-fa18-5f32-8740-fc493c1b589d
+  type: component
+  name: __init__
+  description: Function __init__
+- id: 1cbf5ee6-0113-5902-a19f-3b783fd29e67
+  type: component
+  name: current_scope
+  description: Function current_scope
+- id: 6ead6573-df54-5793-bc9f-1df744986f3e
+  type: component
+  name: visit
+  description: Function visit
 - id: 77759c7c-420b-572a-a765-65c3d3479dd5
   type: module
   name: visitors.py
@@ -2936,6 +2977,9 @@ edges:
   target: eead12e1-3524-5e23-99c1-c23c44e35eba
   type: contains
 - source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
+  target: 78676d70-433a-5fbb-8015-4972dea6fcd1
+  type: contains
+- source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
   target: 828c3a86-8c8c-59a9-b76b-194ea93baad6
   type: contains
 - source: c1d5d3f5-9bf5-5de5-aff0-e04a35728545
@@ -3093,6 +3137,33 @@ edges:
   type: contains
 - source: 9865715b-99a5-4dcb-ba92-90b03cc3cf1c
   target: 297c9311-ffe7-5ff3-b4f7-9e6ecea0aaa2
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 1aff7c5f-a080-5009-a02b-f07a256aad13
+  type: contains
+- source: 1aff7c5f-a080-5009-a02b-f07a256aad13
+  target: 11819b36-95ad-5906-8e16-8dce5a0d9b7c
+  type: contains
+- source: 1aff7c5f-a080-5009-a02b-f07a256aad13
+  target: b0475f18-b4db-52d6-a4b0-fb04296e17cf
+  type: contains
+- source: b0475f18-b4db-52d6-a4b0-fb04296e17cf
+  target: 4ff16ba5-ce73-5af6-8de3-10b0cbe186e9
+  type: contains
+- source: b0475f18-b4db-52d6-a4b0-fb04296e17cf
+  target: b0395153-2812-5308-9052-588034fb29ea
+  type: contains
+- source: 1aff7c5f-a080-5009-a02b-f07a256aad13
+  target: 9522b48f-e0b9-5be7-965a-2acf6f749b15
+  type: contains
+- source: 9522b48f-e0b9-5be7-965a-2acf6f749b15
+  target: 430da02e-fa18-5f32-8740-fc493c1b589d
+  type: contains
+- source: 9522b48f-e0b9-5be7-965a-2acf6f749b15
+  target: 1cbf5ee6-0113-5902-a19f-3b783fd29e67
+  type: contains
+- source: 9522b48f-e0b9-5be7-965a-2acf6f749b15
+  target: 6ead6573-df54-5793-bc9f-1df744986f3e
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 77759c7c-420b-572a-a765-65c3d3479dd5

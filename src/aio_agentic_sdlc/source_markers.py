@@ -20,6 +20,9 @@ NODE_MARKER_PATTERN = re.compile(
     r"^[ \t]*#\s*aio-sdlc-node:\s*([a-fA-F0-9-]+)\s*$",
     re.MULTILINE,
 )
+LINE_COMMENT_NODE_MARKER_PATTERN = re.compile(
+    r"^[ \t]*//\s*aio-sdlc-node:\s*([a-fA-F0-9-]+)\s*$",
+)
 MAPPING_APPROVAL_PATTERN = re.compile(
     rb"^(?P<indent>[ \t]*)#\s*aio-sdlc-mapping-approval:\s*"
     rb"(?P<payload>\{.*\})[ \t]*(?P<newline>\r?\n)?$"
@@ -335,6 +338,19 @@ def canonical_node_marker(line: str) -> str | None:
     """Return a canonical UUID only when the entire comment is a valid marker."""
 
     match = NODE_MARKER_PATTERN.fullmatch(line.rstrip("\r\n"))
+    if not match:
+        return None
+    try:
+        return str(UUID(match.group(1)))
+    except ValueError:
+        return None
+
+
+def canonical_line_comment_marker(line: str) -> str | None:
+    """Return a canonical UUID from a `// aio-sdlc-node:` comment, as TypeScript
+    writes it, only when the entire comment is a valid marker."""
+
+    match = LINE_COMMENT_NODE_MARKER_PATTERN.fullmatch(line.rstrip("\r\n"))
     if not match:
         return None
     try:
