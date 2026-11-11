@@ -52,6 +52,12 @@ from aio_agentic_sdlc.mapping import (
     render_receipt_refresh_review,
 )
 from aio_agentic_sdlc.observed_state import load_observed_state
+from aio_agentic_sdlc.qa_findings import (
+    load_findings,
+    propose_dispositions,
+    record_disposition,
+    render_proposals,
+)
 from aio_agentic_sdlc.reality_dag_generator import RealityDAGGenerator
 from aio_agentic_sdlc.reconciliation import (
     ReconciliationEngine,
@@ -1076,6 +1082,127 @@ def evidence_record(
         click.echo(f"Recorded {level} evidence for {criterion_id} ({count} records).")
     except Exception as e:
         click.secho(f"Error recording evidence: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@cli.group("qa")
+def qa():
+    """Choose the disposition of agentic-qa-kit findings (Seam B)."""
+
+
+_PROJECT_PATH = click.option(
+    "--project-path",
+    required=True,
+    type=click.Path(exists=True, file_okay=False),
+    help="Path to the project containing the canonical framework workspace.",
+)
+_FINDINGS = click.option(
+    "--findings",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False),
+    help="An `aqk-findings` document exported by agentic-qa-kit.",
+)
+
+
+@qa.command("propose")
+@_PROJECT_PATH
+@_FINDINGS
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["human", "json"]),
+    default="human",
+    show_default=True,
+    help="Render a human brief or the complete machine report.",
+)
+def qa_propose(project_path, findings, output_format):
+    """Propose revert-node or bug-handoff for each finding. Read-only."""
+
+    try:
+        root = Path(os.path.abspath(project_path))
+        report = propose_dispositions(
+            load_findings(findings),
+            DAGManager.load(str(root / INTENTION_DAG_FILE)),
+            ledger=load_evidence_ledger(root / EVIDENCE_LEDGER_FILE),
+        )
+        if output_format == "json":
+            click.echo(json.dumps(report, indent=2))
+        else:
+            click.echo(render_proposals(report))
+    except Exception as e:
+        click.secho(f"Error proposing QA dispositions: {str(e)}", err=True, fg="red")
+        sys.exit(1)
+
+
+@qa.command("record")
+@_PROJECT_PATH
+@_FINDINGS
+@click.option("--session-id", required=True, help="The finding's QA session ID.")
+@click.option("--finding-id", required=True, help="The QA finding ID.")
+@click.option(
+    "--disposition",
+    required=True,
+    type=click.Choice(["revert-node", "bug-handoff"]),
+    help="The chosen disposition.",
+)
+@click.option(
+    "--criterion-id",
+    help="For revert-node: the node's acceptance criterion the finding reopens.",
+)
+@click.option("--reason", required=True, help="Why this disposition was chosen.")
+@click.option("--recorded-by", required=True, help="Identity recording it.")
+@click.option("--recorded-at", required=True, help="Timezone-aware ISO-8601 timestamp.")
+@click.option(
+    "--approved-by",
+    help="The person approving; required for revert-node or to override the proposal.",
+)
+def qa_record(
+    project_path,
+    findings,
+    session_id,
+    finding_id,
+    disposition,
+    criterion_id,
+    reason,
+    recorded_by,
+    recorded_at,
+    approved_by,
+):
+    """Record one finding's disposition and reason in the evidence ledger.
+
+    Never edits the Intention DAG. revert-node reopens one acceptance criterion
+    of an approved node, so the node returns to the diff as verification work.
+    """
+
+    try:
+        root = Path(os.path.abspath(project_path))
+        record = record_disposition(
+            root / EVIDENCE_LEDGER_FILE,
+            load_findings(findings),
+            DAGManager.load(str(root / INTENTION_DAG_FILE)),
+            session_id=session_id,
+            finding_id=finding_id,
+            disposition=disposition,
+            reason=reason,
+            recorded_by=recorded_by,
+            recorded_at=recorded_at,
+            criterion_id=criterion_id,
+            approved_by=approved_by,
+        )
+        click.echo(f"Recorded {record.disposition} for {record.source}.")
+        if record.disposition == "revert-node":
+            click.echo(
+                f"Criterion {record.criterion_id} of {record.intent_id} is reopened: "
+                "the node stays in the diff until evidence recorded after this "
+                "finding meets it."
+            )
+        else:
+            click.echo(
+                "Emit the Bug payload with the QA kit: qa backlog-export "
+                f"{record.session_id} {record.finding_id} --input <fields.json>"
+            )
+    except Exception as e:
+        click.secho(f"Error recording the QA disposition: {str(e)}", err=True, fg="red")
         sys.exit(1)
 
 
