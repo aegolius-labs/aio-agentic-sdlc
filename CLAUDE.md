@@ -12,6 +12,12 @@ It is the long-term end product of Aegolius Labs. `agentic-backlog-kit` and
 dependency-free slice without adopting the whole framework. They federate with it; they
 are not part of it. See `doc/authority-model.md`.
 
+`agentic-product-playbook` is an experiment that guides the Intake side: what a project
+must decide first when it is scaffolded and its DAG is created. It proposes intent and
+never approves it. Whether it stays a separate repository or becomes part of Intake is
+undecided. A UI layer over the suite is wanted and its form is not chosen
+(`doc/VISION.md`).
+
 ## The North Star
 
 Read `doc/VISION.md` before any architectural change. The core claim:
@@ -122,7 +128,7 @@ Stale quickly — re-measure rather than trusting these numbers.
 | --- | --- |
 | Intention nodes | 62 (101 edges), all carrying Intent IR |
 | Approval states | 45 `approved`, 11 `review_required`, 6 `rejected` (owner review, #145) |
-| Reality nodes | 373 (tests excluded since #102) |
+| Reality nodes | 437 (measured 2026-11-11, after TypeScript observation in #170; tests excluded since #102) |
 | Confirmed nodes | 18; 15 mapping receipts (19 files carry `# aio-sdlc-node:` markers) |
 | Completed dogfood cycles | 12, under `.aio-agentic-sdlc/changes/` |
 
@@ -196,8 +202,8 @@ uv sync --frozen --group dev
 uv run --no-sync pytest -W error
 ```
 
-`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **547 passed,
-2 skipped** (measured 2026-11-08). Windows counts differ because of the symlink tests
+`uv` 0.12.16 is installed (winget `astral-sh.uv`). On Linux, expect **618 passed,
+2 skipped** (measured 2026-11-11). Windows counts differ because of the symlink tests
 below.
 
 Seven symlink and TOCTOU tests fail on the current Windows machine with

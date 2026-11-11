@@ -1,6 +1,6 @@
 # AIO Agentic SDLC Roadmap
 
-Last updated: 2026-11-08
+Last updated: 2026-11-11
 
 ## Product goal
 
@@ -45,8 +45,8 @@ itself:
    appears in the diff, is executed by `aio-sdlc apply`, and comes back as
    evidence, without hand-editing any state file.
 5. The work projects one way to GitHub through `agentic-backlog-kit` (Seam A),
-   and QA findings return through `agentic-qa-kit` with an explicit
-   disposition (Seam B).
+   and QA findings return through `agentic-qa-kit` as evidence, each given an
+   explicit disposition by this framework (Seam B).
 
 ## Completed foundations
 
@@ -70,14 +70,15 @@ itself:
 
 Goal: the diff can authorize work. Since the owner's review on 2026-11-05
 (#145), 45 nodes are approved, 6 rejected and 11 still `review_required`, so
-intent approval no longer blocks most of the diff. As of 2026-11-08 the
-blocker is classification: 35 approved items await a mapping or a triage
-decision (M2).
+intent approval no longer blocks most of the diff. The owner's 2026-11-08
+packet then mapped or classified the 35 approved items that were waiting, so
+the blocker is now what Reality can't observe (M2).
 
-- [ ] Review all 55 `review_required` nodes: approve, revise or retire each.
+- [ ] Review every `review_required` node: approve, revise or retire each.
   The grouped proposal is in
   [doc/reviews/intent-review-2026-10-15.md](doc/reviews/intent-review-2026-10-15.md).
-  45 were decided in #145; 11 remain, deferred by that review.
+  The owner's review in #145 left 45 of the 62 nodes approved and 6 rejected;
+  11 remain, deferred by that review (measured 2026-11-11).
 - [x] Resolve the nodes that contradict other documents: the licensing and
   EULA nodes against `COMMERCIAL.md`, and the QA swarm nodes against the
   authority model's layer 5. Rejected or revised in #145.
@@ -88,7 +89,8 @@ decision (M2).
 ## M2: Mapping coverage
 
 Goal: reconciliation resolves most nodes in both directions. As of
-2026-11-08, 18 of 62 nodes are confirmed against 373 Reality nodes.
+2026-11-08, 18 of 62 nodes were confirmed against 373 Reality nodes. Reality
+has 437 nodes since TypeScript observation (#170, measured 2026-11-11).
 
 - [x] Map every approved node that has an implementation, through the
   read-only review and approval flow. The owner's 2026-11-08 packet mapped 8
@@ -136,6 +138,19 @@ Reference Demo (`cb02a996`).
   implementation, tests, evidence and approval. `dag-tool demo`, with an
   integration test, and CI runs it from the installed wheel. Its traceability
   report still needs an outside reader's review (DEMO-AC2).
+- [ ] Proposal, no Intention node yet: scoring inputs belong to intent. The
+  scoring engine orders the leaves of the diff, but an Intention node carries
+  no impact or effort, so `diffing_engine` gives each task fixed values by
+  task kind and the order is in effect dependency order. Record impact and
+  effort on the Intention node, approved with the rest of its intent, and
+  derive each task's inputs from them (owner direction, 2026-11-11).
+- [ ] Proposal, no Intention node yet: Intake uses the stage and decision
+  guidance from `agentic-product-playbook` when it scaffolds a project and
+  creates its DAG. The playbook proposes intent at `review_required` and
+  never approves it. Whether it stays a separate repository with a data
+  contract ("Seam C") or becomes part of this framework's Intake path is
+  undecided (owner, 2026-11-11); see
+  [doc/authority-model.md](doc/authority-model.md#the-product-playbook).
 - [ ] A versioned golden corpus measures intent translation.
   `dag-tool benchmark-intent` and corpus v1 exist; the corpus and its
   thresholds wait for the owner's approval (BENCHMARK-AC1).
@@ -147,7 +162,17 @@ Reference Demo (`cb02a996`).
   on both sides. `dag-tool export-abk`, contract `seam-a-work` v1.
 - [ ] Seam B: a QA finding inside accepted intent reverts the responsible
   node (`revert-node`) through an approval-gated transition, and only findings
-  outside intent become Bug payloads.
+  outside intent become Bug payloads. This framework chooses the disposition
+  when it consumes a finding and records it with the reason (owner decision,
+  2026-11-11). `agentic-qa-kit` supplies the evidence and does not choose.
+  Nothing is built on either side yet: there is no contract version, no
+  fixture and no consumer.
+- [ ] Proposal, no Intention node yet: the framework's order is the order the
+  projection shows. When composed, GitHub should display the order this
+  framework computed instead of a second ranking computed by
+  `agentic-backlog-kit` (owner direction, 2026-11-11). Today `export-abk`
+  hands the kit each task's impact and effort and copies impact into business
+  value, and the kit computes its own Priority from them.
 
 ## M6: Portability and hardening
 
@@ -177,3 +202,17 @@ Ontology Portability (`15302505`), Product Hardening (`82579715`).
   opted in, and nothing from the project itself. Usage is evidence about this
   framework as a product, never intent. The owner approved the route on
   2026-11-07; it becomes work only once Intake records it as a node.
+
+## Later, not sequenced
+
+- Proposal, no Intention node yet: a UI layer that ties the suite together.
+  The owner wants one (2026-11-11) and has deliberately not chosen its form:
+  integrations into third-party tools, a terminal UI, a web app, or a mix. It
+  is revisited once more of M4 and M5 is complete. It is a view over the
+  layers in [doc/authority-model.md](doc/authority-model.md), so what it shows
+  never becomes intent except through Intake. The `TUI Dashboard` node is
+  still `review_required` and is one candidate form, not the decision.
+- Consolidating the kits into this repository. The owner raised it on
+  2026-11-11. Federation stays the decision until the conditions in
+  [doc/authority-model.md](doc/authority-model.md#revisiting-this-decision)
+  hold.

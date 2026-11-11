@@ -5,9 +5,13 @@ kind of truth. It exists because three Aegolius Labs repositories overlap in
 subject matter and would otherwise contradict each other:
 
 - `aio-agentic-sdlc` — the Dual-DAG reconciliation engine and SDLC orchestrator.
+  It is the end product: the framework the other repositories serve.
 - `agentic-backlog-kit` (ABK) — deterministic GitHub Issues and Projects backlog
   workflows.
 - `agentic-qa-kit` (AQK) — evidence-centered quality assurance workflows.
+
+A fourth repository, `agentic-product-playbook`, is an experiment that proposes
+intent. It owns no layer; see [The product playbook](#the-product-playbook).
 
 ABK and AQK were extracted from concepts in this repository so that a developer
 could use a fast, targeted, dependency-free tool without adopting the whole
@@ -68,11 +72,25 @@ contract for reconciling that work with GitHub Issues and Projects.
 
 ABK does not decide *what* should be built. When composed, it receives work.
 
+### Ordering the work
+
+This framework's scoring engine orders the leaves of the diff. When composed,
+that order is authoritative, and ABK's projection should show it. ABK's own
+scoring decides order only when ABK is used standalone, where no layer 3
+exists.
+
+This is the owner's direction of 2026-11-11 and is not yet what the code does.
+Two gaps are recorded as proposals in `ROADMAP.md`: an Intention node carries
+no impact or effort, so each task gets fixed values by task kind; and
+`dag-tool export-abk` hands those values to ABK, which computes its own
+Priority from them.
+
 ### agentic-qa-kit owns
 
 Bounded QA sessions, charters, attempts, findings, controlled reproduction, and
-the auditable evidence ledger. AQK does not decide disposition on its own and
-does not manage a backlog.
+the auditable evidence ledger. AQK does not decide disposition and does not
+manage a backlog. When composed, this framework chooses each finding's
+disposition (Seam B).
 
 ## Interface contracts
 
@@ -157,8 +175,12 @@ are byte-identical to the kit's copies and pin both directions on this side.
 
 ### Seam B: QA evidence (layer 5 to layers 2-4)
 
-An AQK finding has exactly two legitimate dispositions, and the composed system
-must choose explicitly:
+Status: decided in principle, not built. Neither repository has a contract
+version, a fixture or a consumer for this seam yet (`ROADMAP.md`, M5).
+
+An AQK finding has exactly two legitimate dispositions. When composed, this
+framework chooses between them explicitly, because only it knows whether a
+defect falls inside accepted intent:
 
 - **`revert-node`** — the defect falls inside existing accepted intent. The
   correct action is to revert the responsible Intention DAG node to an open
@@ -169,9 +191,30 @@ must choose explicitly:
   used standalone without this framework. AQK emits one Bug payload for ABK
   ingestion.
 
-AQK must record which disposition was chosen and why. Emitting a Bug payload for
-a defect that belongs to an existing accepted node is a contract violation: it
-creates a second, competing record of the same work.
+This framework records which disposition it chose and why (owner decision,
+2026-11-11, replacing the earlier wording that had AQK record it). AQK supplies
+the evidence: the confirmed finding, its reproduction and its limitations.
+Standalone, AQK has nothing to choose, because `bug-handoff` is the only
+disposition available. Emitting a Bug payload for a defect that belongs to an
+existing accepted node is a contract violation: it creates a second, competing
+record of the same work.
+
+## The product playbook
+
+`agentic-product-playbook` is stage and decision guidance for the Intake side:
+it helps the agents that scaffold a project and create its DAG work out what
+must be decided first. It is an experiment at its own proof-of-concept stage.
+
+- It owns no layer of the ladder. It sits upstream of layer 1 and may propose
+  intent, at `review_required` with `human_statement` or `conversation`
+  provenance. It never approves intent. A person approves every node through
+  this framework's tooling.
+- The order it prescribes becomes dependency edges between Intention nodes,
+  not scores.
+- How it connects is undecided (owner, 2026-11-11). It may stay a separate
+  repository joined by a data contract, which its own documents call "Seam C",
+  or become part of this framework's Intake path. No Seam C contract exists,
+  and this document defines none until that is decided.
 
 ## Standalone use
 
@@ -191,8 +234,10 @@ on the targeted use case that motivated the extraction.
 
 ## Revisiting this decision
 
-Federation is the current decision, not a permanent one. Consolidation into this
-repository should be reconsidered when any **two** of the following hold:
+Federation is the current decision, not a permanent one. The owner raised
+consolidation again on 2026-11-11, including archiving the kits and merging
+them here, and kept federation for now. Consolidation into this repository
+should be reconsidered when any **two** of the following hold:
 
 1. The Seam A or Seam B contract requires breaking changes more often than
    quarterly, indicating the boundary is not real.
