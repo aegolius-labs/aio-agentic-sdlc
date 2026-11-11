@@ -300,7 +300,7 @@ class DriftTriageEngine:
         }
         if self.evidence is not None:
             bound["evidence_sha256"] = hashlib.sha256(
-                _canonical_json(self.evidence.ledger.model_dump(mode="json"))
+                _canonical_json(self.evidence.ledger.digest_payload())
             ).hexdigest()
         plan_digest = hashlib.sha256(_canonical_json(bound)).hexdigest()
         identity = {

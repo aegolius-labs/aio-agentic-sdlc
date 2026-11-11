@@ -1,0 +1,98 @@
+{
+  "contract": "aqk-findings",
+  "contract_version": 1,
+  "exported_at": "2026-11-11T15:00:00Z",
+  "source": {
+    "tool": "agentic-qa-kit",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "session_id": "qa-example",
+      "finding_id": "finding-rounding",
+      "source": "agentic-qa-kit:session=qa-example;finding=finding-rounding",
+      "intent_guid": "3b241101-e2bb-4255-8caf-4136c566a962",
+      "status": "confirmed",
+      "session": {
+        "mode": "functional",
+        "integrity": "chained",
+        "target": {
+          "revision": "abc123",
+          "dirty": false
+        }
+      },
+      "title": "Half-cent totals round down instead of half up",
+      "quality_attribute": "functional-suitability",
+      "severity": "high",
+      "confidence": "high",
+      "summary": "A customer-visible total differs from the declared rounding rule.",
+      "expected": "10.005 rounds to 10.01 using the declared half-up rule.",
+      "actual": "10.005 rounds to 10.00.",
+      "oracle": "Independent Decimal quantization using ROUND_HALF_UP.",
+      "reproduction": {
+        "preconditions": ["Default currency configuration"],
+        "steps": ["Calculate a total of 10.005", "Observe the persisted total"],
+        "reproducibility": "always",
+        "attempts": 2
+      },
+      "attempt_ids": ["attempt-boundary", "attempt-boundary-repeat"],
+      "evidence": [
+        {
+          "kind": "test-output",
+          "location": ".agentic-qa/sessions/qa-example/evidence/test-output.txt",
+          "digest": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+        }
+      ],
+      "limitations": ["Only one runtime was exercised"],
+      "acceptance_criteria": [
+        "10.005 produces 10.01 under the declared currency rounding rule"
+      ],
+      "suspected_root_cause": "unknown"
+    },
+    {
+      "session_id": "qa-example",
+      "finding_id": "finding-export-encoding",
+      "source": "agentic-qa-kit:session=qa-example;finding=finding-export-encoding",
+      "intent_guid": null,
+      "status": "confirmed",
+      "session": {
+        "mode": "functional",
+        "integrity": "chained",
+        "target": {
+          "revision": "abc123",
+          "dirty": false
+        }
+      },
+      "title": "CSV export drops non-ASCII customer names",
+      "quality_attribute": "data-integrity",
+      "severity": "medium",
+      "confidence": "medium",
+      "summary": "Exported CSV replaces non-ASCII characters in customer names.",
+      "expected": "The exported name keeps every character of the stored name.",
+      "actual": "Characters outside ASCII are written as '?'.",
+      "oracle": "Byte comparison of the stored UTF-8 name with the exported field.",
+      "reproduction": {
+        "preconditions": ["A customer named with a non-ASCII character"],
+        "steps": [
+          "Export customers to CSV",
+          "Compare the exported name with the stored one"
+        ],
+        "reproducibility": "always",
+        "attempts": 1
+      },
+      "attempt_ids": ["attempt-export"],
+      "evidence": [
+        {
+          "kind": "artifact",
+          "location": ".agentic-qa/sessions/qa-example/evidence/export.csv"
+        }
+      ],
+      "limitations": ["Only the CSV format was exercised"],
+      "acceptance_criteria": [
+        "An exported CSV keeps non-ASCII customer names unchanged"
+      ],
+      "suspected_root_cause": "unknown"
+    }
+  ],
+  "digest": "sha256:4c266b23080a53592f8f1b8f00573436029f42523c6bf64597a4c12dc79439bb"
+}

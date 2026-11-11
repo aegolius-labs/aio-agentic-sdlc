@@ -175,8 +175,10 @@ are byte-identical to the kit's copies and pin both directions on this side.
 
 ### Seam B: QA evidence (layer 5 to layers 2-4)
 
-Status: decided in principle, not built. Neither repository has a contract
-version, a fixture or a consumer for this seam yet (`ROADMAP.md`, M5).
+Status: the framework side is built: contract `aqk-findings` version 1, the
+fixture `tests/fixtures/seam-b/findings.json` and the `dag-tool qa` consumer.
+The kit does not emit the document yet, and its byte-identical copy of the
+fixture is still to come (`ROADMAP.md`, M5).
 
 An AQK finding has exactly two legitimate dispositions. When composed, this
 framework chooses between them explicitly, because only it knows whether a
@@ -198,6 +200,48 @@ Standalone, AQK has nothing to choose, because `bug-handoff` is the only
 disposition available. Emitting a Bug payload for a defect that belongs to an
 existing accepted node is a contract violation: it creates a second, competing
 record of the same work.
+
+The kit hands confirmed findings across as an `aqk-findings` document, read
+through `aio_agentic_sdlc.qa_findings`:
+
+- The document must name `contract_version` 1 and match its own digest, the
+  SHA-256 of its canonical JSON without `digest`. An unknown version is
+  rejected. Additive fields keep the version; removals and renames bump it.
+- Each finding carries `session_id`, `finding_id`, the kit's `source`
+  (`agentic-qa-kit:session=<id>;finding=<id>`), `intent_guid`, `status`,
+  `session` (`mode`, `integrity`, `target.revision`, `target.dirty`) and the
+  kit's finding fields: `title`, `quality_attribute`, `severity`,
+  `confidence`, `summary`, `expected`, `actual`, `oracle`, `reproduction`,
+  `attempt_ids`, `evidence`, `limitations`, `acceptance_criteria` and
+  `suspected_root_cause`.
+- Only confirmed findings are eligible, with reproduction steps, a
+  reproducibility other than `not-reproduced`, evidence and acceptance
+  criteria. A finding from a session whose receipt chain is `broken` is
+  rejected. A finding appears once.
+- `intent_guid` is the lowercase canonical GUID of the Intention node the QA
+  session was testing, or `null` when it did not know one. It is never
+  inferred from a title or an id.
+
+`dag-tool qa propose --project-path <dir> --findings <file>` is read-only. For
+each finding it proposes `revert-node` when the GUID names an approved
+Intention node, and `bug-handoff` otherwise, with the reason: `no_guid`,
+`guid_not_in_intention` or `intent_not_approved`. An unmapped finding is
+reported, never guessed.
+
+`dag-tool qa record` records the chosen disposition and its reason in the
+evidence ledger (`.aio-agentic-sdlc/evidence.json`, `qa_dispositions`) under
+the ledger's lock. A finding takes exactly one disposition.
+
+- `revert-node` needs the approved node, one of its acceptance criteria
+  (`--criterion-id`) and a named approver (`--approved-by`). It reopens that
+  criterion: evidence recorded before the disposition no longer counts for it,
+  so the node returns to the diff as `verify_acceptance` work that triage
+  authorizes. It ends when evidence recorded after the disposition meets every
+  reference of the criterion again. Approved intent is not touched; the node
+  is open because its acceptance evidence no longer holds (ADR 0003).
+- `bug-handoff` reopens nothing. The kit's `backlog-export` emits the Bug
+  payload. Choosing other than the proposed disposition also needs a named
+  approver.
 
 ## The product playbook
 

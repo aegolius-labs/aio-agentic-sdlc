@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- Seam B, the framework side (Intention node QA Evidence Intake,
+  QA-SEAM-B-AC1). `dag-tool qa propose` reads an `agentic-qa-kit`
+  `aqk-findings` document (contract version 1, self-digest) and proposes a
+  disposition for each confirmed finding: `revert-node` when its GUID names an
+  approved Intention node, `bug-handoff` otherwise. It never matches by title
+  or id. `dag-tool qa record` records the chosen disposition and its reason in
+  the evidence ledger. `revert-node` needs a named approver and reopens one
+  acceptance criterion: evidence recorded before it stops counting, so the
+  node returns to the diff as verification work. It never edits the Intention
+  DAG.
+- The evidence ledger gains `qa_dispositions`. A ledger without any is written
+  and digested exactly as before.
+
 ## [0.51.0](https://github.com/aegolius-labs/aio-agentic-sdlc/releases/tag/v0.51.0) (2026-11-10)
 
 ### Added

@@ -458,3 +458,21 @@ uv run dag-tool export-abk \
 The export never calls GitHub. Pass `--observed-state` with an `abk observe`
 document so finished items drop out once their issues are closed. The contract
 is in `doc/authority-model.md`.
+
+### Choosing the disposition of QA findings (Seam B)
+
+`agentic-qa-kit` supplies confirmed findings as evidence; this framework
+chooses what happens to each. Propose, then record what a person chose:
+
+```bash
+uv run dag-tool qa propose --project-path . --findings findings.json
+uv run dag-tool qa record --project-path . --findings findings.json \
+  --session-id <session> --finding-id <finding> --disposition revert-node \
+  --criterion-id <criterion> --reason "Why" --recorded-by <identity> \
+  --recorded-at <timezone-aware-iso8601> --approved-by <person>
+```
+
+`revert-node` reopens one acceptance criterion of an approved node, so the
+node returns to the diff until fresh evidence meets it. It never edits the
+Intention DAG. `bug-handoff` leaves the Bug payload to the kit's
+`backlog-export`. The contract is in `doc/authority-model.md`.

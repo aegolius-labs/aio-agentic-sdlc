@@ -473,6 +473,21 @@ nodes:
   type: component
   name: evidence_record
   description: Append one record bound to an existing acceptance criterion.
+- id: 1ac5f0a9-b690-55b9-956c-79bcabafccb1
+  type: component
+  name: qa
+  description: Choose the disposition of agentic-qa-kit findings (Seam B).
+- id: c7082390-c4a1-5839-a44e-4ff4ec594f1f
+  type: component
+  name: qa_propose
+  description: Propose revert-node or bug-handoff for each finding. Read-only.
+- id: f7995d4d-835e-57af-a23a-42623eaa256f
+  type: component
+  name: qa_record
+  description: "Record one finding's disposition and reason in the evidence ledger.\n\
+    \n    Never edits the Intention DAG. revert-node reopens one acceptance criterion\n\
+    \    of an approved node, so the node returns to the diff as verification work.\n\
+    \    "
 - id: 3e8a1ea7-2960-5b5d-ab75-4b455163995e
   type: component
   name: visualize
@@ -877,10 +892,38 @@ nodes:
   type: component
   name: key
   description: Function key
+- id: eed5e980-87fc-5029-9dce-fe99ed9d6d62
+  type: entity
+  name: QADisposition
+  description: "The disposition this framework chose for one QA finding (Seam B).\n\
+    \n    `revert-node` reopens one acceptance criterion of an approved Intention\n\
+    \    node: evidence recorded before it no longer counts for that criterion, so\n\
+    \    the node returns to the diff until fresh evidence is recorded. It needs a\n\
+    \    named approver and never edits the Intention DAG. `bug-handoff` reopens\n\
+    \    nothing; the finding goes to agentic-backlog-kit as a Bug payload. Choosing\n\
+    \    other than the proposed disposition also needs a named approver.\n    "
+- id: a8049aa4-6703-537f-a0c8-a3f512ba6876
+  type: component
+  name: canonical_intent_id
+  description: Function canonical_intent_id
+- id: e2a66f11-beea-5096-8246-bd394e07526b
+  type: component
+  name: timezone_aware
+  description: Function timezone_aware
+- id: fb82767c-d52d-56be-827e-a4b72addf7e3
+  type: component
+  name: disposition_rules
+  description: Function disposition_rules
 - id: d65a076e-ec66-5225-a492-29199ab2e440
   type: entity
   name: EvidenceLedger
-  description: The committed evidence ledger, schema version 1.
+  description: "The committed evidence ledger, schema version 1.\n\n    `qa_dispositions`\
+    \ is additive: a ledger without any is written, and\n    digested, exactly as\
+    \ before the field existed.\n    "
+- id: ce522657-5b38-5ea0-8ef0-440027380f84
+  type: component
+  name: digest_payload
+  description: The JSON form triage digests; empty dispositions are left out.
 - id: 0832ebed-e715-5804-8694-8bad443c3608
   type: component
   name: load_evidence_ledger
@@ -890,6 +933,10 @@ nodes:
   name: record_evidence
   description: Append one record bound to an existing criterion; return the record
     count.
+- id: 0c64b147-c2cc-5d3b-95f3-e700de59d557
+  type: component
+  name: record_qa_disposition
+  description: Append one finding's disposition; a finding takes exactly one.
 - id: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
   type: component
   name: EvidenceEvaluator
@@ -1431,6 +1478,46 @@ nodes:
     \ (or 'Blocked' on failure). An\n       agent returning is not evidence; the next\
     \ ingest completes the task\n       only if it has left the diff.\n\n    Returns\
     \ the executed task's name, or None when nothing is authorized.\n    "
+- id: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  type: module
+  name: qa_findings.py
+  description: Module src.aio_agentic_sdlc.qa_findings
+- id: 0c4bc8d4-afee-560b-a77f-7419a3c11b49
+  type: component
+  name: FindingsError
+  description: Raised when a findings document or a disposition violates Seam B.
+- id: a3c5b06a-29cf-5906-9023-44512d508b3a
+  type: component
+  name: findings_digest
+  description: 'Return the kit''s digest of a document: canonical JSON without `digest`.'
+- id: 1c089197-3598-51e5-b34a-ad56097fd093
+  type: component
+  name: finding_source
+  description: The kit's stable source string for one finding.
+- id: 3e9daba5-f321-5789-b489-ba707d67a96f
+  type: component
+  name: validate_findings
+  description: Return the document unchanged if it honours contract v1, else raise.
+- id: 5a536de6-a6ca-5a2c-b75d-c9d3d642a4f9
+  type: component
+  name: load_findings
+  description: Read and validate one findings document from disk.
+- id: 125da752-1879-5481-a9da-8a93a805b824
+  type: component
+  name: propose_dispositions
+  description: Propose a disposition for every finding; read-only.
+- id: d9f90307-a11f-5139-8795-fc9499fbdbdb
+  type: component
+  name: record_disposition
+  description: "Record the chosen disposition of one finding, with its reason.\n\n\
+    \    The proposal is recomputed against the current Intention DAG. `revert-node`\n\
+    \    is refused unless the finding names an approved node. The record goes into\n\
+    \    the evidence ledger under its lock; the Intention DAG is never written.\n\
+    \    "
+- id: 2940ea32-9f6c-5202-a662-3f54652cdefa
+  type: component
+  name: render_proposals
+  description: A short human brief of the proposals.
 - id: 1dbef474-b42c-50ba-81a6-fcf97002ad6c
   type: module
   name: reality_dag_generator.py
@@ -2224,6 +2311,15 @@ edges:
   target: b46a2aca-7a70-5927-a270-34c3b52fb892
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: 1ac5f0a9-b690-55b9-956c-79bcabafccb1
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: c7082390-c4a1-5839-a44e-4ff4ec594f1f
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
+  target: f7995d4d-835e-57af-a23a-42623eaa256f
+  type: contains
+- source: 51038e11-df2c-549d-b731-bd99dd919ed5
   target: 3e8a1ea7-2960-5b5d-ab75-4b455163995e
   type: contains
 - source: 51038e11-df2c-549d-b731-bd99dd919ed5
@@ -2506,13 +2602,31 @@ edges:
   target: f2376ed8-b9af-515f-9827-4ff09d758312
   type: contains
 - source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: eed5e980-87fc-5029-9dce-fe99ed9d6d62
+  type: contains
+- source: eed5e980-87fc-5029-9dce-fe99ed9d6d62
+  target: a8049aa4-6703-537f-a0c8-a3f512ba6876
+  type: contains
+- source: eed5e980-87fc-5029-9dce-fe99ed9d6d62
+  target: e2a66f11-beea-5096-8246-bd394e07526b
+  type: contains
+- source: eed5e980-87fc-5029-9dce-fe99ed9d6d62
+  target: fb82767c-d52d-56be-827e-a4b72addf7e3
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
   target: d65a076e-ec66-5225-a492-29199ab2e440
+  type: contains
+- source: d65a076e-ec66-5225-a492-29199ab2e440
+  target: ce522657-5b38-5ea0-8ef0-440027380f84
   type: contains
 - source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
   target: 0832ebed-e715-5804-8694-8bad443c3608
   type: contains
 - source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
   target: e0d7c364-1e0f-507e-848a-21bb6022c328
+  type: contains
+- source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
+  target: 0c64b147-c2cc-5d3b-95f3-e700de59d557
   type: contains
 - source: e2e2fb7a-6c02-58b2-984c-ffae7f55c32f
   target: 6b1b3459-38a0-5cd5-8ff4-1453f17c3d76
@@ -2885,6 +2999,33 @@ edges:
   type: contains
 - source: 654e7846-a5b4-5627-af8a-6045142b4851
   target: 47757762-ac3c-582e-a93a-0bee49c1de94
+  type: contains
+- source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
+  target: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: 0c4bc8d4-afee-560b-a77f-7419a3c11b49
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: a3c5b06a-29cf-5906-9023-44512d508b3a
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: 1c089197-3598-51e5-b34a-ad56097fd093
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: 3e9daba5-f321-5789-b489-ba707d67a96f
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: 5a536de6-a6ca-5a2c-b75d-c9d3d642a4f9
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: 125da752-1879-5481-a9da-8a93a805b824
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: d9f90307-a11f-5139-8795-fc9499fbdbdb
+  type: contains
+- source: 463c1ba1-1575-5638-8a42-c7b9c49f81da
+  target: 2940ea32-9f6c-5202-a662-3f54652cdefa
   type: contains
 - source: 719b92f7-5e13-5bca-9990-75f7b431ec3b
   target: 1dbef474-b42c-50ba-81a6-fcf97002ad6c

@@ -165,8 +165,11 @@ Reference Demo (`cb02a996`).
   outside intent become Bug payloads. This framework chooses the disposition
   when it consumes a finding and records it with the reason (owner decision,
   2026-11-11). `agentic-qa-kit` supplies the evidence and does not choose.
-  Nothing is built on either side yet: there is no contract version, no
-  fixture and no consumer.
+  The framework side is built: contract `aqk-findings` v1, its fixture and
+  `dag-tool qa propose` and `qa record`. A recorded `revert-node` reopens one
+  acceptance criterion of the node, so it returns to the diff, and needs a
+  named approver. Still open: the kit's export of the document and its copy
+  of the fixture, and the mapping of QA Evidence Intake (`f4d2f082`).
 - [ ] Proposal, no Intention node yet: the framework's order is the order the
   projection shows. When composed, GitHub should display the order this
   framework computed instead of a second ranking computed by

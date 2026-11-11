@@ -1,0 +1,9 @@
+[
+  {
+    "intent_id": "6b1b3459-38a0-5cd5-8ff4-1453f17c3d76",
+    "intent_name": "Explicit Evidence Model",
+    "source_path": "src/aio_agentic_sdlc/evidence.py",
+    "symbol": "class EvidenceEvaluator",
+    "evidence_digest": "0a2a7ca59a55e47f06aaf987ffffa15866724798e200991ea9dc58a2e2225c16"
+  }
+]

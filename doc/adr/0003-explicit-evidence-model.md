@@ -61,3 +61,8 @@ classification and never edits intent.
   reading of what they require; sharper criteria are ROADMAP M1 work.
 - Keeping incomplete nodes in the diff and gating `apply` on evidence are
   follow-ups that consume this grading (ROADMAP M3).
+- Amended 2026-11-11 for Seam B (`doc/authority-model.md`). The ledger also
+  holds `qa_dispositions`. An approved `revert-node` QA finding reopens one
+  criterion: records made before it stop counting for that criterion, the
+  node's own reconciliation reference included, until records made after it
+  meet each reference again. Grading still never edits intent.

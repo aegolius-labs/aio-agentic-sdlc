@@ -134,13 +134,97 @@ class EvidenceRecord(BaseModel):
         return (self.intent_id, self.criterion_id, self.reference)
 
 
+QA_DISPOSITIONS = ("revert-node", "bug-handoff")
+
+
+class QADisposition(BaseModel):
+    """The disposition this framework chose for one QA finding (Seam B).
+
+    `revert-node` reopens one acceptance criterion of an approved Intention
+    node: evidence recorded before it no longer counts for that criterion, so
+    the node returns to the diff until fresh evidence is recorded. It needs a
+    named approver and never edits the Intention DAG. `bug-handoff` reopens
+    nothing; the finding goes to agentic-backlog-kit as a Bug payload. Choosing
+    other than the proposed disposition also needs a named approver.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    source: NonEmptyStr
+    session_id: NonEmptyStr
+    finding_id: NonEmptyStr
+    findings_digest: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    title: NonEmptyStr
+    disposition: Literal["revert-node", "bug-handoff"]
+    proposed_disposition: Literal["revert-node", "bug-handoff"]
+    intent_id: NonEmptyStr | None = None
+    criterion_id: NonEmptyStr | None = None
+    reason: NonEmptyStr
+    recorded_by: NonEmptyStr
+    recorded_at: datetime
+    approved_by: NonEmptyStr | None = None
+
+    @field_validator("intent_id")
+    @classmethod
+    def canonical_intent_id(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+        try:
+            canonical = str(UUID(value))
+        except ValueError as exc:
+            raise EvidenceError("intent_id must be a canonical UUID") from exc
+        if canonical != value:
+            raise EvidenceError("intent_id must be a canonical lowercase UUID")
+        return value
+
+    @field_validator("recorded_at")
+    @classmethod
+    def timezone_aware(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise EvidenceError("recorded_at must be timezone-aware")
+        return value
+
+    @model_validator(mode="after")
+    def disposition_rules(self) -> Self:
+        if self.disposition == "revert-node":
+            if self.intent_id is None or self.criterion_id is None:
+                raise EvidenceError(
+                    "revert-node names the Intention node and the acceptance "
+                    "criterion it reopens"
+                )
+            if not self.approved_by:
+                raise EvidenceError(
+                    "revert-node requires approved_by: a person approves it"
+                )
+        elif self.criterion_id is not None:
+            raise EvidenceError("bug-handoff reopens no criterion")
+        if self.disposition != self.proposed_disposition and not self.approved_by:
+            raise EvidenceError(
+                "choosing other than the proposed disposition requires approved_by"
+            )
+        return self
+
+
 class EvidenceLedger(BaseModel):
-    """The committed evidence ledger, schema version 1."""
+    """The committed evidence ledger, schema version 1.
+
+    `qa_dispositions` is additive: a ledger without any is written, and
+    digested, exactly as before the field existed.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
     schema_version: Literal[1] = EVIDENCE_SCHEMA_VERSION
     records: list[EvidenceRecord] = Field(default_factory=list)
+    qa_dispositions: list[QADisposition] = Field(default_factory=list)
+
+    def digest_payload(self) -> dict[str, Any]:
+        """The JSON form triage digests; empty dispositions are left out."""
+
+        payload = self.model_dump(mode="json")
+        if not payload["qa_dispositions"]:
+            del payload["qa_dispositions"]
+        return payload
 
 
 def load_evidence_ledger(path: str | Path) -> EvidenceLedger:
@@ -162,9 +246,10 @@ def _write_ledger(target: Path, ledger: EvidenceLedger) -> None:
     )
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            json.dump(
-                ledger.model_dump(mode="json", exclude_none=True), handle, indent=2
-            )
+            payload = ledger.model_dump(mode="json", exclude_none=True)
+            if not payload["qa_dispositions"]:
+                del payload["qa_dispositions"]
+            json.dump(payload, handle, indent=2)
             handle.write("\n")
             handle.flush()
             os.fsync(handle.fileno())
@@ -213,8 +298,22 @@ def record_evidence(
     target = guarded_file_path(ledger_path)
     with FileLock(f"{target}.lock", timeout=30):
         ledger = load_evidence_ledger(target)
+        reopened_at = max(
+            (
+                d.recorded_at
+                for d in ledger.qa_dispositions
+                if d.disposition == "revert-node"
+                and (d.intent_id, d.criterion_id)
+                == (record.intent_id, record.criterion_id)
+            ),
+            default=None,
+        )
+        # A record that predates a QA reopening of its criterion no longer
+        # counts, so fresh evidence at the same level is not a duplicate.
         if any(
-            existing.key() == record.key() and existing.level == record.level
+            existing.key() == record.key()
+            and existing.level == record.level
+            and (reopened_at is None or existing.recorded_at > reopened_at)
             for existing in ledger.records
         ):
             raise EvidenceError(
@@ -224,6 +323,48 @@ def record_evidence(
         ledger.records.append(record)
         _write_ledger(target, ledger)
         return len(ledger.records)
+
+
+def record_qa_disposition(
+    ledger_path: str | Path,
+    intention: DAGManager,
+    disposition: QADisposition,
+) -> int:
+    """Append one finding's disposition; a finding takes exactly one."""
+
+    if disposition.disposition == "revert-node":
+        node = next(
+            (
+                n
+                for n in intention.nodes.values()
+                if str(UUID(n.id)) == disposition.intent_id
+            ),
+            None,
+        )
+        if node is None or node.intent is None:
+            raise EvidenceError(
+                f"no Intention node with Intent IR has id {disposition.intent_id}"
+            )
+        if not any(
+            c.id == disposition.criterion_id for c in node.intent.acceptance_criteria
+        ):
+            raise EvidenceError(
+                f"'{node.name}' has no acceptance criterion {disposition.criterion_id}"
+            )
+    target = guarded_file_path(ledger_path)
+    with FileLock(f"{target}.lock", timeout=30):
+        ledger = load_evidence_ledger(target)
+        existing = next(
+            (d for d in ledger.qa_dispositions if d.source == disposition.source),
+            None,
+        )
+        if existing is not None:
+            raise EvidenceError(
+                f"{disposition.source} already has disposition {existing.disposition}"
+            )
+        ledger.qa_dispositions.append(disposition)
+        _write_ledger(target, ledger)
+        return len(ledger.qa_dispositions)
 
 
 def _locator_path(locator: str) -> str | None:
@@ -260,6 +401,14 @@ class EvidenceEvaluator:
         self._records: dict[tuple[str, str, str], list[EvidenceRecord]] = {}
         for record in ledger.records:
             self._records.setdefault(record.key(), []).append(record)
+        # An approved revert-node QA finding reopens one criterion: only
+        # evidence recorded after the latest such finding counts for it.
+        self._reopened: dict[tuple[str, str], list[QADisposition]] = {}
+        for disposition in ledger.qa_dispositions:
+            if disposition.disposition == "revert-node":
+                self._reopened.setdefault(
+                    (disposition.intent_id, disposition.criterion_id), []
+                ).append(disposition)
 
     def _usable(self, record: EvidenceRecord) -> bool:
         return self.project_root is None or not _locator_missing(
@@ -284,10 +433,14 @@ class EvidenceEvaluator:
         broken_records = 0
         for criterion in node.intent.acceptance_criteria:
             references = []
+            reopened_by = self._reopened.get((intent_id, criterion.id), [])
+            reopened_at = max((d.recorded_at for d in reopened_by), default=None)
             for reference in criterion.required_evidence:
                 records = self._records.get((intent_id, criterion.id, reference), [])
                 usable = [r for r in records if self._usable(r)]
                 broken_records += len(records) - len(usable)
+                if reopened_at is not None:
+                    usable = [r for r in usable if r.recorded_at > reopened_at]
                 achieved = max(
                     [base, *(r.level for r in usable)], key=lambda level: level.rank
                 )
@@ -297,6 +450,10 @@ class EvidenceEvaluator:
                     needed == EvidenceLevel.MAPPED
                     and reference != f"reconciliation:intent:{intent_id}"
                     and not any(r.level.rank >= needed.rank for r in usable)
+                ):
+                    satisfied = False
+                if reopened_at is not None and not any(
+                    r.level.rank >= needed.rank for r in usable
                 ):
                     satisfied = False
                 entry = {
@@ -315,17 +472,18 @@ class EvidenceEvaluator:
             satisfied = all(entry["satisfied"] for entry in references)
             if not satisfied:
                 unverified_criteria += 1
-            criteria.append(
-                {
-                    "id": criterion.id,
-                    "level": min(
-                        (EvidenceLevel(e["achieved_level"]) for e in references),
-                        key=lambda level: level.rank,
-                    ).value,
-                    "satisfied": satisfied,
-                    "references": references,
-                }
-            )
+            entry = {
+                "id": criterion.id,
+                "level": min(
+                    (EvidenceLevel(e["achieved_level"]) for e in references),
+                    key=lambda level: level.rank,
+                ).value,
+                "satisfied": satisfied,
+                "references": references,
+            }
+            if reopened_by:
+                entry["reopened_by"] = sorted(d.source for d in reopened_by)
+            criteria.append(entry)
         returned = criteria[:max_criteria]
         result = {
             "complete": mapped and unverified_criteria == 0,
