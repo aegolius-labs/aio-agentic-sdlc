@@ -8,7 +8,11 @@ The ultimate "North Star" for this project is to evolve beyond passive task trac
 
 1. **The Intention DAG:** We maintain a living Directed Acyclic Graph (DAG) that represents the *desired* state of the software. It documents how the project is supposed to work, structural decisions, requirements, and dependencies.
 2. **The Reality DAG:** We generate a real-time DAG representing the *actual* state of the implemented codebase. To ensure we can compute an accurate delta, we must build our own Reality DAG generator so that it maps 1:1 with the ontology and schema of the Intention DAG.
-3. **The Backlog as a Diff:** The "Backlog" is no longer a static list of user-created tasks. The Backlog is mathematically defined as the **Diff** between the Intention DAG and the Reality DAG. This diff precisely highlights missing dependencies, orphaned code, incomplete features, and architectural misalignments. The leaves of the diff are the actionable items. The framework's own scoring engine orders them, within the order the dependency edges already impose.
+3. **The Backlog as a Diff:** The "Backlog" is no longer a static list of user-created tasks. The
+   Backlog is mathematically defined as the **Diff** between the Intention DAG and the Reality DAG.
+   This diff precisely highlights missing dependencies, orphaned code, incomplete features, and
+   architectural misalignments. The leaves of the diff are the actionable items. The framework's own
+   scoring engine orders them, within the order the dependency edges already impose.
 4. **Agentic Orchestration:** By calculating this Diff, our agentic SDLC framework knows exactly where the software is and where it needs to go. It can autonomously break down the Diff, formulate implementation plans, and delegate work to specialized subagents (Architects, Implementers, QA) to continuously pull the Reality DAG into alignment with the Intention DAG.
 
 ## Implications for Architecture
@@ -30,4 +34,8 @@ The kits are separate repositories today so that each keeps a fast, dependency-f
 
 ## Undecided: A UI Layer
 
-The owner wants a UI layer that ties the suite together (stated 2026-11-11). Its form is deliberately not chosen yet. It could be integrations into third-party tools, a terminal UI, a web app, or a mix. The choice waits until more of the loop is complete. Whatever form it takes, it is a view over the layers above, like the GitHub projection: it may show and collect input, but what it shows never becomes intent except through the approval-gated Intake path.
+The owner wants a UI layer that ties the suite together (stated 2026-11-11). Its form is
+deliberately not chosen yet. It could be integrations into third-party tools, a terminal UI, a web
+app, or a mix. The choice waits until more of the loop is complete. Whatever form it takes, it is a
+view over the layers above, like the GitHub projection: it may show and collect input, but what it
+shows never becomes intent except through the approval-gated Intake path.
