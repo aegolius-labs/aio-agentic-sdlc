@@ -1,0 +1,18 @@
+[
+  {
+    "intent_id": "15302505-8828-525a-bebb-f72621f467a1",
+    "intent_name": "Cross-language Ontology Portability",
+    "candidate_reality_id": "b0475f18-b4db-52d6-a4b0-fb04296e17cf",
+    "symbol": "class TypeScriptParser",
+    "source_path": "src/aio_agentic_sdlc/parsers/typescript_parser.py",
+    "evidence_digest": "f8e85c78e4cc25db1a9c83f426581481deb0ade05bd437d20856584eb0ab1867"
+  },
+  {
+    "intent_id": "2e8a1562-7e77-4402-992f-f461e8c7161f",
+    "intent_name": "Canonical GUID Extractor",
+    "candidate_reality_id": "327574f6-8cdd-5835-95a3-a50a49c30646",
+    "symbol": "function scan_project",
+    "source_path": "src/aio_agentic_sdlc/guid_extractor.py",
+    "evidence_digest": "ab9dbfef5fc2f9935e3424357f717a9b08b0669f2cbc7d19c3b74c4a8792438b"
+  }
+]
